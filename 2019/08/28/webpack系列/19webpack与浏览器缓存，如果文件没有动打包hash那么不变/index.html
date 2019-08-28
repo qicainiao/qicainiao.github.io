@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="首先安装react相关能支持react代码的包 1npm install react react-dom --save  index.js 123456789101112import &quot;@babel/polyfill&quot;;import React, &amp;#123; Component &amp;#125; from &apos;react&apos;;import ReactDom from &apos;react-dom&apos;;class">
+<meta name="description" content="根据之前的配置，假设文件上传至服务器中，没有加hash，如果页面内容有更改，浏览器刷新的时候，请求的还是原先的文件，也就是浏览器的缓存，因为名字没有变。现在我们在上线的webpack配置中加上hash 1234output:&amp;#123;　　filename: &apos;[name].[contenthash].js&apos;,　　chunkFilename: &apos;[name].[contenthash].js&apos;,&amp;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="webpack系列-12webpack实现对react代码打包">
-<meta property="og:url" content="http://yoursite.com/2019/08/28/webpack系列/12webpack实现react代码打包/index.html">
+<meta property="og:title" content="webpack系列-19webpack与浏览器缓存">
+<meta property="og:url" content="http://yoursite.com/2019/08/28/webpack系列/19webpack与浏览器缓存，如果文件没有动打包hash那么不变/index.html">
 <meta property="og:site_name" content="qicainiao&#39;s Blog">
-<meta property="og:description" content="首先安装react相关能支持react代码的包 1npm install react react-dom --save  index.js 123456789101112import &quot;@babel/polyfill&quot;;import React, &amp;#123; Component &amp;#125; from &apos;react&apos;;import ReactDom from &apos;react-dom&apos;;class">
+<meta property="og:description" content="根据之前的配置，假设文件上传至服务器中，没有加hash，如果页面内容有更改，浏览器刷新的时候，请求的还是原先的文件，也就是浏览器的缓存，因为名字没有变。现在我们在上线的webpack配置中加上hash 1234output:&amp;#123;　　filename: &apos;[name].[contenthash].js&apos;,　　chunkFilename: &apos;[name].[contenthash].js&apos;,&amp;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-28T06:50:00.403Z">
+<meta property="og:updated_time" content="2019-08-28T09:58:40.744Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="webpack系列-12webpack实现对react代码打包">
-<meta name="twitter:description" content="首先安装react相关能支持react代码的包 1npm install react react-dom --save  index.js 123456789101112import &quot;@babel/polyfill&quot;;import React, &amp;#123; Component &amp;#125; from &apos;react&apos;;import ReactDom from &apos;react-dom&apos;;class">
+<meta name="twitter:title" content="webpack系列-19webpack与浏览器缓存">
+<meta name="twitter:description" content="根据之前的配置，假设文件上传至服务器中，没有加hash，如果页面内容有更改，浏览器刷新的时候，请求的还是原先的文件，也就是浏览器的缓存，因为名字没有变。现在我们在上线的webpack配置中加上hash 1234output:&amp;#123;　　filename: &apos;[name].[contenthash].js&apos;,　　chunkFilename: &apos;[name].[contenthash].js&apos;,&amp;">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/08/28/webpack系列/12webpack实现react代码打包/">
+  <link rel="canonical" href="http://yoursite.com/2019/08/28/webpack系列/19webpack与浏览器缓存，如果文件没有动打包hash那么不变/">
 
 
 
 
 
-  <title>webpack系列-12webpack实现对react代码打包 | qicainiao's Blog</title>
+  <title>webpack系列-19webpack与浏览器缓存 | qicainiao's Blog</title>
   
 
 
@@ -232,7 +232,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/12webpack实现react代码打包/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/19webpack与浏览器缓存，如果文件没有动打包hash那么不变/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="qicainiao">
@@ -249,7 +249,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">webpack系列-12webpack实现对react代码打包</h1>
+          <h1 class="post-title" itemprop="name headline">webpack系列-19webpack与浏览器缓存</h1>
         
 
         <div class="post-meta">
@@ -261,7 +261,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:48:04+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T17:56:01+08:00">
                 2019-08-28
               </time>
             
@@ -299,19 +299,13 @@
       
 
       
-        <p>首先安装react相关能支持react代码的包</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install react react-dom --save</span><br></pre></td></tr></table></figure>
+        <p>根据之前的配置，假设文件上传至服务器中，没有加hash，如果页面内容有更改，浏览器刷新的时候，请求的还是原先的文件，也就是浏览器的缓存，因为名字没有变。现在我们在上线的webpack配置中加上hash</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">output:&#123;</span><br><span class="line">　　filename: <span class="string">'[name].[contenthash].js'</span>,</span><br><span class="line">　　chunkFilename: <span class="string">'[name].[contenthash].js'</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import <span class="string">"@babel/polyfill"</span>;</span><br><span class="line"></span><br><span class="line">import React, &#123; Component &#125; from <span class="string">'react'</span>;</span><br><span class="line">import ReactDom from <span class="string">'react-dom'</span>;</span><br><span class="line"></span><br><span class="line">class App extends Component &#123;</span><br><span class="line">　　<span class="function"><span class="title">render</span></span>() &#123;</span><br><span class="line">　　　　<span class="built_in">return</span> &lt;div&gt;Hello World&lt;/div&gt;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDom.render(&lt;App /&gt;, document.getElementById(<span class="string">'root'</span>));</span><br></pre></td></tr></table></figure>
+<p>这个时候打包出来的文件就有了hash值。只要文件内容不变，hash值就不变，内容变了才变。</p>
+<p>如果打包失效，比如老版本的webpack4。这个时候加一个配置参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">optimization:&#123;</span><br><span class="line">　　runtimeChunk: &#123;</span><br><span class="line">　　　　name: <span class="string">'runtime'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>index.html</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>.babelrc</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">　　<span class="string">"presets"</span>: [</span><br><span class="line">　　　　[<span class="string">"@babel/preset-env"</span>,&#123;</span><br><span class="line">　　　　　　　　<span class="string">"targets"</span>: &#123;</span><br><span class="line">　　　　　　　　<span class="string">"chrome"</span>: <span class="string">"67"</span>,</span><br><span class="line">　　　　　　&#125;,</span><br><span class="line">　　　　　　<span class="string">"useBuiltIns"</span>: <span class="string">"usage"</span>,</span><br><span class="line">　　　　　　<span class="string">"corejs"</span>: 3</span><br><span class="line">　　　　&#125;],</span><br><span class="line">　　　　<span class="string">"@babel/preset-react"</span></span><br><span class="line">　　]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>再运行npm run start。就可以正确读取到hello world这个文本了</p>
 
       
     </div>
@@ -336,8 +330,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/28/webpack系列/11webpack中使用babel处理es6/" rel="next" title="webpack系列-11webpack中使用babel处理es6">
-                <i class="fa fa-chevron-left"></i> webpack系列-11webpack中使用babel处理es6
+              <a href="/2019/08/28/webpack系列/18webpack中css文件的代码分割和压缩/" rel="next" title="webpack系列-18webpack中css文件的代码分割">
+                <i class="fa fa-chevron-left"></i> webpack系列-18webpack中css文件的代码分割
               </a>
             
           </div>
@@ -346,8 +340,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/08/28/webpack系列/13webpack中tree shaking/" rel="prev" title="webpack系列-13webpack中 tree shaking概念详解">
-                webpack系列-13webpack中 tree shaking概念详解 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/08/28/webpack系列/21webpack中环境变量的使用方法/" rel="prev" title="webpack系列-21webpack中环境变量的使用方法">
+                webpack系列-21webpack中环境变量的使用方法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

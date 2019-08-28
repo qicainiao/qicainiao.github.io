@@ -232,6 +232,604 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/13webpack中tree shaking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/webpack系列/13webpack中tree shaking/" itemprop="url">webpack系列-13webpack中 tree shaking概念详解</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:50:26+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import <span class="string">"@babel/polyfill"</span>;</span><br></pre></td></tr></table></figure>
+
+<p>index.js里面只留下babel/plyfill。打包npm run bundle，会发现一条提示语。<br>他的意思是如果.babelrc里面用了useBuiltIns。业务代码里面就不需要再引入babel/polyfill。webpack会自动引入polyfill。<br>将index.js里面的代码全部删除就没有问题了。在src里面新建一个math.js</p>
+<p>math.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> const add = (a, b) =&gt; &#123;</span><br><span class="line">　　console.log(a+b);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> const minus = (a, b) =&gt; &#123;</span><br><span class="line">　　console.log(a-b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import &#123; add &#125; from <span class="string">'./math.js'</span>;</span><br><span class="line"></span><br><span class="line">add(1,2);</span><br></pre></td></tr></table></figure>
+
+<p>index.html</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>所有文件准备好了后，我们打包npx webpack。打开index.html。就发现输出了3。说明代码已经正确的运行了。</p>
+<p>可以看到我在index里面只引用了add方法，但是在打包生成的文件里minus这个文件也存在打包文件里。虽然index.js里面只引用了math.js的一个方法，但是把所有的math.js都打包生成到了main.js里面。那这是没有必要的。因为业务代码只需要add。最理想的是我引用什么，就给我打包什么。在webpack 2.0以后提供了tree shaking的概念，意思是树抖动的意思。把没用的东西都摇晃掉。<br>tree shaking只支持 ES Module的引入方式，因为es module底层是一个静态引入的方式，而commonjs是动态引入的方式。</p>
+<p>webpack.config.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　optimization: &#123;</span><br><span class="line">　　　　// 看一看哪些模块被导出了，再去打包</span><br><span class="line">　　　　useExports: <span class="literal">true</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>package.json</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">　　<span class="string">"sideEffects"</span>: <span class="literal">false</span></span><br><span class="line">　　/***</span><br><span class="line">　　* 把不需要tre shaking的模块配置在这里</span><br><span class="line">　　* 如果webpack引入了tree shaking，那么webpack只要打包一个模块，就会应用tree shaking这种</span><br><span class="line">　　* 方式打包。如果没有引入任何一个模块，<span class="string">"sideEffects"</span>: [<span class="string">"babel/polyfill"</span>]</span><br><span class="line">　　* babel/ polyfill引入就会报错。这里配置了后，tree shaking就不会去打包babel/polyfill</span><br><span class="line">　　* 但是现在我们写的是业务代码，不是第三方模块，不使用babel.polyfill，这是配置<span class="literal">false</span>，</span><br><span class="line">　　* 就是所有打包文件都走tree shaking。</span><br><span class="line">　　*/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们再去打包，发现minus还在，但是tree shaking已经生效了，前面会提醒，他已经知道只用了add方法，</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/*! exports provided: add, minus */</span><br><span class="line">/*! exports used: add */</span><br></pre></td></tr></table></figure>
+
+<p>但是在开发环境下，我们可能需要调试，报出来的行可能不准确，所以保留了代码。真正打包上线的时候，minus的代码就会不打包了这个时候。production的时候，optimization都不需要配置。production的时候tree shaking自动的配置好了。只需要 devtool: ‘cheap-module-eval-source-map’就可以</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/12webpack实现react代码打包/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/webpack系列/12webpack实现react代码打包/" itemprop="url">webpack系列-12webpack实现对react代码打包</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:48:04+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>首先安装react相关能支持react代码的包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install react react-dom --save</span><br></pre></td></tr></table></figure>
+
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import <span class="string">"@babel/polyfill"</span>;</span><br><span class="line"></span><br><span class="line">import React, &#123; Component &#125; from <span class="string">'react'</span>;</span><br><span class="line">import ReactDom from <span class="string">'react-dom'</span>;</span><br><span class="line"></span><br><span class="line">class App extends Component &#123;</span><br><span class="line">　　<span class="function"><span class="title">render</span></span>() &#123;</span><br><span class="line">　　　　<span class="built_in">return</span> &lt;div&gt;Hello World&lt;/div&gt;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDom.render(&lt;App /&gt;, document.getElementById(<span class="string">'root'</span>));</span><br></pre></td></tr></table></figure>
+
+<p>index.html</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>.babelrc</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">　　<span class="string">"presets"</span>: [</span><br><span class="line">　　　　[<span class="string">"@babel/preset-env"</span>,&#123;</span><br><span class="line">　　　　　　　　<span class="string">"targets"</span>: &#123;</span><br><span class="line">　　　　　　　　<span class="string">"chrome"</span>: <span class="string">"67"</span>,</span><br><span class="line">　　　　　　&#125;,</span><br><span class="line">　　　　　　<span class="string">"useBuiltIns"</span>: <span class="string">"usage"</span>,</span><br><span class="line">　　　　　　<span class="string">"corejs"</span>: 3</span><br><span class="line">　　　　&#125;],</span><br><span class="line">　　　　<span class="string">"@babel/preset-react"</span></span><br><span class="line">　　]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再运行npm run start。就可以正确读取到hello world这个文本了</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/11webpack中使用babel处理es6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/webpack系列/11webpack中使用babel处理es6/" itemprop="url">webpack系列-11webpack中使用babel处理es6</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:37:10+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const arr = [</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;),</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;)</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">arr.map(item =&gt; &#123;</span><br><span class="line">　　console.log(item);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>index.html</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>运行npx webpack(用dev-server打包放在了缓存里面，看不到最终的打包内容)。看到打包生成的main.js的最后几行，index里面写的js，原封不动的打包到了main.js里面。这个时候浏览器中运行，可以打印出promise对象。好像是没问题的，这是什么原因呢，这是因为chrome更新比较快，es6里面很多东西，他都做了实现，所以直接在chrome浏览器写es6语法没问题，但是比如在ie或者更新没那么快的浏览器，，，就会报错。。。</p>
+<p>这个时候需要接住babel,<a href="https://babeljs.io/。" target="_blank" rel="noopener">https://babeljs.io/。</a><br>先安装两个包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev babel-loader @babel/core</span><br></pre></td></tr></table></figure>
+
+<p>一个是帮助webpack打包用的工具，一个是babel的核心库<br>webpack配置babel相关</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">"babel-loader"</span></span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再继续安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install @babel/preset-env --save-dev</span><br></pre></td></tr></table></figure>
+
+<p>为什么要安装这个模块，当我们使用babel－loader处理js文件的时候，实际上这个babel-loader只是webpack和babel做通信的一个桥梁，用了他之后，webpack和babel做了打通，但实际上，babel-loader并不会帮助我们把es6语法翻译成es5语法，还需要借助一些其它的模块才能够帮助我们把es6语法翻译成es5语法。babel/preset-env就是这样的一个模块，这里面包含了所有把es6转化成es5的规则。装好之后，还需要在webpack里面配置一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">　　　　　　options:&#123;</span><br><span class="line">　　　　　　　　<span class="string">"presets"</span>: [<span class="string">"@babel/preset-env"</span>]</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再使用npx webpack，看转化后的main.js，发现es6的语法转化成了es5的语法。但是光做到这点不够。为什么呢？因为比如像Promise这样新的语法变量，包括数组里面这个map方法，在低版本的浏览器里，实际上还是不存在的。虽然了语法翻译，但只翻译了一部分。还有一些对象或者函数在一些低版本的浏览器里面还是没有的。</p>
+<p>所以不仅要用preset-env翻译es6，还需要将缺失的语法补充到浏览器里，这个模块就是babel/polyfill。然后把polyfill引入到业务代码的最顶部<br>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import <span class="string">"@babel/polyfill"</span>;</span><br><span class="line"></span><br><span class="line">const arr = [</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;),</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;)</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">arr.map(item =&gt; &#123;</span><br><span class="line">　　console.log(item);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>处理好后，再运行，会发现原来打包好的main是28kb，现在是534kb。这多出来的内容就是polyfill弥补的内容，所以main.js一下子就变的很大。那么我不想要这么大，我只需要你在我需要补充语法的时候出来相应处理的代码就可以。<br>安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install core-js --save-dev</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">　　　　　　options:&#123;</span><br><span class="line">　　　　　　　　presets: [[<span class="string">'@babel/preset-env'</span>,&#123;</span><br><span class="line">　　　　　　　　/**</span><br><span class="line">　　　　　　　　* 当我做polyfill填充的时候，去加一些低版本特性的时候，我不是把所有特性都加进来</span><br><span class="line">　　　　　　　　* 是根据你的业务代码来决定要加什么</span><br><span class="line">　　　　　　　　*/</span><br><span class="line">　　　　　　　　useBuiltIns: <span class="string">'usage'</span>,</span><br><span class="line">　　　　　　　　corejs: 3</span><br><span class="line">　　　　　　　　&#125;]]</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主页打包出来的main就124kb，小了很多</p>
+<p>当然preset也可以配置一些额外的参数<br> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">　　　　　　options:&#123;</span><br><span class="line">　　　　　　　　presets: [[<span class="string">'@babel/preset-env'</span>,&#123;</span><br><span class="line">　　　　　　　　/**</span><br><span class="line">　　　　　　　　* 意思是我的这个项目，打包会运行在&gt;67这个版本的chrome浏览器下</span><br><span class="line">　　　　　　　　* 比如chrome浏览器在67版本以上对es6语法支持很好了，就不需要翻译</span><br><span class="line">　　　　　　　　*/</span><br><span class="line">　　　　　　　　targets: &#123;</span><br><span class="line">　　　　　　　　　　chrome: <span class="string">"67"</span>,</span><br><span class="line">　　　　　　　　&#125;,</span><br><span class="line">　　　　　　　　/**</span><br><span class="line">　　　　　　　　* 当我做polyfill填充的时候，去加一些低版本特性的时候，我不是把所有特性都加进来</span><br><span class="line">　　　　　　　　* 是根据你的业务代码来决定要加什么</span><br><span class="line">　　　　　　　　* @babel/polyfill，放在js入口</span><br><span class="line">　　　　　　　　*/</span><br><span class="line">　　　　　　　　useBuiltIns: <span class="string">'usage'</span>,</span><br><span class="line">　　　　　　　　corejs: 3</span><br><span class="line">　　　　　　　　&#125;]]</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>再运行npm run bundle，发现main.js重新变成了28.8kb。</p>
+<p>这种方案不一定所有场景都适用，在开发一个第三方模块的时候，这个时候用polyfill注入是有问题的，因为这是时候注入会以全局变量的方式注入，会污染到全局环境。所以我们在打包UI组件库或者类库的时候，需要换一种打包的方式。去除index的pollfile。webpack也不做presets的配置了<br>首先安装</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev @babel/plugin-transform-runtime</span><br><span class="line">npm install --save @babel/runtime</span><br></pre></td></tr></table></figure>
+
+<p>index.js</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// import <span class="string">"@babel/polyfill"</span>;</span><br><span class="line"></span><br><span class="line">const arr = [</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;),</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;)</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">arr.map(item =&gt; &#123;</span><br><span class="line">　　console.log(item);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">　　　　　　options:&#123;</span><br><span class="line">　　　　　　　　<span class="string">"plugins"</span>: [[<span class="string">"@babel/plugin-transform-runtime"</span>,&#123;</span><br><span class="line">　　　　　　　　<span class="string">"absoluteRuntime"</span>: <span class="literal">false</span>,</span><br><span class="line">　　　　　　　　<span class="string">"corejs"</span>: 2,</span><br><span class="line">　　　　　　　　<span class="string">"helpers"</span>: <span class="literal">true</span>,</span><br><span class="line">　　　　　　　　<span class="string">"regenerator"</span>: <span class="literal">true</span>,</span><br><span class="line">　　　　　　　　<span class="string">"useESModules"</span>: <span class="literal">false</span></span><br><span class="line">　　　　　　　　&#125;]]</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再强调一遍，如果我们写的只是业务代码，在配置的时候只要配置presets,同时引入pollfill就可以了。如果你写的是一个库项目代码的时候，这个时候要使用babel/plugin-transform-runtime。这个时候可以有效的避免presets,或者说是pollfill的问题。pollfile会污染全局环境。但是plugin-transform-runtime会以闭包的方式注入。这样写类库的时候是更好的方式。</p>
+<p>另外补充一个知识点，如果我们认真的去配置babel相关的配置，会发现非常的长。我们可以在根目录新建一个文件。叫.babelrc。然后把options对象拿出来放到.babelrc里面。然后删除babel配置的option<br>.babelrc</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">　　<span class="string">"plugins"</span>: [[<span class="string">"@babel/plugin-transform-runtime"</span>,&#123;</span><br><span class="line">　　<span class="string">"absoluteRuntime"</span>: <span class="literal">false</span>,</span><br><span class="line">　　<span class="string">"corejs"</span>: 2,</span><br><span class="line">　　<span class="string">"helpers"</span>: <span class="literal">true</span>,</span><br><span class="line">　　<span class="string">"regenerator"</span>: <span class="literal">true</span>,</span><br><span class="line">　　<span class="string">"useESModules"</span>: <span class="literal">false</span></span><br><span class="line">　　&#125;]]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>webpack.config.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　test: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: &quot;babel-loader&quot;</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样执行起来 npm run bundle 不会有任何问题</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/10webpack热模块更新/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/webpack系列/10webpack热模块更新/" itemprop="url">webpack系列-10webpack热模块更新</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:25:24+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Hot Module Replacement，热模块更新，很多时候会简写成HMR。</p>
+<p>首先我们把package.json里面的script改成</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"start"</span>: <span class="string">"webpack-dev-server"</span>,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>在加热更新之前，我们运行npm run start，会发现之前我们打包有个dist目录，为什么运行这个命令的时候，dist目录没有了。实际上，webpack-dev-server，还是会对src目录下进行打包的。但是打包生成的文件，他并不会放在dist目录下。而是放到电脑中的内存里面。这样的话，可以有效的提升打包的速度。让我们开发更快，所以不用担心。</p>
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var btn = document.createElement(<span class="string">'button'</span>);</span><br><span class="line">btn.innerHTML = <span class="string">'新增'</span>;</span><br><span class="line">document.body.appendChild(btn);</span><br><span class="line"></span><br><span class="line">btn.onclick = <span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">　　var div = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　div.innerHTML = <span class="string">'item'</span>;</span><br><span class="line">　　document.body.appendChild(div);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个js是点击一下新增，就新增一个item的div。现在我要实现一个样式的效果。偶数的时候给他加个背景</p>
+<p>style.css</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">div:nth-of-type(odd) &#123;</span><br><span class="line">　　background: yellow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候我把yellow改成blue。webpack-dev-server检测到代码对变化就会重新刷新，需要重新点击去测试。那之前好不容易点的东西没有了，又要重新点击，于是我就希望，当改变样式代码的时候，不要刷新页面，只要改变样式就行了，不要给我删除掉之前的dom。这个时候就用到了HMR</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　// 起个服务器</span><br><span class="line">　　devServer: &#123;</span><br><span class="line">　　　　// 这个意思是服务器要生成在哪个文件夹下</span><br><span class="line">　　　　contentBase:<span class="string">'./dist'</span>,</span><br><span class="line">　　　　// 启动的时候自动打开浏览器，然后自动访问这个服务器地址</span><br><span class="line">　　　　open:<span class="literal">true</span>,</span><br><span class="line">　　　　// 开启Hot Module Replacement</span><br><span class="line">　　　　hot: <span class="literal">true</span>,</span><br><span class="line">　　　　// 即便hmr的功能没有生效，浏览器也不要自动刷新</span><br><span class="line">　　　　hotOnly: <span class="literal">true</span></span><br><span class="line">　　&#125;,</span><br><span class="line">　　// HtmlWebpackPlugin会在打包结束后，自动生成一个html文件，并把打包生成的js自动引入到这个html文件中</span><br><span class="line">　　plugins: [</span><br><span class="line">　　　　new HtmlWebpackPlugin(&#123;</span><br><span class="line">　　　　　　template: <span class="string">'src/index.html'</span></span><br><span class="line">　　　　&#125;),</span><br><span class="line">　　　　new CleanWebpackPlugin(),</span><br><span class="line">　　　　// 当dev-server,两项host配置搞定后，再使用这个插件后，hmr功能就生效了</span><br><span class="line">　　　　new webpack.HotModuleReplacementPlugin()</span><br><span class="line">　　],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候再去更改样式，就不会影响之前js对html的变更。改了css文件，就只会替换css的内容<br>所以使用HMR的好处是,在写css的时候，方便调试css。</p>
+<p>这是时候再把上面的配置恢复到没有hmr的时候</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　// 起个服务器</span><br><span class="line">　　devServer: &#123;</span><br><span class="line">　　　　// 这个意思是服务器要生成在哪个文件夹下</span><br><span class="line">　　　　contentBase:<span class="string">'./dist'</span>,</span><br><span class="line">　　　　// 启动的时候自动打开浏览器，然后自动访问这个服务器地址</span><br><span class="line">　　　　open:<span class="literal">true</span></span><br><span class="line">　　&#125;,</span><br><span class="line">　　// HtmlWebpackPlugin会在打包结束后，自动生成一个html文件，并把打包生成的js自动引入到这个html文件中</span><br><span class="line">　　plugins: [</span><br><span class="line">　　　　new HtmlWebpackPlugin(&#123;</span><br><span class="line">　　　　　　template: <span class="string">'src/index.html'</span></span><br><span class="line">　　　　&#125;),</span><br><span class="line">　　　　new CleanWebpackPlugin()</span><br><span class="line">　　],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import counter from <span class="string">'./counter'</span>;</span><br><span class="line">import number from <span class="string">'./number'</span>;</span><br><span class="line"></span><br><span class="line">counter();</span><br><span class="line">number();</span><br></pre></td></tr></table></figure>
+
+<p>counter.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">counter</span></span>() &#123;</span><br><span class="line">　　var div = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　div.setAttribute(<span class="string">'id'</span>, <span class="string">'counter'</span>);</span><br><span class="line">　　div.innerHTML = 1;</span><br><span class="line">　　div.onclick = <span class="function"><span class="title">function</span></span>() &#123;</span><br><span class="line">　　div.innerHTML = parseInt(div.innerHTML, 10) + 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">document.body.appendChild(div);</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> default counter;</span><br></pre></td></tr></table></figure>
+
+<p>number.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">number</span></span>() &#123;</span><br><span class="line">　　var div = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　div.setAttribute(<span class="string">'id'</span>, <span class="string">'number'</span>);</span><br><span class="line">　　div.innerHTML = 1000;</span><br><span class="line">　　document.body.appendChild(div);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">export</span> default number;</span><br></pre></td></tr></table></figure>
+
+<p> 这个时候运行页面，把1增加到10。这个时候将number.js里面写死的1000变成2000。发现，呀，我之前点击到的10，又重新恢复到了1。说明刷新了页面。之前的一些数据没有保存下来。我希望number的数据更新到，别去更新我counter.js到内容。这时候把配置加回来</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　// 起个服务器</span><br><span class="line">　　devServer: &#123;</span><br><span class="line">　　　　// 这个意思是服务器要生成在哪个文件夹下</span><br><span class="line">　　　　contentBase:<span class="string">'./dist'</span>,</span><br><span class="line">　　　　// 启动的时候自动打开浏览器，然后自动访问这个服务器地址</span><br><span class="line">　　　　open:<span class="literal">true</span>,</span><br><span class="line">　　　　// 开启Hot Module Replacement</span><br><span class="line">　　　　hot: <span class="literal">true</span>,</span><br><span class="line">　　　　// 即便hmr的功能没有生效，浏览器也不要自动刷新</span><br><span class="line">　　　　hotOnly: <span class="literal">true</span></span><br><span class="line">　　&#125;,</span><br><span class="line">　　// HtmlWebpackPlugin会在打包结束后，自动生成一个html文件，并把打包生成的js自动引入到这个html文件中</span><br><span class="line">　　plugins: [</span><br><span class="line">　　　　new HtmlWebpackPlugin(&#123;</span><br><span class="line">　　　　　　template: <span class="string">'src/index.html'</span></span><br><span class="line">　　　　&#125;),</span><br><span class="line">　　　　new CleanWebpackPlugin(),</span><br><span class="line">　　　　// 当dev-server,两项host配置搞定后，再使用这个插件后，hmr功能就生效了</span><br><span class="line">　　　　new webpack.HotModuleReplacementPlugin()</span><br><span class="line">　　],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发现number代码改成2000，页面上的1000并没有变成2000。这个时候需要自己去加点代码</p>
+<p>index.js</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import counter from <span class="string">'./counter'</span>;</span><br><span class="line">import number from <span class="string">'./number'</span>;</span><br><span class="line"></span><br><span class="line">counter();</span><br><span class="line">number();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(module.hot) &#123;</span><br><span class="line">　　module.hot.accept(<span class="string">'./number'</span>, ()=&gt;&#123;</span><br><span class="line">　　　　<span class="built_in">let</span> removeNode = document.getElementById(<span class="string">'number'</span>);</span><br><span class="line">　　　　document.body.removeChild(removeNode);</span><br><span class="line">　　　　number();</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候把1点到10。再去更改number里面的代码，把1000改成2000。这个时候发现10没有任何变化，只从1000更新到20000。</p>
+<p>那么这个时候就会想css会自动更新，这里却要在index里面多加这层判断。其实css也是要加这层判断的，只是css-loader里面已经加了这段代码，所以不用写。react,vue里面也内置了这些代码。本质上要写hmr的内容，都需要写这段。只不过框架帮我们实现了，自己不用去写。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/9webpackDevServer提升开发效率/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1137,629 +1735,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/4使用loader打包静态文件-图片/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/4使用loader打包静态文件-图片/" itemprop="url">webpack系列-4使用loader打包静态文件－图片</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T13:02:21+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我们图片打包好的名字变成了很长的字符串，如果想不变动名字怎么办。现在的名字是avatar.jpg，打包后的名字我希望也是avatar.jpg。这个时候我们需要去改配置，在使用file-loader的时候，我们可以额外的加个参数，options，再把配置放进去。</p>
-<h2 id="file-loader"><a href="#file-loader" class="headerlink" title="file-loader"></a>file-loader</h2><h3 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 打包模块不知道该怎么办，就去模块配置里面该怎么办</span><br><span class="line">module: &#123;</span><br><span class="line">　　// 规则</span><br><span class="line">　　rules: [&#123;</span><br><span class="line">　　　　// 假设是以jpg结尾的，我需要一个load帮助我们去打包</span><br><span class="line">　　　　<span class="built_in">test</span>: /\.jpg$/,</span><br><span class="line">　　　　use: &#123;</span><br><span class="line">　　　　　　loader: <span class="string">'file-loader'</span>,</span><br><span class="line">　　　　　　options: &#123;</span><br><span class="line">　　　　　　　　// 原来是什么名字，打包好还是什么名字，placeholder，占位符</span><br><span class="line">　　　　　　　　name: <span class="string">'[name].[ext]'</span></span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<h3 id="placeholder"><a href="#placeholder" class="headerlink" title="placeholder"></a>placeholder</h3><p>这个时候打包出来的文件就不会变名字，这种配置的语法，我们把他叫做placeholder，中文就是占位符，placeholder还有其它的一些配置，比如加上hash</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">module: &#123;</span><br><span class="line">　　// 规则</span><br><span class="line">　　rules: [&#123;</span><br><span class="line">　　　　// 假设是以jpg结尾的，我需要一个load帮助我们去打包</span><br><span class="line">　　　　<span class="built_in">test</span>: /\.jpg|png|gif$/,</span><br><span class="line">　　　　use: &#123;</span><br><span class="line">　　　　　　loader: <span class="string">'file-loader'</span>,</span><br><span class="line">　　　　　　options: &#123;</span><br><span class="line">　　　　　　　　// 原来是什么名字，打包好还是什么名字，placeholder，占位符</span><br><span class="line">　　　　　　　　name: <span class="string">'[name]_[hash].[ext]'</span></span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<h3 id="更多文件类型"><a href="#更多文件类型" class="headerlink" title="更多文件类型"></a>更多文件类型</h3><p>这个时候，原始文件名后面就会跟上hash。除了jpg，还可以打包png,gif等。现在图片是打包在根目录下， 我希望打包到一个imgs的文件夹里，那怎么办？</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 打包模块不知道该怎么办，就去模块配置里面该怎么办</span><br><span class="line">module: &#123;</span><br><span class="line">　　// 规则</span><br><span class="line">　　rules: [&#123;</span><br><span class="line">　　　　// 假设是以jpg结尾的，我需要一个load帮助我们去打包</span><br><span class="line">　　　　<span class="built_in">test</span>: /\.jpg|png|gif$/,</span><br><span class="line">　　　　use: &#123;</span><br><span class="line">　　　　　　loader: <span class="string">'file-loader'</span>,</span><br><span class="line">　　　　　　options: &#123;</span><br><span class="line">　　　　　　　　// 原来是什么名字，打包好还是什么名字</span><br><span class="line">　　　　　　　　name: <span class="string">'[name]_[hash].[ext]'</span>,</span><br><span class="line">　　　　　　　　// 当我碰到jpg,png,gif的时候，打包到根目录下到imgs文件夹里</span><br><span class="line">　　　　　　　　outputPath: <span class="string">'imgs/'</span></span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<h2 id="url-loader"><a href="#url-loader" class="headerlink" title="url-loader"></a>url-loader</h2><p>  除了file-loader，还有一种url-loader。他可以完成file-loader的一切功能</p>
-<h3 id="基础配置-1"><a href="#基础配置-1" class="headerlink" title="基础配置"></a>基础配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 打包模块不知道该怎么办，就去模块配置里面该怎么办</span><br><span class="line">module: &#123;</span><br><span class="line">　　// 规则</span><br><span class="line">　　rules: [&#123;</span><br><span class="line">　　　　// 假设是以jpg结尾的，我需要一个load帮助我们去打包</span><br><span class="line">　　　　<span class="built_in">test</span>: /\.jpg|png|gif$/,</span><br><span class="line">　　　　use: &#123;</span><br><span class="line">　　　　　　loader: <span class="string">'url-loader'</span>,</span><br><span class="line">　　　　　　options: &#123;</span><br><span class="line">　　　　　　　　// 原来是什么名字，打包好还是什么名字</span><br><span class="line">　　　　　　　　name: <span class="string">'[name]_[hash].[ext]'</span>,</span><br><span class="line">　　　　　　　　// 当我碰到jpg,png,gif的时候，打包到根目录下到imgs文件夹里</span><br><span class="line">　　　　　　　　outputPath: <span class="string">'imgs/'</span></span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>我们把file-loader换成url-loader打包，完全没有问题，但是我们发现图片没有被打包到dist目录下，我们运行index.html的时候，没问题，这很奇怪，为什么呢？</p>
-<p>我们打开bundle.js发现图片被打包成了base64的格式。所以url-loader是这么一个loader。这样打包的好处是省了一次请求，但是如果这个图片很大，加载js的时间也会很长，页面不会立马显示出来，所以url-loader最佳的使用方式是什么？</p>
-<p>如果图片是1,2kb，用url-loader很好，但是图片很大，就还是使用file-loader。要想实现这种最佳实践怎么办？</p>
-<h3 id="参数配置"><a href="#参数配置" class="headerlink" title="参数配置"></a>参数配置</h3> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> // 打包模块不知道该怎么办，就去模块配置里面该怎么办</span><br><span class="line">module: &#123;</span><br><span class="line">　　// 规则</span><br><span class="line">　　rules: [&#123;</span><br><span class="line">　　　　// 假设是以jpg结尾的，我需要一个load帮助我们去打包</span><br><span class="line">　　　　test: /\.jpg|png|gif$/,</span><br><span class="line">　　　　use: &#123;</span><br><span class="line">　　　　　　loader: &apos;url-loader&apos;,</span><br><span class="line">　　　　　　options: &#123;</span><br><span class="line">　　　　　　　　// 原来是什么名字，打包好还是什么名字</span><br><span class="line">　　　　　　　　name: &apos;[name]_[hash].[ext]&apos;,</span><br><span class="line">　　　　　　　　// 当我碰到jpg,png,gif的时候，打包到根目录下到imgs文件夹里</span><br><span class="line">　　　　　　　　outputPath: &apos;imgs/&apos;,</span><br><span class="line">　　　　　　　　limit: 2048</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p> 加了一个limit，如果小于2个字节，就打包成base64，如果大于2个字节，就还是使用file-loader打包。</p>
-<p>所以url-loader多了limit的配置项，大于2048的时候会跟file-loader的功能一模一样</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/3webpack基础安装配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/3webpack基础安装配置/" itemprop="url">webpack系列-3搭建webpack环境</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T12:35:07+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>基于nodejs的，webpack正确安装方式<br>-</p>
-<ul>
-<li>npm install webpack webpack-cli -g<br>全局安装webpack</li>
-<li>项目内安装<br>npm install webpack webpack-cli –save-dev</li>
-</ul>
-<h2 id="1webpack-config-js基础配置"><a href="#1webpack-config-js基础配置" class="headerlink" title="1webpack.config.js基础配置"></a>1webpack.config.js基础配置</h2> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">    const path = require(<span class="string">'path'</span>);</span><br><span class="line">	module.exports = &#123;</span><br><span class="line">	　　// 这个文件要做打包，从哪一个文件开始打包</span><br><span class="line">	　　entry: <span class="string">'./src/index.js'</span>,</span><br><span class="line">	　　// 打包文件要放到哪里去，就配置在output这个对象里</span><br><span class="line">	　　output: &#123;</span><br><span class="line">	　　　　// 打包好的文件名字</span><br><span class="line">	　　　　filename: <span class="string">'bundle.js'</span>,</span><br><span class="line">	　　　　/**</span><br><span class="line">	　　　　* 打包出的文件要把他放到哪一个文件夹下，path后面要放一个绝对路径</span><br><span class="line">	　　　　* __dirname指的是webpack.config.js所在的当前目录的这个路径</span><br><span class="line">	　　　　* 下面这个结合就是一个绝对路径</span><br><span class="line">	　　　　*/</span><br><span class="line">	　　　　path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">	　　&#125;</span><br><span class="line">	&#125;</span><br><span class="line"> ```   </span><br><span class="line"></span><br><span class="line">这个时候运行npx webpack就运行成功。当项目中运行webpack的时候，webpack并不知道怎么去打包，于是他就会找默认的配置文件，找到webpack.config.js这个文件。然后他知道应该怎么打包，应该怎么输出，帮你打包好整个流程。</span><br><span class="line"></span><br><span class="line">假设这个配置文件不是webpack.config.js，改成webpackconfig.js。这个时候运行npx webpack就会报错。因为他找不到webpack.config.js。但是假设我就是要以webpackconfig.js作为配置文件该怎么办呢？这样运行</span><br><span class="line"></span><br><span class="line">``` bash</span><br><span class="line"> npx webpack --config webpackconfig.js</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
-
-<p>改到这，我们在打包到过程中，经常会用npx这样到一个命令，但是如果经常写react,vue，可能从来没有使用过这个命令。而是使用npm run这样的命令。所以这就是运用npm script简化我们的打包代码</p>
-<p>我们打开package.json这个文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">　　&quot;name&quot;: &quot;demo&quot;,</span><br><span class="line">　　&quot;version&quot;: &quot;1.0.0&quot;,</span><br><span class="line">　　&quot;description&quot;: &quot;&quot;,</span><br><span class="line">　　&quot;main&quot;: &quot;index.js&quot;,</span><br><span class="line">　　&quot;scripts&quot;: &#123;</span><br><span class="line">　　　　&quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><br><span class="line">　　&#125;,</span><br><span class="line">　　&quot;author&quot;: &quot;&quot;,</span><br><span class="line">　　&quot;license&quot;: &quot;ISC&quot;,</span><br><span class="line">　　&quot;dependencies&quot;: &#123;</span><br><span class="line">　　　　&quot;webpack&quot;: &quot;^4.30.0&quot;,</span><br><span class="line">　　　　&quot;webpack-cli&quot;: &quot;^3.3.0&quot;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个文件里面又一个scripts标签配置项。这是一个对象，我们可以在这里配置一些内容</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">　　&quot;bundle&quot;: &quot;webpack&quot;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>比如这样，这个时候我们不使用npx webpack了。直接运行<br><code>npm run bundle</code><br>一样可以帮我们打包。所以npm run bundle执行的时候就是执行script的bundle命令。这个bundle命令底层在帮你干什么，就是帮你执行webpack这个命令，那么又有一个问题。直接写webpack是在全局里面去找webpack。是不是应该加个npx呢？实际上在scripts里面使用webpack,他会先到工程目录下的node_modules里面去找是否安装了webpack这个指令。现在去写，直接npm run bundle就可以了。</p>
-<p>这个时候把index.html移到dist下面，就可以直接运行起来了</p>
-<h2 id="2-webpack-config-js实践"><a href="#2-webpack-config-js实践" class="headerlink" title="2 webpack.config.js实践"></a>2 webpack.config.js实践</h2><h3 id="什么是loader，什么是plugin"><a href="#什么是loader，什么是plugin" class="headerlink" title="什么是loader，什么是plugin"></a>什么是loader，什么是plugin</h3><p>  loader用于加载某些资源文件。因为webpack本身只能打包common.js规范的js文件，对于其他资源如css，img等，是没有办法加载的，这时就需要对应的loader将资源转化，从而进行加载。</p>
-<p>  plugin用于扩展webpack的功能。不同于loader，plugin的功能更加丰富，比如压缩打包，优化，不只局限于资源的加载。</p>
-<pre><code>文件
-url-loader 像 file loader 一样工作，但如果文件小于限制，可以返回 data URL
-file-loader 将文件发送到输出文件夹，并返回（相对）URL
-
-
-const path = require(&apos;path&apos;);    
-module.exports = {
-    mode: &apos;development&apos;,
-    entry: {
-        main: &apos;./src/index.js&apos;
-    },
-    module: {
-        rules: [{
-            test: /\.(jpg|png|gif)$/,
-            use: {
-                loader: &apos;url-loader&apos;,  //完全可以替换file-loader，去掉limit
-                options: {
-                    name: &apos;[name]_[hash].[ext]&apos;,// 单引号，告诉是字符串，占位符
-                    outputPath: &apos;images/&apos;,
-                    limit: 10240
-                }
-            } 
-        }]
-    },
-    output: {
-        filename: &apos;bundle.js&apos;,
-        path: path.resolve(__dirname, &apos;dist&apos;)
-    }
-}</code></pre><p>name: ‘[name]_[hash].[ext]’,// 单引号，告诉是字符串，占位符官网解释</p>
-<p> <a href="https://www.webpackjs.com/loaders/file-loader/#%E9%80%89%E9%A1%B9" target="_blank" rel="noopener">https://www.webpackjs.com/loaders/file-loader/#%E9%80%89%E9%A1%B9</a>  </p>
-<p> name是基本文件名字 hash是随机hash  ext是文件后缀</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/2模块打包工具/模块打包工具/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/2模块打包工具/模块打包工具/" itemprop="url">webpack系列-2模块打包工具</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T12:35:07+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="模块打包工具"><a href="#模块打包工具" class="headerlink" title="模块打包工具"></a>模块打包工具</h1><p>webpack是一个moudle bundler，模块打包工具。打包所有的脚本，资源，图片，样式</p>
-<p>官网对模块解释<br><a href="https://www.webpackjs.com/concepts/modules/#%E4%BB%80%E4%B9%88%E6%98%AF-webpack-%E6%A8%A1%E5%9D%97" target="_blank" rel="noopener">https://www.webpackjs.com/concepts/modules/#%E4%BB%80%E4%B9%88%E6%98%AF-webpack-%E6%A8%A1%E5%9D%97</a></p>
-<p>模块方法<br><a href="https://www.webpackjs.com/api/module-methods/" target="_blank" rel="noopener">https://www.webpackjs.com/api/module-methods/</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/1webpack是什么/webpack究竟是什么/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/1webpack是什么/webpack究竟是什么/" itemprop="url">webpack系列-1 webpack究竟是什么</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T12:35:07+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="1-webpack究竟是什么？"><a href="#1-webpack究竟是什么？" class="headerlink" title="1 webpack究竟是什么？"></a>1 webpack究竟是什么？</h2><pre><code>以前写html,js的写法如下：</code></pre><p>   index.html文件</p>
-<pre><code>&lt;!DOCTYPE html&gt;
- &lt;html lang=&quot;en&quot;&gt;
- &lt;head&gt;
-     &lt;meta charset=&quot;UTF-8&quot;&gt;
-     &lt;title&gt;这是最原始的网页开发&lt;/title&gt;
- &lt;/head&gt;
- &lt;body&gt;
-     &lt;p&gt;这是我们的网页内容&lt;/p&gt;
-     &lt;div id=&apos;root&apos;&gt;&lt;/div&gt;
-     &lt;script src=&apos;./index.js&apos;&gt;&lt;/script&gt;
- &lt;/body&gt;
- &lt;/html&gt;</code></pre><p>   index.js文件</p>
-<pre><code>var dom = document.getElementById(&apos;root&apos;);
-var header = document.createElement(&apos;div&apos;);
-header.innerText = &apos;header&apos;;
-dom.append(header);
-
-var content = document.createElement(&apos;div&apos;);
-content.innerText = &apos;content&apos;;
-dom.append(content);
-
-var sidebar = document.createElement(&apos;div&apos;);
-sidebar.innerText = &apos;sidebar&apos;;
-dom.append(sidebar);</code></pre><p>  随着业务增加，如果用这种面向过程的编程方式代码就会很长，所有的js逻辑都堆在一个文件，最后难以维护。<br>  采用面向对象的编程方式</p>
-<pre><code>&lt;!DOCTYPE html&gt;
- &lt;html lang=&quot;en&quot;&gt;
- &lt;head&gt;
-     &lt;meta charset=&quot;UTF-8&quot;&gt;
-     &lt;title&gt;这是最原始的网页开发&lt;/title&gt;
- &lt;/head&gt;
- &lt;body&gt;
-     &lt;p&gt;这是我们的网页内容&lt;/p&gt;
-     &lt;div id=&apos;root&apos;&gt;&lt;/div&gt;
-     &lt;script src=&apos;./index.js&apos;&gt;&lt;/script&gt;
- &lt;/body&gt;
- &lt;/html&gt;</code></pre><p>   content.js文件</p>
-<pre><code>function Content() {
-    var dom = document.getElementById(&apos;root&apos;);
-    var content = document.createElement(&apos;div&apos;);
-    content.innerText = &apos;content&apos;;
-    dom.append(content);
-}
-
-module.exports = Content;</code></pre><p>   header.js文件</p>
-<pre><code>    function Header() {
-    var dom = document.getElementById(&apos;root&apos;);
-    var header = document.createElement(&apos;div&apos;);
-    header.innerText = &apos;header&apos;;
-    dom.append(header);
-}
-
-module.exports = Header;</code></pre><p>sidebar.js</p>
-<pre><code>function Sidebar() {
-    var dom = document.getElementById(&apos;root&apos;);
-    var sidebar = document.createElement(&apos;div&apos;);
-    sidebar.innerText = &apos;sidebar&apos;;
-    dom.append(sidebar);
-}
-
-module.exports = Sidebar;</code></pre><p>index.js</p>
-<pre><code>var Header = require(&apos;./header.js&apos;);
-var Sidebar = require(&apos;./sidebar.js&apos;);
-var Content = require(&apos;./content.js&apos;);
-
-new Header();
-new Sidebar();
-new Content();</code></pre><p>这个文件各司其职，便于维护管理。<br>不存在依赖颠倒出现的问题<br>运行上面代码<br>  npm init</p>
-<p>   package.json文件 </p>
-<pre><code>&quot;devDependencies&quot;: {
- &quot;webpack-cli&quot;: &quot;^3.1.2&quot;
-  },
- &quot;dependencies&quot;: {
-   &quot;webpack&quot;: &quot;^4.25.1&quot;
- }</code></pre><p>  执行<br>   npx webpack index.js</p>
-<p><img src="/images/1-1.png" alt></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1810,7 +1785,7 @@ new Content();</code></pre><p>这个文件各司其职，便于维护管理。<b
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

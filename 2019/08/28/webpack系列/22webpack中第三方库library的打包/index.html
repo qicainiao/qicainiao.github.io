@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="之前都是对自己写的业务代码进行打包，但假设我们要开发一个库，这样的库代码如何用webpack进行打包呢，首先我们创建一个非常简单的函数库 首先新建一个文件夹library，运行npm init -y，得到一个package.jsonpackage.json 1234567891011&amp;#123;　　&quot;name&quot;: &quot;library&quot;,　　&quot;version&quot;: &quot;1.0.0&quot;,　　&quot;descript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack系列-21webpack中环境变量的使用方法">
+<meta property="og:url" content="http://yoursite.com/2019/08/28/webpack系列/22webpack中第三方库library的打包/index.html">
+<meta property="og:site_name" content="qicainiao&#39;s Blog">
+<meta property="og:description" content="之前都是对自己写的业务代码进行打包，但假设我们要开发一个库，这样的库代码如何用webpack进行打包呢，首先我们创建一个非常简单的函数库 首先新建一个文件夹library，运行npm init -y，得到一个package.jsonpackage.json 1234567891011&amp;#123;　　&quot;name&quot;: &quot;library&quot;,　　&quot;version&quot;: &quot;1.0.0&quot;,　　&quot;descript">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-28T10:40:11.780Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="webpack系列-21webpack中环境变量的使用方法">
+<meta name="twitter:description" content="之前都是对自己写的业务代码进行打包，但假设我们要开发一个库，这样的库代码如何用webpack进行打包呢，首先我们创建一个非常简单的函数库 首先新建一个文件夹library，运行npm init -y，得到一个package.jsonpackage.json 1234567891011&amp;#123;　　&quot;name&quot;: &quot;library&quot;,　　&quot;version&quot;: &quot;1.0.0&quot;,　　&quot;descript">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/28/webpack系列/22webpack中第三方库library的打包/">
+
+
+
+
+
+  <title>webpack系列-21webpack中环境变量的使用方法 | qicainiao's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">qicainiao's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/22webpack中第三方库library的打包/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">webpack系列-21webpack中环境变量的使用方法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T18:33:41+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前都是对自己写的业务代码进行打包，但假设我们要开发一个库，这样的库代码如何用webpack进行打包呢，首先我们创建一个非常简单的函数库</p>
+<p>首先新建一个文件夹library，运行npm init -y，得到一个package.json<br>package.json</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">　　<span class="string">"name"</span>: <span class="string">"library"</span>,</span><br><span class="line">　　<span class="string">"version"</span>: <span class="string">"1.0.0"</span>,</span><br><span class="line">　　<span class="string">"description"</span>: <span class="string">""</span>,</span><br><span class="line">　　<span class="string">"main"</span>: <span class="string">"index.js"</span>,</span><br><span class="line">　　<span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　&#125;,</span><br><span class="line">　　<span class="string">"keywords"</span>: [],</span><br><span class="line">　　<span class="string">"author"</span>: <span class="string">""</span>,</span><br><span class="line">　　<span class="string">"license"</span>: <span class="string">"MIT"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后library下新建一个src,里面建三个文件,math.js,string.js,index.js</p>
+<p>math.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> <span class="keyword">function</span> add(a,b) &#123;</span><br><span class="line">　　<span class="built_in">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> <span class="keyword">function</span> minus(a,b) &#123;</span><br><span class="line">　　<span class="built_in">return</span> a - b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> <span class="keyword">function</span> cheng(a,b) &#123;</span><br><span class="line">　　<span class="built_in">return</span> a * b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> <span class="keyword">function</span> chu(a,b) &#123;</span><br><span class="line">　　<span class="built_in">return</span> a / b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>string.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> <span class="keyword">function</span> join(a, b)&#123;</span><br><span class="line">　　<span class="built_in">return</span> a + <span class="string">''</span> + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import * as math from <span class="string">'./math'</span>;</span><br><span class="line">import * as string from <span class="string">'./string'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> default &#123; math, string &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后安装webpack</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install webpack webpack-cli --save</span><br></pre></td></tr></table></figure>
+
+<p>新建配置文件 webpack.config.js<br>webpack.config.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const path = require(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'production'</span>,</span><br><span class="line">　　entry: <span class="string">'./src/index.js'</span>,</span><br><span class="line">　　output: &#123;</span><br><span class="line">　　　　path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">　　　　filename: <span class="string">'library.js'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>package.json里面配置script</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"build"</span>: <span class="string">"webpack"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>然后运行 npm run build。生成一个dist文件夹，里面生成了一个library.js。如果是我们业务代码，就好了。但是我们生成的是一个库，给别人用的，那么别人怎么用呢</p>
+<p>第一种</p>
+<p>import library from ‘library’;<br>第二种<br>const library = require(‘library’);<br>第三种</p>
+<p>require([‘library’],function() {<br>})<br>如果我们的库想外面可以被这样引用。可以做一个配置,webpack.config.js里面output多加一个参数<br>webpack.config.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const path = require(<span class="string">'path'</span>);</span><br><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'production'</span>,</span><br><span class="line">　　entry: <span class="string">'./src/index.js'</span>,</span><br><span class="line">　　output: &#123;</span><br><span class="line">　　　　path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">　　　　filename: <span class="string">'library.js'</span>,</span><br><span class="line">　　　　// 通过任何形式，都可以引用的到</span><br><span class="line">　　　　libraryTarget: <span class="string">'umd'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了这种引用之外，我还希望别人通过引用srcipt后，可以通过全局变量来使用这个库</p>
+<script src="library.js"></script>
+<p>library.add();<br>再配置一下webpack.config.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const path = require(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'production'</span>,</span><br><span class="line">　　entry: <span class="string">'./src/index.js'</span>,</span><br><span class="line">　　output: &#123;</span><br><span class="line">　　　　path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">　　　　filename: <span class="string">'library.js'</span>,</span><br><span class="line">　　　　// 打包生成的代码挂载到页面到一个全局变量上</span><br><span class="line">　　　　library: <span class="string">'library'</span>,</span><br><span class="line">　　　　// 通过任何形式，都可以引用的到</span><br><span class="line">　　　　libraryTarget: <span class="string">'umd'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来我们做一个测试，在生成好的dist目录下新建index.html</p>
+<p>index.html</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;Document&lt;/title&gt;</span><br><span class="line">　　　　&lt;script src=<span class="string">"./library.js"</span>&gt;&lt;/script&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后运行这个页面，控制台调用library;</p>
+<p>除了在打包库的时候，我们要额外的配置这两个参数之外呢，我们还要做一件事情。比如string.js<br>string.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> <span class="keyword">function</span> join(a, b)&#123;</span><br><span class="line">　　<span class="built_in">return</span> a + <span class="string">''</span> + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在写的时候发现lodash里面有个功能很好</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install lodash --save</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import _ from <span class="string">'lodash'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> <span class="keyword">function</span> join(a, b)&#123;</span><br><span class="line">　　<span class="built_in">return</span> _.join([a,b], <span class="string">' '</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后现在看起来没有问题，但是别人使用我们的库的时候，他也有可能重新使用了lodash。这就导致一个问题，我们的库里面打包了一次lodash，用户的业务代码里面又打包了一次lodash。所以用户的业务代码里面就容易存在两份lodash代码。为了解决这个问题，我们需要在库里面做一个另外的配置，externals</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">const path = require(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'production'</span>,</span><br><span class="line">　　entry: <span class="string">'./src/index.js'</span>,</span><br><span class="line">　　// 如果打包过程中遇到lodash，就忽略这个库，不要打包到代码里面去</span><br><span class="line">　　externals: [<span class="string">'lodash'</span>],</span><br><span class="line">　　output: &#123;</span><br><span class="line">　　　　path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">　　　　filename: <span class="string">'library.js'</span>,</span><br><span class="line">　　　　// 打包生成的代码挂载到页面到一个全局变量上</span><br><span class="line">　　　　library: <span class="string">'library'</span>,</span><br><span class="line">　　　　// 通过任何形式，都可以引用的到</span><br><span class="line">　　　　libraryTarget: <span class="string">'umd'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候外面直接使用library就不可以了，因为库里面要用lodash。所以在用这个库的时候，业务代码里面要另外引入lodash。</p>
+<p>现在我们看下externals的作用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">externals : &#123;</span><br><span class="line">　　lodash : &#123;</span><br><span class="line">　　　　commonjs: <span class="string">'lodash'</span>,</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>这个意思是。如果lodash这个库在commonjs环境下被使用，lodash加载的时候，名字必须是lodash</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const lodash = require(<span class="string">'lodash'</span>);</span><br><span class="line"></span><br><span class="line">externals : &#123;</span><br><span class="line">　　lodash : &#123;</span><br><span class="line">　　　　root: <span class="string">'_'</span>,</span><br><span class="line">　　　　commonjs: <span class="string">'lodash'</span>,</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>这个时候加一个root。这个意思是如果既不使用commonjs，也不使用es module。更不用amd形式去引入lodash。这个lodash是通过js引入的，这里要求这个script标签必须注入一个叫做’_’的全局变量。但是一般来说没有特殊要求，直接配置成</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">externals : &#123;</span><br><span class="line">　　lodash :<span class="string">'lodash'</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>就可以了，他的意思是不管任何环境下，引入lodash都叫做lodash。</p>
+<p>最终我们给别人使用的是最后的library,那怎么样让别人方便的使用到呢？<br>首先把package.json里面的入口文件配置改成</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"main"</span>: <span class="string">"./dist/library.js"</span>,</span><br></pre></td></tr></table></figure>
+
+<p>然后npm里面注册一个账号。登录后在命令行输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm adduser</span><br></pre></td></tr></table></figure>
+
+<p>输入账号密码后，直接输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm publish</span><br></pre></td></tr></table></figure>
+
+<p>成功后，别人利用npm install library就可以用你的了</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/28/webpack系列/21webpack中环境变量的使用方法/" rel="next" title="webpack系列-21webpack中环境变量的使用方法">
+                <i class="fa fa-chevron-left"></i> webpack系列-21webpack中环境变量的使用方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/28/webpack系列/webpack性能优化/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">qicainiao</p>
+              <p class="site-description motion-element" itemprop="description">Hello World!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qicainiao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
