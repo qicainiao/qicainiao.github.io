@@ -232,6 +232,325 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/18webpack中css文件的代码分割/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/webpack系列/18webpack中css文件的代码分割/" itemprop="url">webpack系列-18webpack中css文件的代码分割</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T17:47:20+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　output: &#123;</span><br><span class="line">　　　　filename: <span class="string">'[name].js'</span>,</span><br><span class="line">　　　　chunkFilename: <span class="string">'[name].chunk.js'</span>,</span><br><span class="line">　　　　path: path.resolve(__dirname, <span class="string">'../dist'</span>)</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在看别人写的webpack，output配置项，肯跟会碰到chunkFilename这样的配置项，那这个是什么意思呢？filename和chunkFilename有什么区别呢？首先看个例子</p>
+<p>index.html</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">async <span class="keyword">function</span> <span class="function"><span class="title">getComponent</span></span>() &#123;</span><br><span class="line">　　const &#123; default: _ &#125; = await import(/* webpackChunkName:<span class="string">'lodash'</span> */<span class="string">'lodash'</span>);</span><br><span class="line">　　const element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　element.innerHTML = _.join([<span class="string">'1'</span>, <span class="string">'2'</span>], <span class="string">'-'</span>);</span><br><span class="line">　　<span class="built_in">return</span> element</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　getComponent().<span class="keyword">then</span>( element =&gt;&#123;</span><br><span class="line">　　　　document.body.appendChild(element);</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>webpack.common.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　entry: &#123;</span><br><span class="line">　　　　main: <span class="string">'./src/index.js'</span></span><br><span class="line">　　&#125;,</span><br><span class="line">　　output: &#123;</span><br><span class="line">　　　　filename: <span class="string">'[name].js'</span>,</span><br><span class="line">　　　　chunkFilename: <span class="string">'[name].chunk.js'</span>,</span><br><span class="line">　　　　path: path.resolve(__dirname, <span class="string">'../dist'</span>)</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行npm run dev-build打包。打开dist目录，发现第三方模块打包好的名字叫vendors<del>lodash.chunk.js，不再是之前的vendors</del>lodash.js。我们的入口文件对应的都是filename的输出。如果不是入口文件，是异步引入或者间接产生的js文件，他就会走chunkFilename这个输出的配置参数。</p>
+<p>接下来进入主题，css代码的分割<br>index.html</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import <span class="string">'./style.css'</span>;</span><br><span class="line">console.log(<span class="string">' hello world '</span>);</span><br></pre></td></tr></table></figure>
+
+<p>style.css</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">body&#123;</span><br><span class="line">　　background: <span class="comment">#abcdef;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行npm run dev-build。发现打包生成的文件只有main.js 和 vendors~main.chunk.js。但是浏览器打开index.html。背景已经有了。这是怎么回事呢？webpack在做css的打包的时候，会直接打包到js里面</p>
+<p>如果我希望在打包生成代码的时候，如果我引入了css文件，那么把css文件打包到dist目录下。而不是直接引入到js文件里面。那么就需要引入一个插件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/plugins/mini-css-extract-plugin</span><br><span class="line"></span><br><span class="line">npm install --save-dev mini-css-extract-plugin</span><br></pre></td></tr></table></figure>
+
+<p>这个插件可以对css进行代码分割。这个插件不适合开发环境，因为官网说了，这个插件现在还暂时不支持热更新。</p>
+<p>安装好之后看怎么使用，首先要在webpack中引入这个插件。首先打开线上配置文件</p>
+<p>webpack.prod.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">const merge = require(&apos;webpack-merge&apos;);</span><br><span class="line">const commonConfig = require(&apos;./webpack.common.js&apos;);</span><br><span class="line">const MiniCssExtractPlugin = require(&apos;mini-css-extract-plugin&apos;);</span><br><span class="line"></span><br><span class="line">const prodConfig = &#123;</span><br><span class="line">　　mode: &apos;production&apos;,</span><br><span class="line">　　devtool: &apos;cheap-module-source-map&apos;,</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　test: /\.scss$/,</span><br><span class="line">　　　　　　use: [</span><br><span class="line">　　　　　　　　MiniCssExtractPlugin.loader,</span><br><span class="line">　　　　　　　　&#123;</span><br><span class="line">　　　　　　　　　　loader: &apos;css-loader&apos;,</span><br><span class="line">　　　　　　　　　　options: &#123;</span><br><span class="line">　　　　　　　　　　　　importLoaders: 2</span><br><span class="line">　　　　　　　　　　&#125;</span><br><span class="line">　　　　　　　　&#125;,</span><br><span class="line">　　　　　　　　&apos;sass-loader&apos;,</span><br><span class="line">　　　　　　　　&apos;postcss-loader&apos;</span><br><span class="line">　　　　　　]</span><br><span class="line">　　　　&#125;,&#123;</span><br><span class="line">　　　　　　test: /\.css$/,</span><br><span class="line">　　　　　　use: [</span><br><span class="line">　　　　　　　　MiniCssExtractPlugin.loader,</span><br><span class="line">　　　　　　　　&apos;css-loader&apos;,</span><br><span class="line">　　　　　　　　&apos;postcss-loader&apos;</span><br><span class="line">　　　　　　]</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;,</span><br><span class="line">　　plugins:[</span><br><span class="line">　　　　new MiniCssExtractPlugin(&#123;&#125;)</span><br><span class="line">　　]</span><br><span class="line">&#125;</span><br><span class="line">module.exports = merge(commonConfig, prodConfig);</span><br></pre></td></tr></table></figure>
+
+<p>然后对应到webpack.common.js里面删除css,scss相关到配置。运行npm run build。发现多出了两个文件main.css 和 main.css.map</p>
+<p>css打包好后，是未压缩的，要将打包好的css进行压缩，安装，optimize-css-assets-webpack-plugin</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install optimize-css-assets-webpack-plugin -D</span><br></pre></td></tr></table></figure>
+
+<p>在webpack.props.js引入并配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">const OptimizeCSSAssetsPlugin = require(&apos;optimize-css-assets-webpack-plugin&apos;);</span><br><span class="line">　　module.exports = &#123;</span><br><span class="line">　　　　optimization: &#123;</span><br><span class="line">　　　　　　minimizer: [new OptimizeCSSAssetsPlugin(&#123;&#125;)],</span><br><span class="line">　　　　&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行 npm run build。会发现css文件被自动的合并压缩。</p>
+<p>还有更高级的用法， 假设有很多个css，要打包到一个css文件里面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/plugins/mini-css-extract-plugin</span><br></pre></td></tr></table></figure>
+
+<p>也可以实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">　　splitChunks: &#123;</span><br><span class="line">　　　　cacheGroups: &#123;</span><br><span class="line">　　　　　　styles: &#123;</span><br><span class="line">　　　　　　　　name: &apos;styles&apos;,</span><br><span class="line">　　　　　　　　test: /\.css$/,</span><br><span class="line">　　　　　　　　chunks: &apos;all&apos;,</span><br><span class="line">　　　　　　　　enforce: true, // 忽略到前面到配置，不管是minSize,maxSize等等，只要是css，都打包到同一个文件中</span><br><span class="line">　　　　　　&#125;,</span><br><span class="line">　　　　&#125;,</span><br><span class="line">　　&#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/18webpack打包分析，preloading,prefetching的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/webpack系列/18webpack打包分析，preloading,prefetching的使用/" itemprop="url">webpack系列-18webpack打包分析，preloading,prefetching的使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T15:58:30+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>打包分析：当我们使用webpack进行打包之后呢，我们可以借助webpack的一些打包工具进行一定的分析，然后看一下他打包是否合理。<br>webpack官网提供的一个分析工具的仓库：<a href="https://github.com/webpack/analyse。" target="_blank" rel="noopener">https://github.com/webpack/analyse。</a><br>如果要对我们自个打包生成的代码进行一个分析，首先要生成一个打包过程的描述文件，将–profile –json &gt; stats.json粘贴到package.json</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"dev-build"</span>: <span class="string">"webpack --profile --json &gt; stats.json --config ./build/webpack.dev.js"</span>,</span><br><span class="line">　　<span class="string">"bundle"</span>: <span class="string">"webpack"</span>,</span><br><span class="line">　　<span class="string">"watch"</span>: <span class="string">"webpack --watch"</span>,</span><br><span class="line">　　<span class="string">"dev"</span>: <span class="string">"webpack-dev-server --config ./build/webpack.dev.js"</span>,</span><br><span class="line">　　<span class="string">"build"</span>: <span class="string">"webpack --config ./build/webpack.prod.js"</span>,</span><br><span class="line">　　<span class="string">"server"</span>: <span class="string">"node server.js"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p> 他的意思是我把打包过程中的一些描述放置到stats.json的文件里面。这个文件的格式是一个json的格式。这么写完之后，我们进行一次打包。打包完之后在根目录出现一个叫做stats.json的文件。这个文件就是webpack自动生成的对应的我们webpack的描述文件。生成这个文件之后打开分析仓库，进入<a href="http://webpack.github.io/analyse/。把我们生成的stats.json传进去。会得到下面的这种结果" target="_blank" rel="noopener">http://webpack.github.io/analyse/。把我们生成的stats.json传进去。会得到下面的这种结果</a></p>
+<p><img src="/images/18-1.png" alt></p>
+<p> 告诉我们，整个打包用的是webpack 4.30.0的版本进行的打包。耗时，1.24s。打包对应的hash值是c631e7b50a03b44511b4。里面有4个模块。2个chunk，也就是2个文件，打包生成3个静态文件，打包过程没有警告，没有异常。上面的后面是每个的详细解析</p>
+<p>除了这个工具之外，还有其他的分析工具，</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/guides/code-splitting/<span class="comment">#bundle-analysis</span></span><br></pre></td></tr></table></figure>
+
+<p>可以安装webpack-bundle-analyzer。我们做复杂项目的时候，代码分割跟我们的预期不相符，就可以通过这个做一些代码分析。看一看是不是有些代码重复打包了，是不是有哪些地方可以优化，哪一部分耗时比较长。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">　　splitChunks: &#123;</span><br><span class="line">　　　　chunks: <span class="string">'all'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们现在这个chunks是all，如果我们将此注释掉，默认的值是什么呢，是aysnc。也就是webpack默认只对异步代码进行分割。那么webpack为什么这么做呢。像jquery，lodash，这种库，应该对他进行分割。这样浏览器可以对他缓存，提高访问速度。但是我们只是提高第二次访问的速度。那真正的对页面做优化，webpack想达到的效果是，当你第一次访问页面的时候，他的加载速度就是最快的。要满足这种，靠将jquery,lodash打包成单独的文件是满足不了需求的。那么webpack真正希望我们编写代码的方式是什么样的呢？</p>
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// async <span class="keyword">function</span> <span class="function"><span class="title">getComponent</span></span>() &#123;</span><br><span class="line">// const &#123; default: _ &#125; = await import(/* webpackChunkName:<span class="string">"lodash"</span> */ <span class="string">'lodash'</span>);</span><br><span class="line">// var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">// element.innerHTML = _.join([<span class="string">'1'</span>, <span class="string">' '</span>, <span class="string">'2'</span>], <span class="string">'-'</span>);</span><br><span class="line">// <span class="built_in">return</span> element;</span><br><span class="line">// &#125;</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">// document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">// getComponent().<span class="keyword">then</span>(element =&gt; &#123;</span><br><span class="line">// document.body.appendChild(element);</span><br><span class="line">// &#125;)</span><br><span class="line">// &#125;)</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　element.innerHTML = <span class="string">'1-2'</span>;</span><br><span class="line">　　document.body.appendChild(element);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>下面的这个方式是我们以前标准的js写法。这段代码肯定没有问题。但是这个代码是否就完全没有优化的空间了，或者说这是不是webpack推荐的代码编写的方式。显然不是</p>
+<p>打开控制台，快捷键 command+shift+p。 输入coverage，打开coverage，点击录制，刷新页面。可以看到main.js的利用率只有75.5%。那么为什么是75.5％呢，看到上面的main.js，一些红色，一些绿色，绿色的才有意义，红色的没用。click里面的代码，只有点击后才变绿。不然是红色，点击前是没有用的代码。一开始加载的时候，这里面的代码就不会执行，不会执行的代码，一开始就让页面下载下来，实际上就会浪费执行的性能</p>
+<p>那么webpack希望这种交互的代码应该放到异步加载的模块里面去写，新建一个click.js<br>index.html</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　import(<span class="string">'./click.js'</span>).<span class="keyword">then</span>((&#123;default: func&#125;) =&gt; &#123;</span><br><span class="line">　　　　func()</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>click.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">handleClick</span></span>()&#123;</span><br><span class="line">　　var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　element.innerHTML = <span class="string">'1-2'</span>;</span><br><span class="line">　　document.body.appendChild(element);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> default handleClick;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候打包后运行index.html，发现main.js的利用率变成了78％，因为加载页面的时候并没有加载业务。所以webpack希望多写异步的代码，所以默认的chunks默认配置的是async。异步的。</p>
+<p>比如用户未登录的情况下，首先我只加载首页的逻辑，不加载登录的逻辑，那么等我点击登录的时候再去记载登录，会不会很慢呢，那么preloading,prefetching就是解决这个问题的。在首页加载好之后，空闲的时间偷偷的去把登录的模块加载好。如果利用这个空闲的时间，两个条件都满足了。那么怎么做呢</p>
+<p>将 /* webpackPrefetch: true */ 这句话放到引入的前面<br>index.js </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　import(/* webpackPrefetch: <span class="literal">true</span> */<span class="string">'./click.js'</span>).<span class="keyword">then</span>((&#123;default: func&#125;) =&gt; &#123;</span><br><span class="line">　　　　func()</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>意思是的当我点击的时候，去加载click.js，但不是非得点击的时候才去加载，而是主要的js加载好之后，有空闲的时候，会偷偷的去家在click.js。上面的这种魔法注释是prefetch的用法 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/guides/code-splitting<span class="comment">#prefetchingpreloading-modules</span></span><br></pre></td></tr></table></figure>
+
+<p>preloading,prefetching的区别。prefetching会等主要的js加载完之后，空闲的时候再去加载click.js<br>/* webpackPreload: true */。preload是和主要的文件一起去加载的，所以preload还是不怎么合理的。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/17webpack中懒加载是什么，chunk是什么/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1421,302 +1740,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/9webpackDevServer提升开发效率/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/9webpackDevServer提升开发效率/" itemprop="url">webpack系列-9webpackDevServer提升开发效率</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:21:01+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>我们目前的状态是，如果代码有变动，每次都需要执行npm run bundle，然后打开index.html，在浏览器里面运行才行。这样，实际上，开发效率是比较低的。我希望如果代码改动，dist会自动的更改，再去看页面效果，刷新就好了。</p>
-<p>首先我们把package.json里面的script改成</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"watch"</span>: <span class="string">"webpack --watch"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>这里加个watch是什么意思呢？意思是webpack会帮我们去watch，监听他打包的文件，只要打包的文件发生变化，他就会自动的重新打包。</p>
-<p>但是这个方式还是不够好，我希望，不仅自动打包，而且第一次watch的时候，自动给我打开浏览器，这个时候可以配合webpack的devServer来实现。需要安装webpack-dev-server<br>webpack下配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　// 起个服务器</span><br><span class="line">　　devServer: &#123;</span><br><span class="line">　　// 这个意思是服务器要生成在哪个文件夹下</span><br><span class="line">　　　　contentBase:<span class="string">'./dist'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>package.json</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"watch"</span>: <span class="string">"webpack --watch"</span>,</span><br><span class="line">　　<span class="string">"start"</span>: <span class="string">"webpack-dev-server"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>然后启动npm run start。他会提示我们Project is running at <a href="http://localhost:8080/。然后浏览器打开这个网页，在js发生变化的时候，webpack-dev-server也能感知到js发生的变化，会自动更新，不用重新刷新。" target="_blank" rel="noopener">http://localhost:8080/。然后浏览器打开这个网页，在js发生变化的时候，webpack-dev-server也能感知到js发生的变化，会自动更新，不用重新刷新。</a></p>
-<p>所以webpack-dev-server比刚才的watch好在哪里。他不但会监听变化，重新帮我们打包，还会自动的重新刷新浏览器。这个时候我们再对webpack做一个配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　// 起个服务器</span><br><span class="line">　　devServer: &#123;</span><br><span class="line">　　　　// 这个意思是服务器要生成在哪个文件夹下</span><br><span class="line">　　　　contentBase:<span class="string">'./dist'</span>,</span><br><span class="line">　　　　// 启动的时候自动打开浏览器，然后自动访问这个服务器地址</span><br><span class="line">　　　　open:<span class="literal">true</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>那么为什么要开这样一个服务器呢，我们在写react,vue的时候，知道前端都要写个ajax去请求，如果是通过npm run bundle,通过原始的webpack打包，打开dist文件下的index.html。这个时候页面去发ajax请求就不行了。因为如果要发ajax请求，这个地址必须在服务器上，通过http的形式打开。所以需要webpack-dev-server。</p>
-<p>我们不管写react还是vue。里面都有一个proxy这样的配置。实际上是帮助我们跨域的时候使用的接口代理。那为什么在react,vue之中可以使用接口代理呢？是因为，他们的底层都使用了webpack-dev-server。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 起个服务器</span><br><span class="line">devServer: &#123;</span><br><span class="line">　　// 这个意思是服务器要生成在哪个文件夹下</span><br><span class="line">　　contentBase:<span class="string">'./dist'</span>,</span><br><span class="line">　　// 启动的时候自动打开浏览器，然后自动访问这个服务器地址</span><br><span class="line">　　open:<span class="literal">true</span>,</span><br><span class="line">　　// 如果浏览器访问localhost:8080/api下的地址，会自动转发到http://localhost:3000下</span><br><span class="line">　　proxy: &#123;</span><br><span class="line">　　　　<span class="string">'/api'</span>: <span class="string">'http://localhost:3000'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>除了这三个配置，还可以有很多其它到配置项，<a href="https://webpack.js.org/configuration/dev-server#devserverproxy" target="_blank" rel="noopener">https://webpack.js.org/configuration/dev-server#devserverproxy</a></p>
-<p>在我们使用比较老到脚手架工具，会发现他并没有配置webpack-dev-server。而是自己实现了一个类似于webpack-dev-server这样到内容。为什么呢，因为比较早的时候，webpack-dev-server不是特别的稳定。配置项也不多，有些作者认为不好用，就自己实现了</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"bundle"</span>: <span class="string">"webpack"</span>,</span><br><span class="line">　　<span class="string">"watch"</span>: <span class="string">"webpack --watch"</span>,</span><br><span class="line">　　<span class="string">"start"</span>: <span class="string">"webpack-dev-server"</span>,</span><br><span class="line">　　<span class="string">"server"</span>: <span class="string">"node server.js"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>安装 npm install express webpack-dev-middleware -D。</p>
-<p>在根目录下创建server.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const express = require(<span class="string">'express'</span>);</span><br><span class="line">const webpack = require(<span class="string">'webpack'</span>);</span><br><span class="line">const webpackDevMiddleware = require(<span class="string">'webpack-dev-middleware'</span>);</span><br><span class="line">const config = require(<span class="string">'./webpack.config.js'</span>);</span><br><span class="line">const complier = webpack(config);</span><br><span class="line"></span><br><span class="line">const app = express();</span><br><span class="line">app.use(webpackDevMiddleware(complier,&#123;</span><br><span class="line">　　publicPath:config.output.publicPath</span><br><span class="line">&#125;))</span><br><span class="line"></span><br><span class="line">app.listen(3000, ()=&gt;&#123;</span><br><span class="line">　　console.log(<span class="string">'server is running'</span>);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>然后运行localhost:3000就运行。实际上这样自己写，得到跟webpack-dev-server一样的效果，自己需要写很多内容。所以webpack-dev-server是最推荐的方式，也是业界用的最多的。<br>所以这种方式是在node中使用webpack</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/8webpack中SourceMap的配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/8webpack中SourceMap的配置/" itemprop="url">webpack系列-8webpack中SourceMap的配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:14:36+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>希望在开发的时候，不要告诉我压缩文件哪一行代码出错了，而是告诉我具体的哪个文件，哪行js代码出错了。</p>
-<p>什么是SourceMap?<br>现在知道dist目录下main.js文件96行出错<br>sourceMap 它是一个映射关系，他知道dist目录下main.js文件96行，实际上对应的是src目录下index.js的第一行。<br>当前其实是index.js的第一行</p>
-<p>配置，其实webpack默认是把sourceMap配置进去了，去掉SourceMap</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　// 默认sourceMap配置进去了，所以先把sourceMap把他关掉</span><br><span class="line">　　devtool: <span class="string">'none'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>加上SourceMap配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'inline-source-map'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>用inline的时候js.map文件会变成base64的字符串被压缩到main.js里面。会告诉我们哪一行哪一列出错了</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'cheap-inline-source-map'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>用cheap-inline会告诉我们哪一行出错了，不会告诉我们哪一列</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'inline-cheap-module-source-map'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>inline-cheap-module-source-map表示我不仅管业务代码的错误，还管第三方模块代码的错误</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'eval'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>eval是打包最快的一种，但是针对于比较复杂的情况下，eval提示的信息不一定全面</p>
-<p>最佳实践</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'cheap-module-eval-source-map'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种方式提示的错误比较全，打包速度比较快，</p>
-<p>如果是线上，建议这样</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'production'</span>,</span><br><span class="line">　　devtool: <span class="string">'cheap-module-source-map'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1762,7 +1790,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

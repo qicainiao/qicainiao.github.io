@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="打包分析：当我们使用webpack进行打包之后呢，我们可以借助webpack的一些打包工具进行一定的分析，然后看一下他打包是否合理。webpack官网提供的一个分析工具的仓库：https://github.com/webpack/analyse。如果要对我们自个打包生成的代码进行一个分析，首先要生成一个打包过程的描述文件，将–profile –json &amp;gt; stats.json粘贴到pack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack系列-18webpack打包分析，preloading,prefetching的使用">
+<meta property="og:url" content="http://yoursite.com/2019/08/28/webpack系列/18webpack打包分析，preloading,prefetching的使用/index.html">
+<meta property="og:site_name" content="qicainiao&#39;s Blog">
+<meta property="og:description" content="打包分析：当我们使用webpack进行打包之后呢，我们可以借助webpack的一些打包工具进行一定的分析，然后看一下他打包是否合理。webpack官网提供的一个分析工具的仓库：https://github.com/webpack/analyse。如果要对我们自个打包生成的代码进行一个分析，首先要生成一个打包过程的描述文件，将–profile –json &amp;gt; stats.json粘贴到pack">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/18-1.png">
+<meta property="og:updated_time" content="2019-08-28T08:07:07.613Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="webpack系列-18webpack打包分析，preloading,prefetching的使用">
+<meta name="twitter:description" content="打包分析：当我们使用webpack进行打包之后呢，我们可以借助webpack的一些打包工具进行一定的分析，然后看一下他打包是否合理。webpack官网提供的一个分析工具的仓库：https://github.com/webpack/analyse。如果要对我们自个打包生成的代码进行一个分析，首先要生成一个打包过程的描述文件，将–profile –json &amp;gt; stats.json粘贴到pack">
+<meta name="twitter:image" content="http://yoursite.com/images/18-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/28/webpack系列/18webpack打包分析，preloading,prefetching的使用/">
+
+
+
+
+
+  <title>webpack系列-18webpack打包分析，preloading,prefetching的使用 | qicainiao's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">qicainiao's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/18webpack打包分析，preloading,prefetching的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">webpack系列-18webpack打包分析，preloading,prefetching的使用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T15:58:30+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>打包分析：当我们使用webpack进行打包之后呢，我们可以借助webpack的一些打包工具进行一定的分析，然后看一下他打包是否合理。<br>webpack官网提供的一个分析工具的仓库：<a href="https://github.com/webpack/analyse。" target="_blank" rel="noopener">https://github.com/webpack/analyse。</a><br>如果要对我们自个打包生成的代码进行一个分析，首先要生成一个打包过程的描述文件，将–profile –json &gt; stats.json粘贴到package.json</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"dev-build"</span>: <span class="string">"webpack --profile --json &gt; stats.json --config ./build/webpack.dev.js"</span>,</span><br><span class="line">　　<span class="string">"bundle"</span>: <span class="string">"webpack"</span>,</span><br><span class="line">　　<span class="string">"watch"</span>: <span class="string">"webpack --watch"</span>,</span><br><span class="line">　　<span class="string">"dev"</span>: <span class="string">"webpack-dev-server --config ./build/webpack.dev.js"</span>,</span><br><span class="line">　　<span class="string">"build"</span>: <span class="string">"webpack --config ./build/webpack.prod.js"</span>,</span><br><span class="line">　　<span class="string">"server"</span>: <span class="string">"node server.js"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p> 他的意思是我把打包过程中的一些描述放置到stats.json的文件里面。这个文件的格式是一个json的格式。这么写完之后，我们进行一次打包。打包完之后在根目录出现一个叫做stats.json的文件。这个文件就是webpack自动生成的对应的我们webpack的描述文件。生成这个文件之后打开分析仓库，进入<a href="http://webpack.github.io/analyse/。把我们生成的stats.json传进去。会得到下面的这种结果" target="_blank" rel="noopener">http://webpack.github.io/analyse/。把我们生成的stats.json传进去。会得到下面的这种结果</a></p>
+<p><img src="/images/18-1.png" alt></p>
+<p> 告诉我们，整个打包用的是webpack 4.30.0的版本进行的打包。耗时，1.24s。打包对应的hash值是c631e7b50a03b44511b4。里面有4个模块。2个chunk，也就是2个文件，打包生成3个静态文件，打包过程没有警告，没有异常。上面的后面是每个的详细解析</p>
+<p>除了这个工具之外，还有其他的分析工具，</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/guides/code-splitting/<span class="comment">#bundle-analysis</span></span><br></pre></td></tr></table></figure>
+
+<p>可以安装webpack-bundle-analyzer。我们做复杂项目的时候，代码分割跟我们的预期不相符，就可以通过这个做一些代码分析。看一看是不是有些代码重复打包了，是不是有哪些地方可以优化，哪一部分耗时比较长。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">　　splitChunks: &#123;</span><br><span class="line">　　　　chunks: <span class="string">'all'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们现在这个chunks是all，如果我们将此注释掉，默认的值是什么呢，是aysnc。也就是webpack默认只对异步代码进行分割。那么webpack为什么这么做呢。像jquery，lodash，这种库，应该对他进行分割。这样浏览器可以对他缓存，提高访问速度。但是我们只是提高第二次访问的速度。那真正的对页面做优化，webpack想达到的效果是，当你第一次访问页面的时候，他的加载速度就是最快的。要满足这种，靠将jquery,lodash打包成单独的文件是满足不了需求的。那么webpack真正希望我们编写代码的方式是什么样的呢？</p>
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// async <span class="keyword">function</span> <span class="function"><span class="title">getComponent</span></span>() &#123;</span><br><span class="line">// const &#123; default: _ &#125; = await import(/* webpackChunkName:<span class="string">"lodash"</span> */ <span class="string">'lodash'</span>);</span><br><span class="line">// var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">// element.innerHTML = _.join([<span class="string">'1'</span>, <span class="string">' '</span>, <span class="string">'2'</span>], <span class="string">'-'</span>);</span><br><span class="line">// <span class="built_in">return</span> element;</span><br><span class="line">// &#125;</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">// document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">// getComponent().<span class="keyword">then</span>(element =&gt; &#123;</span><br><span class="line">// document.body.appendChild(element);</span><br><span class="line">// &#125;)</span><br><span class="line">// &#125;)</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　element.innerHTML = <span class="string">'1-2'</span>;</span><br><span class="line">　　document.body.appendChild(element);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>下面的这个方式是我们以前标准的js写法。这段代码肯定没有问题。但是这个代码是否就完全没有优化的空间了，或者说这是不是webpack推荐的代码编写的方式。显然不是</p>
+<p>打开控制台，快捷键 command+shift+p。 输入coverage，打开coverage，点击录制，刷新页面。可以看到main.js的利用率只有75.5%。那么为什么是75.5％呢，看到上面的main.js，一些红色，一些绿色，绿色的才有意义，红色的没用。click里面的代码，只有点击后才变绿。不然是红色，点击前是没有用的代码。一开始加载的时候，这里面的代码就不会执行，不会执行的代码，一开始就让页面下载下来，实际上就会浪费执行的性能</p>
+<p>那么webpack希望这种交互的代码应该放到异步加载的模块里面去写，新建一个click.js<br>index.html</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　import(<span class="string">'./click.js'</span>).<span class="keyword">then</span>((&#123;default: func&#125;) =&gt; &#123;</span><br><span class="line">　　　　func()</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>click.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">handleClick</span></span>()&#123;</span><br><span class="line">　　var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　element.innerHTML = <span class="string">'1-2'</span>;</span><br><span class="line">　　document.body.appendChild(element);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> default handleClick;</span><br></pre></td></tr></table></figure>
+
+<p>这个时候打包后运行index.html，发现main.js的利用率变成了78％，因为加载页面的时候并没有加载业务。所以webpack希望多写异步的代码，所以默认的chunks默认配置的是async。异步的。</p>
+<p>比如用户未登录的情况下，首先我只加载首页的逻辑，不加载登录的逻辑，那么等我点击登录的时候再去记载登录，会不会很慢呢，那么preloading,prefetching就是解决这个问题的。在首页加载好之后，空闲的时间偷偷的去把登录的模块加载好。如果利用这个空闲的时间，两个条件都满足了。那么怎么做呢</p>
+<p>将 /* webpackPrefetch: true */ 这句话放到引入的前面<br>index.js </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　import(/* webpackPrefetch: <span class="literal">true</span> */<span class="string">'./click.js'</span>).<span class="keyword">then</span>((&#123;default: func&#125;) =&gt; &#123;</span><br><span class="line">　　　　func()</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>意思是的当我点击的时候，去加载click.js，但不是非得点击的时候才去加载，而是主要的js加载好之后，有空闲的时候，会偷偷的去家在click.js。上面的这种魔法注释是prefetch的用法 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/guides/code-splitting<span class="comment">#prefetchingpreloading-modules</span></span><br></pre></td></tr></table></figure>
+
+<p>preloading,prefetching的区别。prefetching会等主要的js加载完之后，空闲的时候再去加载click.js<br>/* webpackPreload: true */。preload是和主要的文件一起去加载的，所以preload还是不怎么合理的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/28/webpack系列/17webpack中懒加载是什么，chunk是什么/" rel="next" title="webpack系列-17webpack中懒加载是什么，chunk是什么">
+                <i class="fa fa-chevron-left"></i> webpack系列-17webpack中懒加载是什么，chunk是什么
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/28/webpack系列/18webpack中css文件的代码分割/" rel="prev" title="webpack系列-18webpack中css文件的代码分割">
+                webpack系列-18webpack中css文件的代码分割 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">qicainiao</p>
+              <p class="site-description motion-element" itemprop="description">Hello World!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qicainiao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
