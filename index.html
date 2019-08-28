@@ -232,7 +232,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/webpack系列-1走进webpack/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/webpack性能优化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="qicainiao">
@@ -251,7 +251,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/08/28/webpack系列/webpack系列-1走进webpack/" itemprop="url">webpack系列-1走进webpack</a></h1>
+                <a class="post-title-link" href="/2019/08/28/webpack系列/webpack性能优化/" itemprop="url">未命名</a></h1>
         
 
         <div class="post-meta">
@@ -263,7 +263,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T11:03:46+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T12:35:07+08:00">
                 2019-08-28
               </time>
             
@@ -303,7 +303,497 @@
       
         
           
-            <p>sssss</p>
+            <p>webpack优化</p>
+<h2 id="6-控制包文件大小"><a href="#6-控制包文件大小" class="headerlink" title="6 控制包文件大小"></a>6 控制包文件大小</h2><h2 id="7thread-loader-parallel-webpack-happypack多进程打包"><a href="#7thread-loader-parallel-webpack-happypack多进程打包" class="headerlink" title="7thread-loader,parallel-webpack,happypack多进程打包"></a>7thread-loader,parallel-webpack,happypack多进程打包</h2><h2 id="8合理使用sourceMap"><a href="#8合理使用sourceMap" class="headerlink" title="8合理使用sourceMap"></a>8合理使用sourceMap</h2><p>   合理使用，既加速打包速度，又能快速查看问题</p>
+<h2 id="9结合stats分析打包结果"><a href="#9结合stats分析打包结果" class="headerlink" title="9结合stats分析打包结果"></a>9结合stats分析打包结果</h2><h2 id="10开发环境内存编译"><a href="#10开发环境内存编译" class="headerlink" title="10开发环境内存编译"></a>10开发环境内存编译</h2><p>  开发环境没有生成dist目录，就可以运行，是因为编译出来的文件在内存中，内存运行速度比硬盘快</p>
+<h2 id="11开发环境无用插件剔除"><a href="#11开发环境无用插件剔除" class="headerlink" title="11开发环境无用插件剔除"></a>11开发环境无用插件剔除</h2><h2 id="12合理使用插件的配置选项"><a href="#12合理使用插件的配置选项" class="headerlink" title="12合理使用插件的配置选项"></a>12合理使用插件的配置选项</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/3webpack基础安装配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/webpack系列/3webpack基础安装配置/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T12:35:07+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>搭建webpack环境</p>
+<p>基于nodejs的，webpack正确安装方式<br>-</p>
+<ul>
+<li>npm install webpack webpack-cli -g<br>全局安装webpack</li>
+<li>项目内安装<br>npm install webpack webpack-cli –save-dev</li>
+</ul>
+<h2 id="1webpack-config-js基础配置"><a href="#1webpack-config-js基础配置" class="headerlink" title="1webpack.config.js基础配置"></a>1webpack.config.js基础配置</h2><pre><code>module.exports = {
+    mode: &apos;development&apos;, //production编译出代码会被压缩，development不会压缩
+    entry: {
+        main: &apos;./src/index.js&apos;
+    },
+    output: {
+        filename: &apos;bundle.js&apos;,
+        path: path.resolve(__dirname, &apos;dist&apos;)
+    }
+}</code></pre><p>直接运行 npm webpack –config  webpack.config.js，以webpack.config.js为配置文件进行打包</p>
+<pre><code>脚本文件的方式
+&quot;dev&quot;:&quot;webpack --mode development&quot;,
+&quot;prod&quot;:&quot;webpack --mode production&quot;</code></pre><h2 id="2-webpack-config-js实践"><a href="#2-webpack-config-js实践" class="headerlink" title="2 webpack.config.js实践"></a>2 webpack.config.js实践</h2><h2 id="1-什么是loader，什么是plugin"><a href="#1-什么是loader，什么是plugin" class="headerlink" title="1.什么是loader，什么是plugin"></a>1.什么是loader，什么是plugin</h2><p>  loader用于加载某些资源文件。因为webpack本身只能打包common.js规范的js文件，对于其他资源如css，img等，是没有办法加载的，这时就需要对应的loader将资源转化，从而进行加载。</p>
+<p>  plugin用于扩展webpack的功能。不同于loader，plugin的功能更加丰富，比如压缩打包，优化，不只局限于资源的加载。</p>
+<pre><code>文件
+url-loader 像 file loader 一样工作，但如果文件小于限制，可以返回 data URL
+file-loader 将文件发送到输出文件夹，并返回（相对）URL
+
+
+const path = require(&apos;path&apos;);    
+module.exports = {
+    mode: &apos;development&apos;,
+    entry: {
+        main: &apos;./src/index.js&apos;
+    },
+    module: {
+        rules: [{
+            test: /\.(jpg|png|gif)$/,
+            use: {
+                loader: &apos;url-loader&apos;,  //完全可以替换file-loader，去掉limit
+                options: {
+                    name: &apos;[name]_[hash].[ext]&apos;,// 单引号，告诉是字符串，占位符
+                    outputPath: &apos;images/&apos;,
+                    limit: 10240
+                }
+            } 
+        }]
+    },
+    output: {
+        filename: &apos;bundle.js&apos;,
+        path: path.resolve(__dirname, &apos;dist&apos;)
+    }
+}</code></pre><p>name: ‘[name]_[hash].[ext]’,// 单引号，告诉是字符串，占位符官网解释</p>
+<p> <a href="https://www.webpackjs.com/loaders/file-loader/#%E9%80%89%E9%A1%B9" target="_blank" rel="noopener">https://www.webpackjs.com/loaders/file-loader/#%E9%80%89%E9%A1%B9</a>  </p>
+<p> name是基本文件名字 hash是随机hash  ext是文件后缀</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/2模块打包工具/模块打包工具/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/webpack系列/2模块打包工具/模块打包工具/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T12:35:07+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="模块打包工具"><a href="#模块打包工具" class="headerlink" title="模块打包工具"></a>模块打包工具</h1><p>webpack是一个moudle bundler，模块打包工具。打包所有的脚本，资源，图片，样式</p>
+<p>官网对模块解释<br><a href="https://www.webpackjs.com/concepts/modules/#%E4%BB%80%E4%B9%88%E6%98%AF-webpack-%E6%A8%A1%E5%9D%97" target="_blank" rel="noopener">https://www.webpackjs.com/concepts/modules/#%E4%BB%80%E4%B9%88%E6%98%AF-webpack-%E6%A8%A1%E5%9D%97</a></p>
+<p>模块方法<br><a href="https://www.webpackjs.com/api/module-methods/" target="_blank" rel="noopener">https://www.webpackjs.com/api/module-methods/</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/1webpack是什么/webpack究竟是什么/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/webpack系列/1webpack是什么/webpack究竟是什么/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T12:35:07+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Webpack优化——将你的构建效率提速翻倍</p>
+<h2 id="1-webpack究竟是什么？"><a href="#1-webpack究竟是什么？" class="headerlink" title="1 webpack究竟是什么？"></a>1 webpack究竟是什么？</h2><pre><code>以前写html,js的写法如下：</code></pre><p>   index.html文件</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+ &lt;html lang=&quot;en&quot;&gt;
+ &lt;head&gt;
+     &lt;meta charset=&quot;UTF-8&quot;&gt;
+     &lt;title&gt;这是最原始的网页开发&lt;/title&gt;
+ &lt;/head&gt;
+ &lt;body&gt;
+     &lt;p&gt;这是我们的网页内容&lt;/p&gt;
+     &lt;div id=&apos;root&apos;&gt;&lt;/div&gt;
+     &lt;script src=&apos;./index.js&apos;&gt;&lt;/script&gt;
+ &lt;/body&gt;
+ &lt;/html&gt;</code></pre><p>   index.js文件</p>
+<pre><code>var dom = document.getElementById(&apos;root&apos;);
+var header = document.createElement(&apos;div&apos;);
+header.innerText = &apos;header&apos;;
+dom.append(header);
+
+var content = document.createElement(&apos;div&apos;);
+content.innerText = &apos;content&apos;;
+dom.append(content);
+
+var sidebar = document.createElement(&apos;div&apos;);
+sidebar.innerText = &apos;sidebar&apos;;
+dom.append(sidebar);</code></pre><p>  随着业务增加，如果用这种面向过程的编程方式代码就会很长，所有的js逻辑都堆在一个文件，最后难以维护。<br>  采用面向对象的编程方式</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+ &lt;html lang=&quot;en&quot;&gt;
+ &lt;head&gt;
+     &lt;meta charset=&quot;UTF-8&quot;&gt;
+     &lt;title&gt;这是最原始的网页开发&lt;/title&gt;
+ &lt;/head&gt;
+ &lt;body&gt;
+     &lt;p&gt;这是我们的网页内容&lt;/p&gt;
+     &lt;div id=&apos;root&apos;&gt;&lt;/div&gt;
+     &lt;script src=&apos;./index.js&apos;&gt;&lt;/script&gt;
+ &lt;/body&gt;
+ &lt;/html&gt;</code></pre><p>   content.js文件</p>
+<pre><code>function Content() {
+    var dom = document.getElementById(&apos;root&apos;);
+    var content = document.createElement(&apos;div&apos;);
+    content.innerText = &apos;content&apos;;
+    dom.append(content);
+}
+
+module.exports = Content;</code></pre><p>   header.js文件</p>
+<pre><code>    function Header() {
+    var dom = document.getElementById(&apos;root&apos;);
+    var header = document.createElement(&apos;div&apos;);
+    header.innerText = &apos;header&apos;;
+    dom.append(header);
+}
+
+module.exports = Header;</code></pre><p>sidebar.js</p>
+<pre><code>function Sidebar() {
+    var dom = document.getElementById(&apos;root&apos;);
+    var sidebar = document.createElement(&apos;div&apos;);
+    sidebar.innerText = &apos;sidebar&apos;;
+    dom.append(sidebar);
+}
+
+module.exports = Sidebar;</code></pre><p>index.js</p>
+<pre><code>var Header = require(&apos;./header.js&apos;);
+var Sidebar = require(&apos;./sidebar.js&apos;);
+var Content = require(&apos;./content.js&apos;);
+
+new Header();
+new Sidebar();
+new Content();</code></pre><p>这个文件各司其职，便于维护管理。<br>不存在依赖颠倒出现的问题<br>运行上面代码<br>  npm init</p>
+<p>   package.json文件 </p>
+<pre><code>&quot;devDependencies&quot;: {
+ &quot;webpack-cli&quot;: &quot;^3.1.2&quot;
+  },
+ &quot;dependencies&quot;: {
+   &quot;webpack&quot;: &quot;^4.25.1&quot;
+ }</code></pre><p>  执行<br>   npx webpack index.js</p>
+<p><img src="../01.png" alt></p>
 
           
         
@@ -517,7 +1007,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
