@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="基于nodejs的，webpack正确安装方式-  npm install webpack webpack-cli -g全局安装webpack 项目内安装npm install webpack webpack-cli –save-dev  1webpack.config.js基础配置module.exports = {     mode: &amp;apos;development&amp;apos;, //pr">
+<meta name="description" content="基于nodejs的，webpack正确安装方式-  npm install webpack webpack-cli -g全局安装webpack 项目内安装npm install webpack webpack-cli –save-dev  1webpack.config.js基础配置 12345678910111213141516171819202122232425    const path =">
 <meta property="og:type" content="article">
 <meta property="og:title" content="webpack系列-3搭建webpack环境">
 <meta property="og:url" content="http://yoursite.com/2019/08/28/webpack系列/3webpack基础安装配置/index.html">
 <meta property="og:site_name" content="qicainiao&#39;s Blog">
-<meta property="og:description" content="基于nodejs的，webpack正确安装方式-  npm install webpack webpack-cli -g全局安装webpack 项目内安装npm install webpack webpack-cli –save-dev  1webpack.config.js基础配置module.exports = {     mode: &amp;apos;development&amp;apos;, //pr">
+<meta property="og:description" content="基于nodejs的，webpack正确安装方式-  npm install webpack webpack-cli -g全局安装webpack 项目内安装npm install webpack webpack-cli –save-dev  1webpack.config.js基础配置 12345678910111213141516171819202122232425    const path =">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-28T04:38:06.106Z">
+<meta property="og:updated_time" content="2019-08-28T04:54:31.105Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="webpack系列-3搭建webpack环境">
-<meta name="twitter:description" content="基于nodejs的，webpack正确安装方式-  npm install webpack webpack-cli -g全局安装webpack 项目内安装npm install webpack webpack-cli –save-dev  1webpack.config.js基础配置module.exports = {     mode: &amp;apos;development&amp;apos;, //pr">
+<meta name="twitter:description" content="基于nodejs的，webpack正确安装方式-  npm install webpack webpack-cli -g全局安装webpack 项目内安装npm install webpack webpack-cli –save-dev  1webpack.config.js基础配置 12345678910111213141516171819202122232425    const path =">
 
 
 
@@ -304,19 +304,18 @@
 <li>npm install webpack webpack-cli -g<br>全局安装webpack</li>
 <li>项目内安装<br>npm install webpack webpack-cli –save-dev</li>
 </ul>
-<h2 id="1webpack-config-js基础配置"><a href="#1webpack-config-js基础配置" class="headerlink" title="1webpack.config.js基础配置"></a>1webpack.config.js基础配置</h2><pre><code>module.exports = {
-    mode: &apos;development&apos;, //production编译出代码会被压缩，development不会压缩
-    entry: {
-        main: &apos;./src/index.js&apos;
-    },
-    output: {
-        filename: &apos;bundle.js&apos;,
-        path: path.resolve(__dirname, &apos;dist&apos;)
-    }
-}</code></pre><p>直接运行 npm webpack –config  webpack.config.js，以webpack.config.js为配置文件进行打包</p>
-<pre><code>脚本文件的方式
-&quot;dev&quot;:&quot;webpack --mode development&quot;,
-&quot;prod&quot;:&quot;webpack --mode production&quot;</code></pre><h2 id="2-webpack-config-js实践"><a href="#2-webpack-config-js实践" class="headerlink" title="2 webpack.config.js实践"></a>2 webpack.config.js实践</h2><h2 id="1-什么是loader，什么是plugin"><a href="#1-什么是loader，什么是plugin" class="headerlink" title="1.什么是loader，什么是plugin"></a>1.什么是loader，什么是plugin</h2><p>  loader用于加载某些资源文件。因为webpack本身只能打包common.js规范的js文件，对于其他资源如css，img等，是没有办法加载的，这时就需要对应的loader将资源转化，从而进行加载。</p>
+<h2 id="1webpack-config-js基础配置"><a href="#1webpack-config-js基础配置" class="headerlink" title="1webpack.config.js基础配置"></a>1webpack.config.js基础配置</h2> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">    const path = require(<span class="string">'path'</span>);</span><br><span class="line">	module.exports = &#123;</span><br><span class="line">	　　// 这个文件要做打包，从哪一个文件开始打包</span><br><span class="line">	　　entry: <span class="string">'./src/index.js'</span>,</span><br><span class="line">	　　// 打包文件要放到哪里去，就配置在output这个对象里</span><br><span class="line">	　　output: &#123;</span><br><span class="line">	　　　　// 打包好的文件名字</span><br><span class="line">	　　　　filename: <span class="string">'bundle.js'</span>,</span><br><span class="line">	　　　　/**</span><br><span class="line">	　　　　* 打包出的文件要把他放到哪一个文件夹下，path后面要放一个绝对路径</span><br><span class="line">	　　　　* __dirname指的是webpack.config.js所在的当前目录的这个路径</span><br><span class="line">	　　　　* 下面这个结合就是一个绝对路径</span><br><span class="line">	　　　　*/</span><br><span class="line">	　　　　path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">	　　&#125;</span><br><span class="line">	&#125;</span><br><span class="line"> ```   </span><br><span class="line"></span><br><span class="line">这个时候运行npx webpack就运行成功。当项目中运行webpack的时候，webpack并不知道怎么去打包，于是他就会找默认的配置文件，找到webpack.config.js这个文件。然后他知道应该怎么打包，应该怎么输出，帮你打包好整个流程。</span><br><span class="line"></span><br><span class="line">假设这个配置文件不是webpack.config.js，改成webpackconfig.js。这个时候运行npx webpack就会报错。因为他找不到webpack.config.js。但是假设我就是要以webpackconfig.js作为配置文件该怎么办呢？这样运行</span><br><span class="line"></span><br><span class="line">``` bash</span><br><span class="line"> npx webpack --config webpackconfig.js</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+
+<p>改到这，我们在打包到过程中，经常会用npx这样到一个命令，但是如果经常写react,vue，可能从来没有使用过这个命令。而是使用npm run这样的命令。所以这就是运用npm script简化我们的打包代码</p>
+<p>我们打开package.json这个文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">　　&quot;name&quot;: &quot;demo&quot;,</span><br><span class="line">　　&quot;version&quot;: &quot;1.0.0&quot;,</span><br><span class="line">　　&quot;description&quot;: &quot;&quot;,</span><br><span class="line">　　&quot;main&quot;: &quot;index.js&quot;,</span><br><span class="line">　　&quot;scripts&quot;: &#123;</span><br><span class="line">　　　　&quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><br><span class="line">　　&#125;,</span><br><span class="line">　　&quot;author&quot;: &quot;&quot;,</span><br><span class="line">　　&quot;license&quot;: &quot;ISC&quot;,</span><br><span class="line">　　&quot;dependencies&quot;: &#123;</span><br><span class="line">　　　　&quot;webpack&quot;: &quot;^4.30.0&quot;,</span><br><span class="line">　　　　&quot;webpack-cli&quot;: &quot;^3.3.0&quot;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个文件里面又一个scripts标签配置项。这是一个对象，我们可以在这里配置一些内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">　　&quot;bundle&quot;: &quot;webpack&quot;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>比如这样，这个时候我们不使用npx webpack了。直接运行<br><code>npm run bundle</code><br>一样可以帮我们打包。所以npm run bundle执行的时候就是执行script的bundle命令。这个bundle命令底层在帮你干什么，就是帮你执行webpack这个命令，那么又有一个问题。直接写webpack是在全局里面去找webpack。是不是应该加个npx呢？实际上在scripts里面使用webpack,他会先到工程目录下的node_modules里面去找是否安装了webpack这个指令。现在去写，直接npm run bundle就可以了。</p>
+<p>这个时候把index.html移到dist下面，就可以直接运行起来了</p>
+<h2 id="2-webpack-config-js实践"><a href="#2-webpack-config-js实践" class="headerlink" title="2 webpack.config.js实践"></a>2 webpack.config.js实践</h2><h2 id="1-什么是loader，什么是plugin"><a href="#1-什么是loader，什么是plugin" class="headerlink" title="1.什么是loader，什么是plugin"></a>1.什么是loader，什么是plugin</h2><p>  loader用于加载某些资源文件。因为webpack本身只能打包common.js规范的js文件，对于其他资源如css，img等，是没有办法加载的，这时就需要对应的loader将资源转化，从而进行加载。</p>
 <p>  plugin用于扩展webpack的功能。不同于loader，plugin的功能更加丰富，比如压缩打包，优化，不只局限于资源的加载。</p>
 <pre><code>文件
 url-loader 像 file loader 一样工作，但如果文件小于限制，可以返回 data URL
