@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="webpack优化 6 控制包文件大小7thread-loader,parallel-webpack,happypack多进程打包8合理使用sourceMap   合理使用，既加速打包速度，又能快速查看问题 9结合stats分析打包结果10开发环境内存编译  开发环境没有生成dist目录，就可以运行，是因为编译出来的文件在内存中，内存运行速度比硬盘快 11开发环境无用插件剔除12合理使用插件的配置">
+<meta name="description" content="6 控制包文件大小7thread-loader,parallel-webpack,happypack多进程打包8合理使用sourceMap   合理使用，既加速打包速度，又能快速查看问题 9结合stats分析打包结果10开发环境内存编译  开发环境没有生成dist目录，就可以运行，是因为编译出来的文件在内存中，内存运行速度比硬盘快 11开发环境无用插件剔除12合理使用插件的配置选项">
 <meta property="og:type" content="article">
-<meta property="og:title" content="qicainiao&#39;s Blog">
+<meta property="og:title" content="webpack系列-4webpack优化">
 <meta property="og:url" content="http://yoursite.com/2019/08/28/webpack系列/webpack性能优化/index.html">
 <meta property="og:site_name" content="qicainiao&#39;s Blog">
-<meta property="og:description" content="webpack优化 6 控制包文件大小7thread-loader,parallel-webpack,happypack多进程打包8合理使用sourceMap   合理使用，既加速打包速度，又能快速查看问题 9结合stats分析打包结果10开发环境内存编译  开发环境没有生成dist目录，就可以运行，是因为编译出来的文件在内存中，内存运行速度比硬盘快 11开发环境无用插件剔除12合理使用插件的配置">
+<meta property="og:description" content="6 控制包文件大小7thread-loader,parallel-webpack,happypack多进程打包8合理使用sourceMap   合理使用，既加速打包速度，又能快速查看问题 9结合stats分析打包结果10开发环境内存编译  开发环境没有生成dist目录，就可以运行，是因为编译出来的文件在内存中，内存运行速度比硬盘快 11开发环境无用插件剔除12合理使用插件的配置选项">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-28T01:21:56.310Z">
+<meta property="og:updated_time" content="2019-08-28T04:38:23.876Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="qicainiao&#39;s Blog">
-<meta name="twitter:description" content="webpack优化 6 控制包文件大小7thread-loader,parallel-webpack,happypack多进程打包8合理使用sourceMap   合理使用，既加速打包速度，又能快速查看问题 9结合stats分析打包结果10开发环境内存编译  开发环境没有生成dist目录，就可以运行，是因为编译出来的文件在内存中，内存运行速度比硬盘快 11开发环境无用插件剔除12合理使用插件的配置">
+<meta name="twitter:title" content="webpack系列-4webpack优化">
+<meta name="twitter:description" content="6 控制包文件大小7thread-loader,parallel-webpack,happypack多进程打包8合理使用sourceMap   合理使用，既加速打包速度，又能快速查看问题 9结合stats分析打包结果10开发环境内存编译  开发环境没有生成dist目录，就可以运行，是因为编译出来的文件在内存中，内存运行速度比硬盘快 11开发环境无用插件剔除12合理使用插件的配置选项">
 
 
 
@@ -125,7 +125,7 @@
 
 
 
-  <title> | qicainiao's Blog</title>
+  <title>webpack系列-4webpack优化 | qicainiao's Blog</title>
   
 
 
@@ -249,7 +249,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">webpack系列-4webpack优化</h1>
         
 
         <div class="post-meta">
@@ -299,8 +299,7 @@
       
 
       
-        <p>webpack优化</p>
-<h2 id="6-控制包文件大小"><a href="#6-控制包文件大小" class="headerlink" title="6 控制包文件大小"></a>6 控制包文件大小</h2><h2 id="7thread-loader-parallel-webpack-happypack多进程打包"><a href="#7thread-loader-parallel-webpack-happypack多进程打包" class="headerlink" title="7thread-loader,parallel-webpack,happypack多进程打包"></a>7thread-loader,parallel-webpack,happypack多进程打包</h2><h2 id="8合理使用sourceMap"><a href="#8合理使用sourceMap" class="headerlink" title="8合理使用sourceMap"></a>8合理使用sourceMap</h2><p>   合理使用，既加速打包速度，又能快速查看问题</p>
+        <h2 id="6-控制包文件大小"><a href="#6-控制包文件大小" class="headerlink" title="6 控制包文件大小"></a>6 控制包文件大小</h2><h2 id="7thread-loader-parallel-webpack-happypack多进程打包"><a href="#7thread-loader-parallel-webpack-happypack多进程打包" class="headerlink" title="7thread-loader,parallel-webpack,happypack多进程打包"></a>7thread-loader,parallel-webpack,happypack多进程打包</h2><h2 id="8合理使用sourceMap"><a href="#8合理使用sourceMap" class="headerlink" title="8合理使用sourceMap"></a>8合理使用sourceMap</h2><p>   合理使用，既加速打包速度，又能快速查看问题</p>
 <h2 id="9结合stats分析打包结果"><a href="#9结合stats分析打包结果" class="headerlink" title="9结合stats分析打包结果"></a>9结合stats分析打包结果</h2><h2 id="10开发环境内存编译"><a href="#10开发环境内存编译" class="headerlink" title="10开发环境内存编译"></a>10开发环境内存编译</h2><p>  开发环境没有生成dist目录，就可以运行，是因为编译出来的文件在内存中，内存运行速度比硬盘快</p>
 <h2 id="11开发环境无用插件剔除"><a href="#11开发环境无用插件剔除" class="headerlink" title="11开发环境无用插件剔除"></a>11开发环境无用插件剔除</h2><h2 id="12合理使用插件的配置选项"><a href="#12合理使用插件的配置选项" class="headerlink" title="12合理使用插件的配置选项"></a>12合理使用插件的配置选项</h2>
       
@@ -326,8 +325,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/28/webpack系列/3webpack基础安装配置/" rel="next" title>
-                <i class="fa fa-chevron-left"></i> 
+              <a href="/2019/08/28/webpack系列/3webpack基础安装配置/" rel="next" title="webpack系列-3搭建webpack环境">
+                <i class="fa fa-chevron-left"></i> webpack系列-3搭建webpack环境
               </a>
             
           </div>
