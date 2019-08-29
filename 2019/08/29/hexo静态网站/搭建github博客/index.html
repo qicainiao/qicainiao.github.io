@@ -79,17 +79,21 @@
 
 
 
-<meta name="description" content="希望在开发的时候，不要告诉我压缩文件哪一行代码出错了，而是告诉我具体的哪个文件，哪行js代码出错了。 什么是SourceMap?现在知道dist目录下main.js文件96行出错sourceMap 它是一个映射关系，他知道dist目录下main.js文件96行，实际上对应的是src目录下index.js的第一行。当前其实是index.js的第一行 配置，其实webpack默认是把sourceMap">
+<meta name="description" content="极简风格博客 =windows + hexos + github这是这篇教程的成品图  #博客搭建分为三步：#  创建github域名及空间 git，nodejs，hexo下载及安装 配置环境  ##1.创建github域名及空间进入github官网，注册并登录。登录后，点击右上角的 “+” 号，选择 “new repository” , 会出现以下界面：  在 repository name 中">
 <meta property="og:type" content="article">
-<meta property="og:title" content="webpack系列-8webpack中SourceMap的配置">
-<meta property="og:url" content="http://yoursite.com/2019/08/28/webpack系列/8webpack中SourceMap的配置/index.html">
+<meta property="og:title" content="hexo搭建静态网站-搭建github博客">
+<meta property="og:url" content="http://yoursite.com/2019/08/29/hexo静态网站/搭建github博客/index.html">
 <meta property="og:site_name" content="qicainiao&#39;s Blog">
-<meta property="og:description" content="希望在开发的时候，不要告诉我压缩文件哪一行代码出错了，而是告诉我具体的哪个文件，哪行js代码出错了。 什么是SourceMap?现在知道dist目录下main.js文件96行出错sourceMap 它是一个映射关系，他知道dist目录下main.js文件96行，实际上对应的是src目录下index.js的第一行。当前其实是index.js的第一行 配置，其实webpack默认是把sourceMap">
+<meta property="og:description" content="极简风格博客 =windows + hexos + github这是这篇教程的成品图  #博客搭建分为三步：#  创建github域名及空间 git，nodejs，hexo下载及安装 配置环境  ##1.创建github域名及空间进入github官网，注册并登录。登录后，点击右上角的 “+” 号，选择 “new repository” , 会出现以下界面：  在 repository name 中">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-29T01:26:31.743Z">
+<meta property="og:image" content="http://yoursite.com/images/hexo/1-1.png">
+<meta property="og:image" content="http://yoursite.com/images/hexo/1-2.png">
+<meta property="og:image" content="http://yoursite.com/images/hexo/1-3.png">
+<meta property="og:updated_time" content="2019-08-29T02:19:44.585Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="webpack系列-8webpack中SourceMap的配置">
-<meta name="twitter:description" content="希望在开发的时候，不要告诉我压缩文件哪一行代码出错了，而是告诉我具体的哪个文件，哪行js代码出错了。 什么是SourceMap?现在知道dist目录下main.js文件96行出错sourceMap 它是一个映射关系，他知道dist目录下main.js文件96行，实际上对应的是src目录下index.js的第一行。当前其实是index.js的第一行 配置，其实webpack默认是把sourceMap">
+<meta name="twitter:title" content="hexo搭建静态网站-搭建github博客">
+<meta name="twitter:description" content="极简风格博客 =windows + hexos + github这是这篇教程的成品图  #博客搭建分为三步：#  创建github域名及空间 git，nodejs，hexo下载及安装 配置环境  ##1.创建github域名及空间进入github官网，注册并登录。登录后，点击右上角的 “+” 号，选择 “new repository” , 会出现以下界面：  在 repository name 中">
+<meta name="twitter:image" content="http://yoursite.com/images/hexo/1-1.png">
 
 
 
@@ -119,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/08/28/webpack系列/8webpack中SourceMap的配置/">
+  <link rel="canonical" href="http://yoursite.com/2019/08/29/hexo静态网站/搭建github博客/">
 
 
 
 
 
-  <title>webpack系列-8webpack中SourceMap的配置 | qicainiao's Blog</title>
+  <title>hexo搭建静态网站-搭建github博客 | qicainiao's Blog</title>
   
 
 
@@ -252,7 +256,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/8webpack中SourceMap的配置/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/29/hexo静态网站/搭建github博客/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="qicainiao">
@@ -269,7 +273,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">webpack系列-8webpack中SourceMap的配置</h1>
+          <h1 class="post-title" itemprop="name headline">hexo搭建静态网站-搭建github博客</h1>
         
 
         <div class="post-meta">
@@ -281,8 +285,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:14:36+08:00">
-                2019-08-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-29T10:15:31+08:00">
+                2019-08-29
               </time>
             
 
@@ -304,8 +308,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack系列/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack系列</span>
+                  <a href="/categories/hexo搭建静态网站/" itemprop="url" rel="index">
+                    <span itemprop="name">hexo搭建静态网站</span>
                   </a>
                 </span>
 
@@ -341,31 +345,46 @@
       
 
       
-        <p>希望在开发的时候，不要告诉我压缩文件哪一行代码出错了，而是告诉我具体的哪个文件，哪行js代码出错了。</p>
-<p>什么是SourceMap?<br>现在知道dist目录下main.js文件96行出错<br>sourceMap 它是一个映射关系，他知道dist目录下main.js文件96行，实际上对应的是src目录下index.js的第一行。<br>当前其实是index.js的第一行</p>
-<p>配置，其实webpack默认是把sourceMap配置进去了，去掉SourceMap</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　// 默认sourceMap配置进去了，所以先把sourceMap把他关掉</span><br><span class="line">　　devtool: <span class="string">'none'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>极简风格博客 =windows + hexos + github<br>这是这篇教程的成品图</p>
+<p><img src="/images/hexo/1-1.png" alt></p>
+<p>#博客搭建分为三步：#</p>
+<ul>
+<li>创建github域名及空间</li>
+<li>git，nodejs，hexo下载及安装</li>
+<li>配置环境</li>
+</ul>
+<p>##1.创建github域名及空间<br>进入github官网，注册并登录。<br>登录后，点击右上角的 “+” 号，选择 “new repository” , 会出现以下界面：</p>
+<p><img src="/images/hexo/1-2.png" alt></p>
+<p>在 repository name 中填入 username.github.io 。（username指的是前面owner的用户名，比如我这里应该填 wenjie710.github.io 。）<br>然后点击最下面的create repository 即可。<br>2.安装 git，nodejs，hexo<br>下载地址：<br>git官网下载：<a href="https://git-scm.com/download/win" target="_blank" rel="noopener">https://git-scm.com/download/win</a><br>nodejs官网下载：<a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">https://nodejs.org/en/download/</a><br>以上两个工具都是直接下载的exe文件，点击安装即可。安装完成之后在文件夹中点击鼠标右键会看到下拉菜单中有一个 Git Bash ，这是一个类似于Liunx的终端，在里面可以模拟Linux下的终端进行操作。<br>git 和 nodejs 安装完成之后才能安装hexo。hexo的安装十分简单，只需要在命令提示符（cmd）中输入以下命令即可。</p>
+<pre><code>npm install -g hexo-cli</code></pre><p>3.配置环境<br>3.1 配置ssh<br>打开 Git Bash ，执行下面的命令生成 SSH 访问私钥及公钥。</p>
+<pre><code>ssh-keygen -t rsa -C &quot;email@email.com&quot;</code></pre><p>输入命令回车之后会提示你输入一些东西，不用管。一直回车到底就好了。然后你的 ~/.ssh 文件下就会生成两个文件 id_rsa 和 id_rsa.pub 。</p>
+<p><img src="/images/hexo/1-3.png" alt></p>
+<p>打开你的 Github -&gt; setting -&gt; SSH Keys 。然后点击 New SSH Key 创建一个新的SSH Key。将文件 id_rsa.pub 中的所以内容复制粘贴到 Key 下面。然后使用下面的命令测试是否可以连接上 Github.</p>
+<pre><code>ssh -T git@github.com</code></pre><p>3.2 编写配置，发布博客<br>3.2.1 主题安装<br>新建一个用以存储博客的文件夹</p>
+<pre><code>hexo init username@github.io</code></pre><p>安装主题，推荐 next， 其它也行，可以自己选选。</p>
+<pre><code>cd username@github.io
+git clone https://github.com/iissnan/hexo-theme-next themes/next</code></pre><p>3.2.2 自定义配置文件<br>打开 username.github.io/_config.yml ，修改以下键值对(注意冒号之后一定要有空格）：</p>
+<pre><code>title: GA-17&apos;s Blog
+subtitle:
+description: Hello World!
+author: GA-17
+language: zh-Hans
+theme: next
+deploy:
+  type: git
+  repo: https://github.com/wenjie710/wenjie710.github.io.git
+  branch: master</code></pre><p>3.2.3 配置完成，写文章！！！<br>在username.github.io/source/_posts下创建你的第一个博客吧，例如，创建一个名为FirstBlog.md的文件，格式用Markdown，注意保存。</p>
+<pre><code>---
+title: My First Blog
+---</code></pre><p>咱的博客搭建完成啦！！</p>
+<p>3.2.4 发布<br>安装hexo-deployer-git自动部署发布工具</p>
+<pre><code>npm install hexo-deployer-git --save</code></pre><p>发布博客</p>
+<pre><code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d
 
-<p>加上SourceMap配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'inline-source-map'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>用inline的时候js.map文件会变成base64的字符串被压缩到main.js里面。会告诉我们哪一行哪一列出错了</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'cheap-inline-source-map'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>用cheap-inline会告诉我们哪一行出错了，不会告诉我们哪一列</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'inline-cheap-module-source-map'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>inline-cheap-module-source-map表示我不仅管业务代码的错误，还管第三方模块代码的错误</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'eval'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>eval是打包最快的一种，但是针对于比较复杂的情况下，eval提示的信息不一定全面</p>
-<p>最佳实践</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'cheap-module-eval-source-map'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这种方式提示的错误比较全，打包速度比较快，</p>
-<p>如果是线上，建议这样</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　mode: <span class="string">'production'</span>,</span><br><span class="line">　　devtool: <span class="string">'cheap-module-source-map'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+# hexo clean 清除缓存
+# hexo g 生成静态页面
+# hexo s 启动服务预览
+# hexo d 开始部署</code></pre><p>如果这是第一次登录，终端会让你输入Github 的邮箱和密码，正确输入后，就会把你的博客上传至Github 了。以后在每次把博客写完后，执行一下这个命令即可。<br>至此，博客搭建完成。进入<a href="https://username.github.io" target="_blank" rel="noopener">https://username.github.io</a> 就能看见自己的博客啦！！！</p>
 
       
     </div>
@@ -390,8 +409,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/28/webpack系列/7webpack中Entry与Output基础配置/" rel="next" title="webpack系列-7webpack中Entry与Output的基础配置">
-                <i class="fa fa-chevron-left"></i> webpack系列-7webpack中Entry与Output的基础配置
+              <a href="/2019/08/28/webpack系列/webpack性能优化/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
               </a>
             
           </div>
@@ -400,8 +419,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/08/28/webpack系列/9webpackDevServer提升开发效率/" rel="prev" title="webpack系列-9webpackDevServer提升开发效率">
-                webpack系列-9webpackDevServer提升开发效率 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/08/29/hexo静态网站/Hexo+NexT 添加分类、标签、关于菜单项/" rel="prev" title="hexo搭建静态网站-Hexo+NexT 添加分类、标签、关于菜单项">
+                hexo搭建静态网站-Hexo+NexT 添加分类、标签、关于菜单项 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

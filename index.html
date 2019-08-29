@@ -190,6 +190,26 @@
         </li>
       
         
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
@@ -218,6 +238,346 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/29/hexo静态网站/Hexo+NexT 添加分类、标签、关于菜单项/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/29/hexo静态网站/Hexo+NexT 添加分类、标签、关于菜单项/" itemprop="url">hexo搭建静态网站-Hexo+NexT 添加分类、标签、关于菜单项</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-29T10:20:09+08:00">
+                2019-08-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/hexo搭建静态网站/" itemprop="url" rel="index">
+                    <span itemprop="name">hexo搭建静态网站</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>极简风格博客 =windows + hexos + github<br>Hexo NexT主题下默认有首页和归档两个菜单，我们还可以开启其他菜单项，比如分类、标签、关于<br>这是这篇教程的成品图</p>
+<p><img src="/images/hexo/2-1.png" alt></p>
+<p>首先打开主题下的配置文件_config.yml，然后搜索menu找到如下配置项，将about、tags、categories前的#号去掉，就开启了关于、标签和分类标签，当然还有其他菜单项也可以开启</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># ---------------------------------------------------------------</span></span><br><span class="line"><span class="comment"># Menu Settings</span></span><br><span class="line"><span class="comment"># ---------------------------------------------------------------</span></span><br><span class="line"> </span><br><span class="line"><span class="comment"># When running the site in a subdirectory (e.g. domain.tld/blog), remove the leading slash from link value (/archives -&gt; archives).</span></span><br><span class="line"><span class="comment"># Usage: `Key: /link/ || icon`</span></span><br><span class="line"><span class="comment"># Key is the name of menu item. If the translation for this item is available, the translated text will be loaded, otherwise the Key name will be used. Key is case-senstive.</span></span><br><span class="line"><span class="comment"># Value before `||` delimiter is the target link.</span></span><br><span class="line"><span class="comment"># Value after `||` delimiter is the name of FontAwesome icon. If icon (with or without delimiter) is not specified, question icon will be loaded.</span></span><br><span class="line"><span class="comment"># External url should start with http:// or https://</span></span><br><span class="line">menu:</span><br><span class="line">  home: / || home</span><br><span class="line">  about: /about/ || user</span><br><span class="line">  tags: /tags/ || tags</span><br><span class="line">  categories: /categories/ || th</span><br><span class="line">  archives: /archives/ || archive</span><br><span class="line">  <span class="comment">#schedule: /schedule/ || calendar</span></span><br><span class="line">  <span class="comment">#sitemap: /sitemap.xml || sitemap</span></span><br></pre></td></tr></table></figure>
+
+<p>重新生成部署后，可以看到新增的菜单项，但是单击后会报如下错误</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Cannot GET /about/</span><br><span class="line">Cannot GET /tags/</span><br><span class="line">Cannot GET /categories/</span><br></pre></td></tr></table></figure>
+
+<p>这是因为你还需运行如下命令新建相关页面</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo new page <span class="string">"about"</span></span><br><span class="line">hexo new page <span class="string">"tags"</span></span><br><span class="line">hexo new page <span class="string">"categories"</span></span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下，会再source文件下创建about、tags、categories文件夹，每个文件夹下还会创建一个index.md文件表示关于、标签页分类页面，编辑这三个MarkDown文件可以自定义这三个页面的内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">D:\hexo\blog&gt;hexo new page <span class="string">"about"</span></span><br><span class="line">INFO  Created: D:\hexo\blog\<span class="built_in">source</span>\about\index.md</span><br><span class="line"> </span><br><span class="line">D:\hexo\blog&gt;hexo new page <span class="string">"tags"</span></span><br><span class="line">INFO  Created: D:\hexo\blog\<span class="built_in">source</span>\tags\index.md</span><br><span class="line"> </span><br><span class="line">D:\hexo\blog&gt;hexo new page <span class="string">"categories"</span></span><br><span class="line">INFO  Created: D:\hexo\blog\<span class="built_in">source</span>\categories\index.md</span><br></pre></td></tr></table></figure>
+
+<p>还差最后一步，打开各页面对应的index.md文件，编辑如下内容，title和date是默认生成的，增加type即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: about</span><br><span class="line">date: 2019-06-25 19:16:17</span><br><span class="line"><span class="built_in">type</span>: <span class="string">"about"</span></span><br><span class="line">---</span><br><span class="line"> </span><br><span class="line">---</span><br><span class="line">title: about</span><br><span class="line">date: 2019-06-25 19:16:17</span><br><span class="line"><span class="built_in">type</span>: <span class="string">"tags"</span></span><br><span class="line">---</span><br><span class="line"> </span><br><span class="line">---</span><br><span class="line">title: about</span><br><span class="line">date: 2019-06-25 19:16:17</span><br><span class="line"><span class="built_in">type</span>: <span class="string">"categories"</span></span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>重新生成和部署即可看到效果</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/29/hexo静态网站/搭建github博客/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/29/hexo静态网站/搭建github博客/" itemprop="url">hexo搭建静态网站-搭建github博客</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-29T10:15:31+08:00">
+                2019-08-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/hexo搭建静态网站/" itemprop="url" rel="index">
+                    <span itemprop="name">hexo搭建静态网站</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>极简风格博客 =windows + hexos + github<br>这是这篇教程的成品图</p>
+<p><img src="/images/hexo/1-1.png" alt></p>
+<p>#博客搭建分为三步：#</p>
+<ul>
+<li>创建github域名及空间</li>
+<li>git，nodejs，hexo下载及安装</li>
+<li>配置环境</li>
+</ul>
+<p>##1.创建github域名及空间<br>进入github官网，注册并登录。<br>登录后，点击右上角的 “+” 号，选择 “new repository” , 会出现以下界面：</p>
+<p><img src="/images/hexo/1-2.png" alt></p>
+<p>在 repository name 中填入 username.github.io 。（username指的是前面owner的用户名，比如我这里应该填 wenjie710.github.io 。）<br>然后点击最下面的create repository 即可。<br>2.安装 git，nodejs，hexo<br>下载地址：<br>git官网下载：<a href="https://git-scm.com/download/win" target="_blank" rel="noopener">https://git-scm.com/download/win</a><br>nodejs官网下载：<a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">https://nodejs.org/en/download/</a><br>以上两个工具都是直接下载的exe文件，点击安装即可。安装完成之后在文件夹中点击鼠标右键会看到下拉菜单中有一个 Git Bash ，这是一个类似于Liunx的终端，在里面可以模拟Linux下的终端进行操作。<br>git 和 nodejs 安装完成之后才能安装hexo。hexo的安装十分简单，只需要在命令提示符（cmd）中输入以下命令即可。</p>
+<pre><code>npm install -g hexo-cli</code></pre><p>3.配置环境<br>3.1 配置ssh<br>打开 Git Bash ，执行下面的命令生成 SSH 访问私钥及公钥。</p>
+<pre><code>ssh-keygen -t rsa -C &quot;email@email.com&quot;</code></pre><p>输入命令回车之后会提示你输入一些东西，不用管。一直回车到底就好了。然后你的 ~/.ssh 文件下就会生成两个文件 id_rsa 和 id_rsa.pub 。</p>
+<p><img src="/images/hexo/1-3.png" alt></p>
+<p>打开你的 Github -&gt; setting -&gt; SSH Keys 。然后点击 New SSH Key 创建一个新的SSH Key。将文件 id_rsa.pub 中的所以内容复制粘贴到 Key 下面。然后使用下面的命令测试是否可以连接上 Github.</p>
+<pre><code>ssh -T git@github.com</code></pre><p>3.2 编写配置，发布博客<br>3.2.1 主题安装<br>新建一个用以存储博客的文件夹</p>
+<pre><code>hexo init username@github.io</code></pre><p>安装主题，推荐 next， 其它也行，可以自己选选。</p>
+<pre><code>cd username@github.io
+git clone https://github.com/iissnan/hexo-theme-next themes/next</code></pre><p>3.2.2 自定义配置文件<br>打开 username.github.io/_config.yml ，修改以下键值对(注意冒号之后一定要有空格）：</p>
+<pre><code>title: GA-17&apos;s Blog
+subtitle:
+description: Hello World!
+author: GA-17
+language: zh-Hans
+theme: next
+deploy:
+  type: git
+  repo: https://github.com/wenjie710/wenjie710.github.io.git
+  branch: master</code></pre><p>3.2.3 配置完成，写文章！！！<br>在username.github.io/source/_posts下创建你的第一个博客吧，例如，创建一个名为FirstBlog.md的文件，格式用Markdown，注意保存。</p>
+<pre><code>---
+title: My First Blog
+---</code></pre><p>咱的博客搭建完成啦！！</p>
+<p>3.2.4 发布<br>安装hexo-deployer-git自动部署发布工具</p>
+<pre><code>npm install hexo-deployer-git --save</code></pre><p>发布博客</p>
+<pre><code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d
+
+# hexo clean 清除缓存
+# hexo g 生成静态页面
+# hexo s 启动服务预览
+# hexo d 开始部署</code></pre><p>如果这是第一次登录，终端会让你输入Github 的邮箱和密码，正确输入后，就会把你的博客上传至Github 了。以后在每次把博客写完后，执行一下这个命令即可。<br>至此，博客搭建完成。进入<a href="https://username.github.io" target="_blank" rel="noopener">https://username.github.io</a> 就能看见自己的博客啦！！！</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -1578,377 +1938,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/15webpack 和 code splitting/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/15webpack 和 code splitting/" itemprop="url">webpack系列-15webpack 和 code splitting</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T15:09:40+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack系列/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack系列</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>webpack的配置项真的是巨多，想完全的能记住是不可能的，所以遇到打包的问题怎么办，首先是打开打包的命令行工具，然后去分析，当你打包的过程开始执行时，他一步一步具体的流程之中哪里出了问题，通过控制台，我们就可以找到这些问题，找到问题后，截取出来，然后到google或者stack overflow上去提问，搜索问题的解决方案，找到后，再去找对应文档上的配置说明，根据文档，再回头去修改我们的配置文件，改的过程中遇到新的问题，再一点一点的去解决。</p>
-<p>接着进入正题。Code Splitting到底是什么？代码分割到底是什么？举个例子。<br>首先我们安装一个包，叫做lodash。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install lodash --save</span><br></pre></td></tr></table></figure>
-
-<p>他是一个功能集合，提供了很多工具方法，可以高性能的比如字符串拼装的一些函数。然后继续写代码</p>
-<p>index.html</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 一般我们习惯用_去代替lodash。</span><br><span class="line">import _ from <span class="string">"lodash"</span>;</span><br><span class="line"></span><br><span class="line">console.log(_.join([<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>], <span class="string">'*'</span>))</span><br></pre></td></tr></table></figure>
-
-<p>其实他引入了一个库，在这里，使用这个库，做了一个字符串链接这样的操作。最终打印的结果应该是a<em>b</em>c这样的字符串。然后我们输入npm run dev-build打包结束后，浏览index.html。发现控制它输出了a<em>b</em>c。所以这个函数就是字符串连接的函数。</p>
-<p>然后我们看到lodash和我们的业务代码都被打包到一个文件中。我们到main.js有1.38M。非常大。工具库和业务逻辑统一打包到main.js里面。这种方式做打包会带来一个潜在的问题。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">第一种方式</span><br><span class="line">假设ladash有1mb，业务逻辑代码1mb。那么main.js 2mb</span><br><span class="line">打包文件会很大，加载时间会很长</span><br><span class="line">当页面业务逻辑发生变化时，又要加载2MB的内容</span><br></pre></td></tr></table></figure>
-
-<p>那么我们需要解决这个问题，在src目录下，我再创建一个文件，叫做lodash.js。然后将lodash的引入放放到lodash.js文件里面</p>
-<p>lodash.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 一般我们习惯用_去代替lodash。</span><br><span class="line">import _ from <span class="string">"lodash"</span>;</span><br><span class="line">window._ = _;</span><br></pre></td></tr></table></figure>
-
-<p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(_.join([<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>], <span class="string">'*'</span>))</span><br></pre></td></tr></table></figure>
-
-<p>webpack.common.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　entry: &#123;</span><br><span class="line">　　　　lodash: <span class="string">'./src/lodash.js'</span>,</span><br><span class="line">　　　　main: <span class="string">'./src/index.js'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>再运行npm run dev-build。发现打包出来两个文件。这个时候lodash就跟index.js分开加载了。之前用户需要加载完2MB的页面才能加载页面。现在我们把main.js分成了两个文件，分别是lodash.js和index.js。这是时候我们去想，</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">第二种方式</span><br><span class="line">main.js被拆成lodash.js，index.js，分别是1mb。</span><br><span class="line">当页面业务逻辑发生变化时，只要加载main.js即可。</span><br></pre></td></tr></table></figure>
-
-<p>这种代码的拆分，就是我们代码的核心概念.CodeSplitting。没有代码拆分完全可以，但是有代码拆分会提升性能。第二种方式是我们自己做的代码分割。不够智能。在webpack里面使用一些插件，可以智能的帮我们做code split。那么我们接下来看webpack这么自动帮我们做</p>
-<p>index.html</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import _ from <span class="string">"lodash"</span>;</span><br><span class="line">console.log(_.join([<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>], <span class="string">'*'</span>))</span><br></pre></td></tr></table></figure>
-
-<p>webpack.common.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　// 优化</span><br><span class="line">　　optimization: &#123;</span><br><span class="line">　　　　// 帮我们做代码分割</span><br><span class="line">　　　　splitChunks: &#123;</span><br><span class="line">　　　　　　chunks: <span class="string">'all'</span></span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后运行npm run dev-build。看运行结果，webpack是怎么帮我们做代码分割的。</p>
-<p><img src="/images/15-1.png" alt><br>打包生成的文件除了main.js。还多出了一个文件，叫做vendors<del>main.js。我们打开main.js，发现里面有index的业务逻辑，但是并没有lodash。再打开vendors</del>main.js。发现他自己把lodash提取出来。我们只做了一个非常简单的配置，webpack自己就知道了当遇到这种公用的类库的时候，自动就打包生成文件。这就是我们webpack的code splitting。所以说代码分割是webpack非常有竞争力的功能。</p>
-<p>当然,webpack里面的代码分割不仅仅可以通过这种配置完成。我们还可以通过另外一种方式进行webpack中的代码分割。之前的那种方式是，index.js的lodash和业务逻辑是同步的。webpack通过分析去做分割。那实际上。我们除了同步的去做代码分割之外，我们还可以异步的去进行加载第三方类库。<br>index.html</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">getComponent</span></span>() &#123;</span><br><span class="line">　　// 异步调用的lodash返回回来后，会放到_这个变量里</span><br><span class="line">　　<span class="built_in">return</span> import(<span class="string">'lodash'</span>).<span class="keyword">then</span>(( &#123;default: _&#125; )=&gt;&#123;</span><br><span class="line">　　　　var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　　　element.innerHTML = _.join([<span class="string">'1'</span>, <span class="string">' '</span>, <span class="string">'2'</span>], <span class="string">'-'</span>);</span><br><span class="line">　　　　<span class="built_in">return</span> element;</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getComponent().<span class="keyword">then</span>(element =&gt; &#123;</span><br><span class="line">　　document.body.appendChild(element);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>然后npm run dev-build。发现会报错<br><img src="/images/15-2.png" alt></p>
-<p>说不支持这种动态import的方式。这个时候我们需要一个webpack的第三方库。帮助我们去支持这种引入方式。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-plugin-dynamic-import-webpack --save-dev</span><br></pre></td></tr></table></figure>
-
-<p>.babelrc</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">　　<span class="string">"presets"</span>: [</span><br><span class="line">　　　　[<span class="string">"@babel/preset-env"</span>,&#123;</span><br><span class="line">　　　　　　<span class="string">"targets"</span>: &#123;</span><br><span class="line">　　　　　　　　<span class="string">"chrome"</span>: <span class="string">"67"</span>,</span><br><span class="line">　　　　　　&#125;,</span><br><span class="line">　　　　　　<span class="string">"useBuiltIns"</span>: <span class="string">"usage"</span>,</span><br><span class="line">　　　　　　<span class="string">"corejs"</span>: 3</span><br><span class="line">　　　　&#125;],</span><br><span class="line">　　　　<span class="string">"@babel/preset-react"</span></span><br><span class="line">　　],</span><br><span class="line">　　<span class="string">"plugins"</span>: [<span class="string">"babel-plugin-dynamic-import-webpack"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后重新的去打包，已经没有问题了。这个时候，我们再打开dist目录。除了main.js，还有一个0.js。main.js只有业务代码。0.js里面打包了lodash。也就是说，webpack在做同步性质的打包的时候，直接上面 import _ from ‘lodash’。然后他会分析代码，自动的分割出lodash。现在代码是异步加载的时候。webpack也会去做代码的分割。</p>
-<p>总结：</p>
-<p>1、代码分割跟webpack无关</p>
-<p>2、所以webpack分割代码有两种方式，一种是同步的方式</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">　　// 帮我们做代码分割</span><br><span class="line">　　splitChunks: &#123;</span><br><span class="line">　　　　chunks: <span class="string">'all'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>靠这个配置。<br>一种是异步的方式，无需做任何配置，会自动进行代码分割。需要额外的安装 babel-plugin-dynamic-import-webpack 支持。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/14webpack中Development和Production模式的区分打包/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/14webpack中Development和Production模式的区分打包/" itemprop="url">webpack系列-14webpack中Development和Production模式的区分打包</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:57:02+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack系列/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack系列</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>当我们在开发一个项目的时候，我们一般用development这个环境进行项目的开发，在这个环境下，webpack使用dev-server，帮我们启用一个服务器，然后这个服务器里面还集成了一些，比如hmr这样的特性，只要我更改了代码，他会帮我们重新打包，然后我们代码的内容会实时的展示在对应的页面上，所以开发环境上，development这样的模式非常的方便，但是一旦我们的代码开发完成了，我们需要把我们的代码打包上线，这个时候主要用刀production模式，那么production模式和development模式差异主要在几个方面。</p>
-<p>首先在开发环境中，source-map他是非常全的，这样的话可以帮助我们快递定位问题，但是在production环境下，代码已经要上线了，这个时候source-map并不那么重要了，这个时候的source-map会更佳简洁一些</p>
-<p>另外一点，在开发环境下，我们的代码不压缩，一旦代码上线，我们希望我们的代码被压缩。</p>
-<p>所以在开发环境下，我们webpack.config.js里面</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mode: <span class="string">'development'</span>,</span><br><span class="line">devtool: <span class="string">'cheap-module-eval-source-map'</span>,</span><br></pre></td></tr></table></figure>
-
-<p>在上线环境下</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mode: <span class="string">'production'</span>,</span><br><span class="line">devtool: <span class="string">'cheap-module-source-map'</span>,</span><br></pre></td></tr></table></figure>
-
-<p>每次开发上线，我们需要不断的去更改webpack.config.js的内容，这样就比较麻烦了，要像解决这个问题，我们这样做，我们给他改一个名字。开发坏境下我们使用webpack.dev.js。线上环境用webpack.prod.js。</p>
-<p>然后在package.json里面配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"dev"</span>: <span class="string">"webpack-dev-server --config webpack.dev.js"</span>,</span><br><span class="line">　　<span class="string">"build"</span>: <span class="string">"webpack --config webpack.prod.js"</span>,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>然后开发环境运行npm run dev。打包运行 npm run build</p>
-<p>我们发现dev和build存在很多相同的代码。比如entry,modules,output。这样就会出现大量重复代码，为了解决这个问题，我们新建一个webpack.common.js。把公共的抽出来，抽出来之后，这个时候直接这样肯定不行，npm run dev就只有webpack.dev.js这里面的文件。我们需要跟它们做一个合并。安装</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install webpack-merge -D</span><br></pre></td></tr></table></figure>
-
-<p>然后webpack.dev.js和webpack.prod.js引入merge模块</p>
-<p>webpack.common.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">const path = require(<span class="string">'path'</span>);</span><br><span class="line">const HtmlWebpackPlugin = require(<span class="string">'html-webpack-plugin'</span>);</span><br><span class="line">const CleanWebpackPlugin = require(<span class="string">'clean-webpack-plugin'</span>);</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">　　// 这个文件要做打包，从哪一个文件开始打包</span><br><span class="line">　　entry: &#123;</span><br><span class="line">　　　　main: <span class="string">'./src/index.js'</span></span><br><span class="line">　　&#125;,</span><br><span class="line">　　// 打包模块不知道该怎么办，就去模块配置里面该怎么办</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　// 规则</span><br><span class="line">　　　　rules: [&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　// 如果你的这个js文件在node_modules里面，就不使用babel-loader了</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">'babel-loader'</span> ,</span><br><span class="line">　　　　&#125;,&#123;</span><br><span class="line">　　　　// 假设是以jpg结尾的，我需要一个load帮助我们去打包</span><br><span class="line">　　　　<span class="built_in">test</span>: /\.jpg|png|gif$/,</span><br><span class="line">　　　　use: &#123;</span><br><span class="line">　　　　　　loader: <span class="string">'url-loader'</span>,</span><br><span class="line">　　　　　　options: &#123;</span><br><span class="line">　　　　　　　　// 原来是什么名字，打包好还是什么名字</span><br><span class="line">　　　　　　　　name: <span class="string">'[name]_[hash].[ext]'</span>,</span><br><span class="line">　　　　　　　　// 当我碰到jpg,png,gif的时候，打包到根目录下到imgs文件夹里</span><br><span class="line">　　　　　　　　outputPath: <span class="string">'imgs/'</span>,</span><br><span class="line">　　　　　　　　<span class="built_in">limit</span>: 2048</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;,&#123;</span><br><span class="line">　　　　<span class="built_in">test</span>: /\.eot|ttf|svg|woff$/,</span><br><span class="line">　　　　use: &#123;</span><br><span class="line">　　　　　　loader: <span class="string">'file-loader'</span></span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;,&#123;</span><br><span class="line">　　　　// 假设是以css结尾的，我需要一个load帮助我们去打包</span><br><span class="line">　　　　<span class="built_in">test</span>: /\.scss$/,</span><br><span class="line">　　　　// 需要两个loader，所以不能是个对象，需要是个数组</span><br><span class="line">　　　　use: [</span><br><span class="line">　　　　　　<span class="string">'style-loader'</span>,</span><br><span class="line">　　　　　　&#123;</span><br><span class="line">　　　　　　　　loader: <span class="string">'css-loader'</span>,</span><br><span class="line">　　　　　　　　options: &#123;</span><br><span class="line">　　　　　　　　　　importLoaders: 2</span><br><span class="line">　　　　　　　　&#125;</span><br><span class="line">　　　　　　&#125;,</span><br><span class="line">　　　　　　<span class="string">'sass-loader'</span>,</span><br><span class="line">　　　　　　<span class="string">'postcss-loader'</span></span><br><span class="line">　　　　]</span><br><span class="line">　　&#125;,&#123;</span><br><span class="line">　　　　<span class="built_in">test</span>: /\.css$/,</span><br><span class="line">　　　　use: [</span><br><span class="line">　　　　　　<span class="string">'style-loader'</span>,</span><br><span class="line">　　　　　　<span class="string">'css-loader'</span>,</span><br><span class="line">　　　　　　<span class="string">'postcss-loader'</span></span><br><span class="line">　　　　]</span><br><span class="line">　　&#125;]&#125;,</span><br><span class="line">　　// HtmlWebpackPlugin会在打包结束后，自动生成一个html文件，并把打包生成的js自动引入到这个html文件中</span><br><span class="line">　　plugins: [</span><br><span class="line">　　　　new HtmlWebpackPlugin(&#123;</span><br><span class="line">　　　　　　template: <span class="string">'src/index.html'</span></span><br><span class="line">　　　　&#125;),</span><br><span class="line">　　　　new CleanWebpackPlugin()</span><br><span class="line">　　],</span><br><span class="line">　　// 打包文件要放到哪里去，就配置在output这个对象里</span><br><span class="line">　　output: &#123;</span><br><span class="line">　　　　// 打包好的文件名字</span><br><span class="line">　　　　filename: <span class="string">'[name].js'</span>,</span><br><span class="line">　　　　/**</span><br><span class="line">　　　　* 打包出的文件要把他放到哪一个文件夹下，path后面要放一个绝对路径</span><br><span class="line">　　　　* __dirname指的是webpack.config.js所在的当前目录的这个路径</span><br><span class="line">　　　　* 下面这个结合就是一个绝对路径</span><br><span class="line">　　　　*/</span><br><span class="line">　　　　path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>webpack.dev.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">const webpack = require(<span class="string">'webpack'</span>);</span><br><span class="line">const merge = require(<span class="string">'webpack-merge'</span>);</span><br><span class="line">const commonConfig = require(<span class="string">'./webpack.common.js'</span>);</span><br><span class="line"></span><br><span class="line">const devConfig = &#123;</span><br><span class="line">　　/**</span><br><span class="line">　　* 打包模式，不配置会警告，但底层还是会去配置默认的，就是production</span><br><span class="line">　　* production: 压缩模式，被压缩的代码</span><br><span class="line">　　* development: 开发模式，不压缩的代码</span><br><span class="line">　　*</span><br><span class="line">　　*/</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　/**</span><br><span class="line">　　* cheap:在生成<span class="built_in">source</span>-map的时候可以不带列信息，只带行信息就可以了</span><br><span class="line">　　* 同时不要对我load代码的<span class="built_in">source</span>-map。只要对我的业务代码进行<span class="built_in">source</span>-map生成</span><br><span class="line">　　* 这种方式提示的错误比较全，打包速度比较快，</span><br><span class="line">　　*/</span><br><span class="line">　　devtool: <span class="string">'cheap-module-eval-source-map'</span>,</span><br><span class="line"> </span><br><span class="line">　　// 起个服务器</span><br><span class="line">　　devServer: &#123;</span><br><span class="line">　　　　// 这个意思是服务器要生成在哪个文件夹下</span><br><span class="line">　　　　contentBase:<span class="string">'./dist'</span>,</span><br><span class="line">　　　　// 启动的时候自动打开浏览器，然后自动访问这个服务器地址</span><br><span class="line">　　　　open:<span class="literal">true</span>,</span><br><span class="line">　　　　// 开启Hot Module Replacement</span><br><span class="line">　　　　hot: <span class="literal">true</span></span><br><span class="line">　　&#125;,</span><br><span class="line">　　// HtmlWebpackPlugin会在打包结束后，自动生成一个html文件，并把打包生成的js自动引入到这个html文件中</span><br><span class="line">　　plugins: [</span><br><span class="line">　　　　new webpack.HotModuleReplacementPlugin()</span><br><span class="line">　　]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module.exports = merge(commonConfig, devConfig);</span><br></pre></td></tr></table></figure>
-
-<p>webpack.prod.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">const merge = require(<span class="string">'webpack-merge'</span>);</span><br><span class="line">const commonConfig = require(<span class="string">'./webpack.common.js'</span>);</span><br><span class="line"></span><br><span class="line">const prodConfig = &#123;</span><br><span class="line">　　/**</span><br><span class="line">　　* 打包模式，不配置会警告，但底层还是会去配置默认的，就是production</span><br><span class="line">　　* production: 压缩模式，被压缩的代码</span><br><span class="line">　　* development: 开发模式，不压缩的代码</span><br><span class="line">　　*</span><br><span class="line">　　*/</span><br><span class="line">　　mode: <span class="string">'production'</span>,</span><br><span class="line">　　/**</span><br><span class="line">　　* cheap:在生成<span class="built_in">source</span>-map的时候可以不带列信息，只带行信息就可以了</span><br><span class="line">　　* 同时不要对我load代码的<span class="built_in">source</span>-map。只要对我的业务代码进行<span class="built_in">source</span>-map生成</span><br><span class="line">　　* 这种方式提示的错误比较全，打包速度比较快，</span><br><span class="line">　　*/</span><br><span class="line">　　devtool: <span class="string">'cheap-module-source-map'</span></span><br><span class="line">&#125;</span><br><span class="line">module.exports = merge(commonConfig, prodConfig);</span><br></pre></td></tr></table></figure>
-
-<p>这样运行npm run dev, npm run build就没有问题了。</p>
-<p>有时候第三方模块会给webpack进行一个整合，都放到build目录里。这两个时候package.json需要进行一个更改</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"dev"</span>: <span class="string">"webpack-dev-server --config ./build/webpack.dev.js"</span>,</span><br><span class="line">　　<span class="string">"build"</span>: <span class="string">"webpack --config ./build/webpack.prod.js"</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1999,7 +1988,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2010,7 +1999,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
