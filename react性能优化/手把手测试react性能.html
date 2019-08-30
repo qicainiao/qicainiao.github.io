@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在最近的工作中我们发现开发一个已经持续开发了一年的React应用在IE11浏览器和一个老旧的安卓设备上工作不是特别流畅，这引起了我们的注意，决定抽出一些精力对代码做一些优化。虽然我们在日常开发中已经有意识的去写高质量、高效率的代码，但是由于开发人员的计算机性能都很好并且经常调试使用的chrome浏览器有一个强大的V8引擎所以性能问题还是经常会被忽略。 我是如何用React Profile发现问题，">
+<meta property="og:type" content="website">
+<meta property="og:title" content="手把手测试react性能">
+<meta property="og:url" content="http://yoursite.com/react性能优化/手把手测试react性能.html">
+<meta property="og:site_name" content="qicainiao&#39;s Blog">
+<meta property="og:description" content="在最近的工作中我们发现开发一个已经持续开发了一年的React应用在IE11浏览器和一个老旧的安卓设备上工作不是特别流畅，这引起了我们的注意，决定抽出一些精力对代码做一些优化。虽然我们在日常开发中已经有意识的去写高质量、高效率的代码，但是由于开发人员的计算机性能都很好并且经常调试使用的chrome浏览器有一个强大的V8引擎所以性能问题还是经常会被忽略。 我是如何用React Profile发现问题，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/react/1.png">
+<meta property="og:image" content="http://yoursite.com/images/react/2.gif">
+<meta property="og:image" content="http://yoursite.com/images/react/3.png">
+<meta property="og:image" content="http://yoursite.com/images/react/4.gif">
+<meta property="og:image" content="http://yoursite.com/images/react/5.png">
+<meta property="og:image" content="http://yoursite.com/images/react/6.png">
+<meta property="og:image" content="http://yoursite.com/images/react/7.png">
+<meta property="og:image" content="http://yoursite.com/images/react/9.gif">
+<meta property="og:image" content="http://yoursite.com/images/react/10.png">
+<meta property="og:image" content="http://yoursite.com/images/react/11.gif">
+<meta property="og:image" content="http://yoursite.com/images/react/11.png">
+<meta property="og:image" content="http://yoursite.com/images/react/12.gif">
+<meta property="og:image" content="http://yoursite.com/react性能优化/.../images/13.png">
+<meta property="og:updated_time" content="2019-08-30T09:33:26.420Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="手把手测试react性能">
+<meta name="twitter:description" content="在最近的工作中我们发现开发一个已经持续开发了一年的React应用在IE11浏览器和一个老旧的安卓设备上工作不是特别流畅，这引起了我们的注意，决定抽出一些精力对代码做一些优化。虽然我们在日常开发中已经有意识的去写高质量、高效率的代码，但是由于开发人员的计算机性能都很好并且经常调试使用的chrome浏览器有一个强大的V8引擎所以性能问题还是经常会被忽略。 我是如何用React Profile发现问题，">
+<meta name="twitter:image" content="http://yoursite.com/images/react/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/react性能优化/手把手测试react性能.html">
+
+
+
+
+
+  <title>手把手测试react性能 | qicainiao's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">qicainiao's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Geek Spirit</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline">手把手测试react性能</h1>
+
+
+
+</header>
+
+      
+      
+      
+      <div class="post-body">
+        
+        
+          <p>在最近的工作中我们发现开发一个已经持续开发了一年的React应用在IE11浏览器和一个老旧的安卓设备上工作不是特别流畅，这引起了我们的注意，决定抽出一些精力对代码做一些优化。虽然我们在日常开发中已经有意识的去写高质量、高效率的代码，但是由于开发人员的计算机性能都很好并且经常调试使用的chrome浏览器有一个强大的V8引擎所以性能问题还是经常会被忽略。</p>
+<p>我是如何用React Profile发现问题，并分析解决问题的。</p>
+<h2 id="分析工具"><a href="#分析工具" class="headerlink" title="分析工具"></a>分析工具</h2><p>性能问题通常是在手动测试或调试时直观感受到的，例如做某些操作时应用出现卡顿或是移动设备发热的情况。但是在这种情况下不太容找到问题到底出在哪些组件中，很多时候新添加的代码并不一定是问题的原因有可能只是个诱因。这时分析工具就非常有用了，可以帮助我们定位问题点。在这篇文章我用React+Redux的Todos例子作为演示代码。</p>
+<h3 id="React-DevTools"><a href="#React-DevTools" class="headerlink" title="React DevTools"></a>React DevTools</h3><p>这应该是每个React开发者必备工具</p>
+<h3 id="Highlight-Updates"><a href="#Highlight-Updates" class="headerlink" title="Highlight Updates"></a>Highlight Updates</h3><p>这是DevTools里提供的一个功能，在我们操作React App时可以高亮重新渲染的组件。</p>
+<p>打开高亮功能</p>
+<p><img src="/images/react/1.png" alt></p>
+<p>使用<br>打开之后当操作App时重新渲染的组件会有一个高亮的边框，边框为蓝色时说明渲染时间短，黄色说明时间有点长，如果时间很长会是红色就要注意了。这个工具会给我们一个直观的显示哪些组件更新了。</p>
+<p><img src="/images/react/2.gif" alt></p>
+<h3 id="React-Profiler"><a href="#React-Profiler" class="headerlink" title="React Profiler"></a>React Profiler</h3><p>这个工具包含在React DevTools中，适用于react 16.5及之后版本。如果你的项目版本合适，会在DevTools里看到Profiler页。</p>
+<p><img src="/images/react/3.png" alt></p>
+<h2 id="分析问题"><a href="#分析问题" class="headerlink" title="分析问题"></a>分析问题</h2><p>使用工具<br>点Profiler右上角的圆形按钮开始记录分析数据，然后在todos上添加3个新的todo项，完成操作之后再点圆形按钮结束录制。</p>
+<p>从App上可以看到，每当添加新的todo项时，整个todo列表和每一个todo项都重新渲染了。 </p>
+<p><img src="/images/react/4.gif" alt></p>
+<p>然后看看Profiler中的数据。</p>
+<p><img src="/images/react/5.png" alt></p>
+<p>React渲染组件主要分两个阶段：渲染（Render）和提交（commit）。渲染阶段react执行组件中的render方法得到渲染结果也就是虚拟DOM，然后和上一次渲染的结果比较找出差异。提交阶段，react会添加、更新或删除真实DOM，把虚拟DOM中的内容渲染到页面中。</p>
+<p><img src="/images/react/6.png" alt></p>
+<p>右上角的1/3表示在录制过程中一共有3次提交，图中的每一个小条代表一次提交，黑色的是当前选中的提交，点击不同的条可以选择不同的提交。小条的高度和颜色反应了提交执行的时间，黄色高的条比蓝色条用的时间长。</p>
+<p><img src="/images/react/7.png" alt></p>
+<p>这部分是火焰图🔥，每一个小块对应一个组件，块的长度、颜色和组件渲染所用时间有关，黄色长的块说明消耗的时间更长。灰色说明这个组件在这次提交中没有重新渲染。这里显示的组件渲染时间是它自身渲染的时间和它所有子组件渲染时间的综合。</p>
+<p><img src="/images/react/9.gif" alt></p>
+<p>找到花费时间长的组件</p>
+<p><img src="/images/react/10.png" alt></p>
+<p>为了让问题更明显我加了30个todo到列表中，从图中很容易发现大部分时间都花在TodoList这个组件上。这个图里有一个容易产生困惑的地方就是Total Renders，这个数字代表的是这个组件在整个App生命周期里被渲染的次数，而不是在这次commit中被渲染的次数。</p>
+<p>和之前只有3个todo时相比较，TodoList这个组件的渲染时间随着todo数量的增加而增加，因为每次渲染列表时每个todo都重新渲染了。而这些渲染并不是必要，因为每个新todo都是添加到列表末尾，之前的todo位置和内容都没有变化应该可以不再渲染。</p>
+<p><img src="/images/react/11.gif" alt></p>
+<p>点击第一个todo组件，然后切换不同的commit发现todo的props一直没有变化，这也证明了我们之前的想法是正确的。</p>
+<h2 id="改进方法"><a href="#改进方法" class="headerlink" title="改进方法"></a>改进方法</h2><p>使用React.PureComponent或React.memo()避免不必要的组件重渲染<br>React.PureComponent和React.Component类似，但是React.PureComponent在shouldComponentUpdate()中对props和state做了一个浅比较，如果props和state没有变化则不渲染组件。</p>
+<p>React.memo()是16.8版本加入的新功能，为使用函数定义的组件提供了类似PureComponent的功能。</p>
+<p>本例中的Todo组件使用函数方式定义的，所以把最后一行使用React.memo()重写为 export default React.memo(Todo)</p>
+<p>重写后的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import React from &apos;react&apos;</span><br><span class="line">import PropTypes from &apos;prop-types&apos;</span><br><span class="line"></span><br><span class="line">const Todo = (&#123; onClick, completed, text &#125;) =&gt; (</span><br><span class="line">  &lt;li</span><br><span class="line">    onClick=&#123;onClick&#125;</span><br><span class="line">    style=&#123;&#123;</span><br><span class="line">      textDecoration: completed ? &apos;line-through&apos; : &apos;none&apos;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">  &gt;</span><br><span class="line">    &#123;text&#125;</span><br><span class="line">  &lt;/li&gt;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">Todo.propTypes = &#123;</span><br><span class="line">  onClick: PropTypes.func.isRequired,</span><br><span class="line">  completed: PropTypes.bool.isRequired,</span><br><span class="line">  text: PropTypes.string.isRequired</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default React.memo(Todo);</span><br></pre></td></tr></table></figure>
+
+<p>改过之后重新录制分析数据再来看看，</p>
+<p><img src="/images/react/11.png" alt></p>
+<p>嗯，并没有什么变化，再次看todo组件的分析数据。<br><img src="/images/react/12.gif" alt></p>
+<p>通过比较两次commit，todo的props看上去没有变化，而且todo也没有state。不过进一步观察，props中completed, id, text都是原始类型，我们可以确定他们是没变的。onClick不同，这是一个函数，它是否变化同定义的方式有关。</p>
+<p>通过查看代码，发现onClick是一个inline的箭头函数，问题是应该出在这里。</p>
+<p>TodoList.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const TodoList = (&#123; todos, toggleTodo &#125;) =&gt; (</span><br><span class="line">  &lt;ul&gt;</span><br><span class="line">    &#123;todos.map(todo =&gt;</span><br><span class="line">      &lt;Todo</span><br><span class="line">        key=&#123;todo.id&#125;</span><br><span class="line">        &#123;...todo&#125;</span><br><span class="line">        onClick=&#123;() =&gt; toggleTodo(todo.id)&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    )&#125;</span><br><span class="line">  &lt;/ul&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>不要使用inline定义的方法或Object为props传值<br>修改后的代码如下：</p>
+<p>TodoList.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const TodoList = (&#123; todos, toggleTodo &#125;) =&gt; (</span><br><span class="line">  &lt;ul&gt;</span><br><span class="line">    &#123;todos.map(todo =&gt;</span><br><span class="line">      &lt;Todo</span><br><span class="line">        key=&#123;todo.id&#125;</span><br><span class="line">        &#123;...todo&#125;</span><br><span class="line">        onClick=&#123;toggleTodo&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    )&#125;</span><br><span class="line">  &lt;/ul&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>把原先的inline方法去掉，改为直接把toggleTodo传给Todo。</p>
+<p>Todo.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">const Todo = (&#123; onClick, id, completed, text &#125;) =&gt; &#123;</span><br><span class="line">  function clickHandler() &#123;</span><br><span class="line">    onClick(id)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return (</span><br><span class="line">    &lt;li</span><br><span class="line">      onClick=&#123;clickHandler&#125;</span><br><span class="line">      style=&#123;&#123;</span><br><span class="line">        textDecoration: completed ? &apos;line-through&apos; : &apos;none&apos;</span><br><span class="line">      &#125;&#125;</span><br><span class="line">    &gt;</span><br><span class="line">      &#123;text&#125;</span><br><span class="line">    &lt;/li&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在Todo.js中定义了一个clickHandler方法，这样todo方法每次重新运行时clickHandler都不会变。</p>
+<p><img src=".../images/13.png" alt></p>
+<p>新的分析数据中可以看到前面的todo组件都是灰色说明没有重新渲染，只有最后一个新加的todo被渲染了。</p>
+
+        
+      </div>
+      
+      
+      
+    </div>
+    
+    
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">qicainiao</p>
+              <p class="site-description motion-element" itemprop="description">Geek Spirit</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#分析工具"><span class="nav-number">1.</span> <span class="nav-text">分析工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#React-DevTools"><span class="nav-number">1.1.</span> <span class="nav-text">React DevTools</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Highlight-Updates"><span class="nav-number">1.2.</span> <span class="nav-text">Highlight Updates</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#React-Profiler"><span class="nav-number">1.3.</span> <span class="nav-text">React Profiler</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析问题"><span class="nav-number">2.</span> <span class="nav-text">分析问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进方法"><span class="nav-number">3.</span> <span class="nav-text">改进方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qicainiao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
