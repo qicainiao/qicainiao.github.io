@@ -80,9 +80,9 @@
 
 
 <meta name="description" content="在最近的工作中我们发现开发一个已经持续开发了一年的React应用在IE11浏览器和一个老旧的安卓设备上工作不是特别流畅，这引起了我们的注意，决定抽出一些精力对代码做一些优化。虽然我们在日常开发中已经有意识的去写高质量、高效率的代码，但是由于开发人员的计算机性能都很好并且经常调试使用的chrome浏览器有一个强大的V8引擎所以性能问题还是经常会被忽略。 我是如何用React Profile发现问题，">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
 <meta property="og:title" content="手把手测试react性能">
-<meta property="og:url" content="http://yoursite.com/react性能优化/手把手测试react性能.html">
+<meta property="og:url" content="http://yoursite.com/2019/08/30/react性能优化/手把手测试react性能/index.html">
 <meta property="og:site_name" content="qicainiao&#39;s Blog">
 <meta property="og:description" content="在最近的工作中我们发现开发一个已经持续开发了一年的React应用在IE11浏览器和一个老旧的安卓设备上工作不是特别流畅，这引起了我们的注意，决定抽出一些精力对代码做一些优化。虽然我们在日常开发中已经有意识的去写高质量、高效率的代码，但是由于开发人员的计算机性能都很好并且经常调试使用的chrome浏览器有一个强大的V8引擎所以性能问题还是经常会被忽略。 我是如何用React Profile发现问题，">
 <meta property="og:locale" content="zh-Hans">
@@ -98,7 +98,7 @@
 <meta property="og:image" content="http://yoursite.com/images/react/11.gif">
 <meta property="og:image" content="http://yoursite.com/images/react/11.png">
 <meta property="og:image" content="http://yoursite.com/images/react/12.gif">
-<meta property="og:image" content="http://yoursite.com/react性能优化/.../images/13.png">
+<meta property="og:image" content="http://yoursite.com/2019/08/30/react性能优化/手把手测试react性能/.../images/13.png">
 <meta property="og:updated_time" content="2019-08-30T09:33:26.420Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="手把手测试react性能">
@@ -133,7 +133,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/react性能优化/手把手测试react性能.html">
+  <link rel="canonical" href="http://yoursite.com/2019/08/30/react性能优化/手把手测试react性能/">
 
 
 
@@ -244,24 +244,108 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/30/react性能优化/手把手测试react性能/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">手把手测试react性能</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <p>在最近的工作中我们发现开发一个已经持续开发了一年的React应用在IE11浏览器和一个老旧的安卓设备上工作不是特别流畅，这引起了我们的注意，决定抽出一些精力对代码做一些优化。虽然我们在日常开发中已经有意识的去写高质量、高效率的代码，但是由于开发人员的计算机性能都很好并且经常调试使用的chrome浏览器有一个强大的V8引擎所以性能问题还是经常会被忽略。</p>
+          <h1 class="post-title" itemprop="name headline">手把手测试react性能</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-30T17:19:27+08:00">
+                2019-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/react性能优化/" itemprop="url" rel="index">
+                    <span itemprop="name">react性能优化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在最近的工作中我们发现开发一个已经持续开发了一年的React应用在IE11浏览器和一个老旧的安卓设备上工作不是特别流畅，这引起了我们的注意，决定抽出一些精力对代码做一些优化。虽然我们在日常开发中已经有意识的去写高质量、高效率的代码，但是由于开发人员的计算机性能都很好并且经常调试使用的chrome浏览器有一个强大的V8引擎所以性能问题还是经常会被忽略。</p>
 <p>我是如何用React Profile发现问题，并分析解决问题的。</p>
 <h2 id="分析工具"><a href="#分析工具" class="headerlink" title="分析工具"></a>分析工具</h2><p>性能问题通常是在手动测试或调试时直观感受到的，例如做某些操作时应用出现卡顿或是移动设备发热的情况。但是在这种情况下不太容找到问题到底出在哪些组件中，很多时候新添加的代码并不一定是问题的原因有可能只是个诱因。这时分析工具就非常有用了，可以帮助我们定位问题点。在这篇文章我用React+Redux的Todos例子作为演示代码。</p>
 <h3 id="React-DevTools"><a href="#React-DevTools" class="headerlink" title="React DevTools"></a>React DevTools</h3><p>这应该是每个React开发者必备工具</p>
@@ -315,15 +399,57 @@
 <p><img src=".../images/13.png" alt></p>
 <p>新的分析数据中可以看到前面的todo组件都是灰色说明没有重新渲染，只有最后一个新加的todo被渲染了。</p>
 
-        
-      </div>
-      
-      
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/30/react性能优化/react性能优化1/" rel="next" title="react性能优化一">
+                <i class="fa fa-chevron-left"></i> react性能优化一
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -381,7 +507,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -392,7 +518,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

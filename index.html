@@ -242,6 +242,354 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/30/react性能优化/手把手测试react性能/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/30/react性能优化/手把手测试react性能/" itemprop="url">手把手测试react性能</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-30T17:19:27+08:00">
+                2019-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/react性能优化/" itemprop="url" rel="index">
+                    <span itemprop="name">react性能优化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在最近的工作中我们发现开发一个已经持续开发了一年的React应用在IE11浏览器和一个老旧的安卓设备上工作不是特别流畅，这引起了我们的注意，决定抽出一些精力对代码做一些优化。虽然我们在日常开发中已经有意识的去写高质量、高效率的代码，但是由于开发人员的计算机性能都很好并且经常调试使用的chrome浏览器有一个强大的V8引擎所以性能问题还是经常会被忽略。</p>
+<p>我是如何用React Profile发现问题，并分析解决问题的。</p>
+<h2 id="分析工具"><a href="#分析工具" class="headerlink" title="分析工具"></a>分析工具</h2><p>性能问题通常是在手动测试或调试时直观感受到的，例如做某些操作时应用出现卡顿或是移动设备发热的情况。但是在这种情况下不太容找到问题到底出在哪些组件中，很多时候新添加的代码并不一定是问题的原因有可能只是个诱因。这时分析工具就非常有用了，可以帮助我们定位问题点。在这篇文章我用React+Redux的Todos例子作为演示代码。</p>
+<h3 id="React-DevTools"><a href="#React-DevTools" class="headerlink" title="React DevTools"></a>React DevTools</h3><p>这应该是每个React开发者必备工具</p>
+<h3 id="Highlight-Updates"><a href="#Highlight-Updates" class="headerlink" title="Highlight Updates"></a>Highlight Updates</h3><p>这是DevTools里提供的一个功能，在我们操作React App时可以高亮重新渲染的组件。</p>
+<p>打开高亮功能</p>
+<p><img src="/images/react/1.png" alt></p>
+<p>使用<br>打开之后当操作App时重新渲染的组件会有一个高亮的边框，边框为蓝色时说明渲染时间短，黄色说明时间有点长，如果时间很长会是红色就要注意了。这个工具会给我们一个直观的显示哪些组件更新了。</p>
+<p><img src="/images/react/2.gif" alt></p>
+<h3 id="React-Profiler"><a href="#React-Profiler" class="headerlink" title="React Profiler"></a>React Profiler</h3><p>这个工具包含在React DevTools中，适用于react 16.5及之后版本。如果你的项目版本合适，会在DevTools里看到Profiler页。</p>
+<p><img src="/images/react/3.png" alt></p>
+<h2 id="分析问题"><a href="#分析问题" class="headerlink" title="分析问题"></a>分析问题</h2><p>使用工具<br>点Profiler右上角的圆形按钮开始记录分析数据，然后在todos上添加3个新的todo项，完成操作之后再点圆形按钮结束录制。</p>
+<p>从App上可以看到，每当添加新的todo项时，整个todo列表和每一个todo项都重新渲染了。 </p>
+<p><img src="/images/react/4.gif" alt></p>
+<p>然后看看Profiler中的数据。</p>
+<p><img src="/images/react/5.png" alt></p>
+<p>React渲染组件主要分两个阶段：渲染（Render）和提交（commit）。渲染阶段react执行组件中的render方法得到渲染结果也就是虚拟DOM，然后和上一次渲染的结果比较找出差异。提交阶段，react会添加、更新或删除真实DOM，把虚拟DOM中的内容渲染到页面中。</p>
+<p><img src="/images/react/6.png" alt></p>
+<p>右上角的1/3表示在录制过程中一共有3次提交，图中的每一个小条代表一次提交，黑色的是当前选中的提交，点击不同的条可以选择不同的提交。小条的高度和颜色反应了提交执行的时间，黄色高的条比蓝色条用的时间长。</p>
+<p><img src="/images/react/7.png" alt></p>
+<p>这部分是火焰图🔥，每一个小块对应一个组件，块的长度、颜色和组件渲染所用时间有关，黄色长的块说明消耗的时间更长。灰色说明这个组件在这次提交中没有重新渲染。这里显示的组件渲染时间是它自身渲染的时间和它所有子组件渲染时间的综合。</p>
+<p><img src="/images/react/9.gif" alt></p>
+<p>找到花费时间长的组件</p>
+<p><img src="/images/react/10.png" alt></p>
+<p>为了让问题更明显我加了30个todo到列表中，从图中很容易发现大部分时间都花在TodoList这个组件上。这个图里有一个容易产生困惑的地方就是Total Renders，这个数字代表的是这个组件在整个App生命周期里被渲染的次数，而不是在这次commit中被渲染的次数。</p>
+<p>和之前只有3个todo时相比较，TodoList这个组件的渲染时间随着todo数量的增加而增加，因为每次渲染列表时每个todo都重新渲染了。而这些渲染并不是必要，因为每个新todo都是添加到列表末尾，之前的todo位置和内容都没有变化应该可以不再渲染。</p>
+<p><img src="/images/react/11.gif" alt></p>
+<p>点击第一个todo组件，然后切换不同的commit发现todo的props一直没有变化，这也证明了我们之前的想法是正确的。</p>
+<h2 id="改进方法"><a href="#改进方法" class="headerlink" title="改进方法"></a>改进方法</h2><p>使用React.PureComponent或React.memo()避免不必要的组件重渲染<br>React.PureComponent和React.Component类似，但是React.PureComponent在shouldComponentUpdate()中对props和state做了一个浅比较，如果props和state没有变化则不渲染组件。</p>
+<p>React.memo()是16.8版本加入的新功能，为使用函数定义的组件提供了类似PureComponent的功能。</p>
+<p>本例中的Todo组件使用函数方式定义的，所以把最后一行使用React.memo()重写为 export default React.memo(Todo)</p>
+<p>重写后的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import React from &apos;react&apos;</span><br><span class="line">import PropTypes from &apos;prop-types&apos;</span><br><span class="line"></span><br><span class="line">const Todo = (&#123; onClick, completed, text &#125;) =&gt; (</span><br><span class="line">  &lt;li</span><br><span class="line">    onClick=&#123;onClick&#125;</span><br><span class="line">    style=&#123;&#123;</span><br><span class="line">      textDecoration: completed ? &apos;line-through&apos; : &apos;none&apos;</span><br><span class="line">    &#125;&#125;</span><br><span class="line">  &gt;</span><br><span class="line">    &#123;text&#125;</span><br><span class="line">  &lt;/li&gt;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">Todo.propTypes = &#123;</span><br><span class="line">  onClick: PropTypes.func.isRequired,</span><br><span class="line">  completed: PropTypes.bool.isRequired,</span><br><span class="line">  text: PropTypes.string.isRequired</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default React.memo(Todo);</span><br></pre></td></tr></table></figure>
+
+<p>改过之后重新录制分析数据再来看看，</p>
+<p><img src="/images/react/11.png" alt></p>
+<p>嗯，并没有什么变化，再次看todo组件的分析数据。<br><img src="/images/react/12.gif" alt></p>
+<p>通过比较两次commit，todo的props看上去没有变化，而且todo也没有state。不过进一步观察，props中completed, id, text都是原始类型，我们可以确定他们是没变的。onClick不同，这是一个函数，它是否变化同定义的方式有关。</p>
+<p>通过查看代码，发现onClick是一个inline的箭头函数，问题是应该出在这里。</p>
+<p>TodoList.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const TodoList = (&#123; todos, toggleTodo &#125;) =&gt; (</span><br><span class="line">  &lt;ul&gt;</span><br><span class="line">    &#123;todos.map(todo =&gt;</span><br><span class="line">      &lt;Todo</span><br><span class="line">        key=&#123;todo.id&#125;</span><br><span class="line">        &#123;...todo&#125;</span><br><span class="line">        onClick=&#123;() =&gt; toggleTodo(todo.id)&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    )&#125;</span><br><span class="line">  &lt;/ul&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>不要使用inline定义的方法或Object为props传值<br>修改后的代码如下：</p>
+<p>TodoList.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">const TodoList = (&#123; todos, toggleTodo &#125;) =&gt; (</span><br><span class="line">  &lt;ul&gt;</span><br><span class="line">    &#123;todos.map(todo =&gt;</span><br><span class="line">      &lt;Todo</span><br><span class="line">        key=&#123;todo.id&#125;</span><br><span class="line">        &#123;...todo&#125;</span><br><span class="line">        onClick=&#123;toggleTodo&#125;</span><br><span class="line">      /&gt;</span><br><span class="line">    )&#125;</span><br><span class="line">  &lt;/ul&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>把原先的inline方法去掉，改为直接把toggleTodo传给Todo。</p>
+<p>Todo.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">const Todo = (&#123; onClick, id, completed, text &#125;) =&gt; &#123;</span><br><span class="line">  function clickHandler() &#123;</span><br><span class="line">    onClick(id)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return (</span><br><span class="line">    &lt;li</span><br><span class="line">      onClick=&#123;clickHandler&#125;</span><br><span class="line">      style=&#123;&#123;</span><br><span class="line">        textDecoration: completed ? &apos;line-through&apos; : &apos;none&apos;</span><br><span class="line">      &#125;&#125;</span><br><span class="line">    &gt;</span><br><span class="line">      &#123;text&#125;</span><br><span class="line">    &lt;/li&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在Todo.js中定义了一个clickHandler方法，这样todo方法每次重新运行时clickHandler都不会变。</p>
+<p><img src=".../images/13.png" alt></p>
+<p>新的分析数据中可以看到前面的todo组件都是灰色说明没有重新渲染，只有最后一个新加的todo被渲染了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/30/react性能优化/react性能优化1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/30/react性能优化/react性能优化1/" itemprop="url">react性能优化一</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-30T17:05:59+08:00">
+                2019-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/react性能优化/" itemprop="url" rel="index">
+                    <span itemprop="name">react性能优化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+<h2 id="props尽量只传需要的数据，避免多余的更新"><a href="#props尽量只传需要的数据，避免多余的更新" class="headerlink" title="props尽量只传需要的数据，避免多余的更新"></a>props尽量只传需要的数据，避免多余的更新</h2><h2 id="组件尽量解耦，比如一个input-list组建，可以将list分成一个PureComponent，只在list数据变化是更新"><a href="#组件尽量解耦，比如一个input-list组建，可以将list分成一个PureComponent，只在list数据变化是更新" class="headerlink" title="组件尽量解耦，比如一个input+list组建，可以将list分成一个PureComponent，只在list数据变化是更新"></a>组件尽量解耦，比如一个input+list组建，可以将list分成一个PureComponent，只在list数据变化是更新</h2><h2 id="如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index"><a href="#如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index" class="headerlink" title="如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index"></a>如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/29/hexo静态网站/Hexo+NexT 添加分类、标签、关于菜单项/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1658,327 +2006,6 @@ title: My First Blog
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/17webpack中懒加载是什么，chunk是什么/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/17webpack中懒加载是什么，chunk是什么/" itemprop="url">webpack系列-17webpack中懒加载是什么，chunk是什么</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T15:53:53+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack系列/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack系列</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">getComponent</span></span>() &#123;</span><br><span class="line">　　// 异步调用的lodash返回回来后，会放到_这个变量里</span><br><span class="line">　　// 这个魔法注释的意思是我异步引入lodash这样的库，在打包的时候，给这个库的名字取名叫lodash。</span><br><span class="line">　　<span class="built_in">return</span> import(/* webpackChunkName:<span class="string">"lodash"</span> */ <span class="string">'lodash'</span>).<span class="keyword">then</span>(( &#123;default: _&#125; )=&gt;&#123;</span><br><span class="line">　　　　var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　　　element.innerHTML = _.join([<span class="string">'1'</span>, <span class="string">' '</span>, <span class="string">'2'</span>], <span class="string">'-'</span>);</span><br><span class="line">　　　　<span class="built_in">return</span> element;</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　getComponent().<span class="keyword">then</span>(element =&gt; &#123;</span><br><span class="line">　　　　document.body.appendChild(element);</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>执行npm run dev-build。dist文件夹里面vendors<del>lodash被打包出来了。这个时候执行dist下面的index.html。发现最开始的时候只加载了index.html和main.js。只有点击页面的时候,vendors</del>lodash.js开始加载。所以通过异步的import语法，有些模块，我们可以对他进行懒加载。什么时候执行到import，什么时候执行。</p>
-<p>好处是借助异步import语法，可以让页面加载更快，刷新的时候根本用不到lodash。webpack跟import没有必然的联系。而是import这种写法可以被webpack识别，然后去实现懒加载</p>
-<p>es7写法index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">async <span class="keyword">function</span> <span class="function"><span class="title">getComponent</span></span>() &#123;</span><br><span class="line">　　const &#123; default: _ &#125; = await import(/* webpackChunkName:<span class="string">"lodash"</span> */ <span class="string">'lodash'</span>);</span><br><span class="line">　　var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　element.innerHTML = _.join([<span class="string">'1'</span>, <span class="string">' '</span>, <span class="string">'2'</span>], <span class="string">'-'</span>);</span><br><span class="line">　　<span class="built_in">return</span> element;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　getComponent().<span class="keyword">then</span>(element =&gt; &#123;</span><br><span class="line">　　　　document.body.appendChild(element);</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>我们打包好的dist下面的js文件，每个js文件就是一个chunk。这个可以从打包的过程可以看出</p>
-<p><img src="/images/17-1.png" alt></p>
-<p>那么这个chunk有什么样的意义呢？</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　//...</span><br><span class="line">　　optimization: &#123;</span><br><span class="line">　　　　splitChunks: &#123;</span><br><span class="line">　　　　　　chunks: <span class="string">'async'</span>,</span><br><span class="line">　　　　　　minSize: 30000,</span><br><span class="line">　　　　　　maxSize: 0,</span><br><span class="line">　　　　　　minChunks: 1,</span><br><span class="line">　　　　　　maxAsyncRequests: 5,</span><br><span class="line">　　　　　　maxInitialRequests: 3,</span><br><span class="line">　　　　　　automaticNameDelimiter: <span class="string">'~'</span>,</span><br><span class="line">　　　　　　name: <span class="literal">true</span>,</span><br><span class="line">　　　　　　cacheGroups: &#123;</span><br><span class="line">　　　　　　　　vendors: &#123;</span><br><span class="line">　　　　　　　　　　<span class="built_in">test</span>: /[\\/]node_modules[\\/]/,</span><br><span class="line">　　　　　　　　　　priority: -10</span><br><span class="line">　　　　　　　　&#125;,</span><br><span class="line">　　　　　　　　default: &#123;</span><br><span class="line">　　　　　　　　　　minChunks: 2,</span><br><span class="line">　　　　　　　　　　priority: -20,</span><br><span class="line">　　　　　　　　　　reuseExistingChunk: <span class="literal">true</span></span><br><span class="line">　　　　　　　　&#125;</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>我们看之前的配置里面的splitChunks。里面有个minChunks。这个意思是整个项目有两个地方以上的地方引入了第三方库（lodash.js），那么就打包成一个chunk。如果只有一个地方用到，就不打包成chunk。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">　　// 帮我们做代码分割</span><br><span class="line">　　splitChunks: &#123;</span><br><span class="line">　　　　// 意思是做代码分割的时候只对异步代码生效，如果想对同步异步都有效，配置成<span class="string">"all"</span></span><br><span class="line">　　　　chunks: <span class="string">'all'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>之前我们没有写那些配置也可以，因为默认就配置了那些。所以我们配置的时候只要这样，让他自动的给我们进行代码分割就可以。默认的分割本身比较合理。如果就是要按自己的风格，再对其不同的配置项配置</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/16webpack中SplitChunksPlugin配置参数详解/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/16webpack中SplitChunksPlugin配置参数详解/" itemprop="url">webpack系列-16webpack中SplitChunksPlugin配置参数详解</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T15:41:59+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack系列/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack系列</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>webpack的代码分割，底层使用了splitchunksplugin这个插件。我们上次打包生成的文件是这样的。</p>
-<p><img src="/images/16-1.png" alt></p>
-<p>这里面的0.js我想给他改个名字，在这种异步加载组件之中，有一种语法，叫做魔法注释</p>
-<p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">getComponent</span></span>() &#123;</span><br><span class="line">　　// 异步调用的lodash返回回来后，会放到_这个变量里</span><br><span class="line">　　// 这个魔法注释的意思是我异步引入lodash这样的库，在打包的时候，给这个库的名字取名叫lodash。</span><br><span class="line">　　<span class="built_in">return</span> import(/* webpackChunkName:<span class="string">"lodash"</span> */ <span class="string">'lodash'</span>).<span class="keyword">then</span>(( &#123;default: _&#125; )=&gt;&#123;</span><br><span class="line">　　　　var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　　　element.innerHTML = _.join([<span class="string">'1'</span>, <span class="string">' '</span>, <span class="string">'2'</span>], <span class="string">'-'</span>);</span><br><span class="line">　　　　<span class="built_in">return</span> element;</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getComponent().<span class="keyword">then</span>(element =&gt; &#123;</span><br><span class="line">　　document.body.appendChild(element);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>babel中去除，babel-plugin-dynamic-import-webpack，这个插件不支持魔法注释。package.json也移除掉这个babel-plugin-dynamic-import-webpack。取而代之，我们去找一个官方引入的动态引入的插件。</p>
-<p>然后放入babelrc中</p>
-<p>.babelrc</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">　　<span class="string">"presets"</span>: [</span><br><span class="line">　　　　[<span class="string">"@babel/preset-env"</span>,&#123;</span><br><span class="line">　　　　　　　　<span class="string">"targets"</span>: &#123;</span><br><span class="line">　　　　　　　　<span class="string">"chrome"</span>: <span class="string">"67"</span>,</span><br><span class="line">　　　　　　&#125;,</span><br><span class="line">　　　　　　<span class="string">"useBuiltIns"</span>: <span class="string">"usage"</span>,</span><br><span class="line">　　　　　　<span class="string">"corejs"</span>: 3</span><br><span class="line">　　　　&#125;],</span><br><span class="line">　　　　<span class="string">"@babel/preset-react"</span></span><br><span class="line">　　],</span><br><span class="line">　　<span class="string">"plugins"</span>: [<span class="string">"@babel/plugin-syntax-dynamic-import"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行npm run dev-build，然后打包出来的名字就不是0.js了，而是vendors~lodash.js。那么我想打包出来的就是lodash怎么弄。需要加个配置。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　optimization: &#123;</span><br><span class="line">　　　　// 帮我们做代码分割</span><br><span class="line">　　　　splitChunks: &#123;</span><br><span class="line">　　　　　　chunks: <span class="string">'all'</span>,</span><br><span class="line">　　　　　　cacheGroups: &#123;</span><br><span class="line">　　　　　　　　vendors: <span class="literal">false</span>,</span><br><span class="line">　　　　　　　　default: <span class="literal">false</span></span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我将splitChunks改成一个空对象，然后进行打包,npm run dev-build。也能打包成功，这是为什么嗯？我们打开官方文档</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/plugins/split-chunks-plugin</span><br></pre></td></tr></table></figure>
-
-<p>就能发现我们什么都不配置，他有一个默认的配置内容。</p>
-<p><img src="/images/16-2.png" alt></p>
-<p>它们分别是什么意思呢</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　// 优化</span><br><span class="line">　　optimization: &#123;</span><br><span class="line">　　　　// 帮我们做代码分割</span><br><span class="line">　　　　splitChunks: &#123;</span><br><span class="line">　　　　　　// 意思是做代码分割的时候只对异步代码生效，如果想对同步异步都有效，配置成<span class="string">"all"</span></span><br><span class="line">　　　　　　chunks: <span class="string">'all'</span>,</span><br><span class="line">　　　　　　// 引入到这个类库大于30kb才做代码分割，如果小于30kb就不做代码分割</span><br><span class="line">　　　　　　minSize: 30000,</span><br><span class="line">　　　　　　// 当改成2就不做代码分割了，因为他发现代码里面只用了一次lodash的引入，小于2</span><br><span class="line">　　　　　　minChunks: 1,</span><br><span class="line">　　　　　　// 同时加载的模块数，最多是5个。也就是说打包前5个的时候，会帮忙分割代码，后面的就不分割了</span><br><span class="line">　　　　　　maxAsyncRequests: 5,</span><br><span class="line">　　　　　　// 入口文件，引入其他的js库，引入的文件最多只能分割成3个文件</span><br><span class="line">　　　　　　maxInitialRequests: 3,</span><br><span class="line">　　　　　　// 文件生成的时候，文件中间会有一个链接符，比如verdors~main.js</span><br><span class="line">　　　　　　automaticNameDelimiter: <span class="string">'~'</span>,</span><br><span class="line">　　　　　　// 指的的cachegroups的名字有效,不然就是0.js,1.js</span><br><span class="line">　　　　　　name: <span class="literal">true</span>,</span><br><span class="line">　　　　　　// 缓存组</span><br><span class="line">　　　　　　cacheGroups: &#123;</span><br><span class="line">　　　　　　　　vendors: &#123;</span><br><span class="line">　　　　　　　　　　/**</span><br><span class="line">　　　　　　　　　　* <span class="built_in">test</span>会检测，同步引入的库是否是在node_modules里面，是的话单独打包</span><br><span class="line">　　　　　　　　　　* 打包vendor~main.js。符合vendors这个组，同时入口是main。</span><br><span class="line">　　　　　　　　　　*/</span><br><span class="line">　　　　　　　　　　<span class="built_in">test</span>: /[\\/]node_modules[\\/]/,</span><br><span class="line">　　　　　　　　　　/**</span><br><span class="line">　　　　　　　　　　* lodash既符合vendors，也符合default。因为default没有<span class="built_in">test</span>，就是都支持，那么根据什么来呢</span><br><span class="line">　　　　　　　　　　* 根据priority,他的值越大，优先级越高，比如-10&gt;-20</span><br><span class="line">　　　　　　　　　　*/</span><br><span class="line">　　　　　　　　　　priority: -10,</span><br><span class="line">　　　　　　　　　　// 当代码同步的时候，一旦遇到是第三方类库，同时满足大于30kb，同时被引入超过1次，同时满足下面的条件，统一打包到vendors.js里面</span><br><span class="line">　　　　　　　　　　filename: <span class="string">'vendors.js'</span></span><br><span class="line">　　　　　　　　&#125;,</span><br><span class="line">　　　　　　　　// 如果不是第三方库的代码走这，如果导入的代码（minSize: 0）大于0kb且不是第三方库，那么分割到common.js中</span><br><span class="line">　　　　　　　　default: &#123;</span><br><span class="line">　　　　　　　　　　priority: -20,</span><br><span class="line">　　　　　　　　　　/**</span><br><span class="line">　　　　　　　　　　* 比如index.js引入了a模块，b模块。a模块里面也引入了b模块</span><br><span class="line">　　　　　　　　　　* 如果配置了reuseExistingChunk，就会判断，如果a里面已经引入了b模块，就不再引入index.js的b模块了</span><br><span class="line">　　　　　　　　　　* 避免重复打包</span><br><span class="line">　　　　　　　　　　*/</span><br><span class="line">　　　　　　　　　　reuseExistingChunk: <span class="literal">true</span>,</span><br><span class="line">　　　　　　　　　　filename: <span class="string">'common.js'</span></span><br><span class="line">　　　　　　　　&#125;</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2029,7 +2056,7 @@ title: My First Blog
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2040,7 +2067,7 @@ title: My First Blog
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
