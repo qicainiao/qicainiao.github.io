@@ -386,7 +386,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">const Todo = (&#123; onClick, id, completed, text &#125;) =&gt; &#123;</span><br><span class="line">  function clickHandler() &#123;</span><br><span class="line">    onClick(id)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return (</span><br><span class="line">    &lt;li</span><br><span class="line">      onClick=&#123;clickHandler&#125;</span><br><span class="line">      style=&#123;&#123;</span><br><span class="line">        textDecoration: completed ? &apos;line-through&apos; : &apos;none&apos;</span><br><span class="line">      &#125;&#125;</span><br><span class="line">    &gt;</span><br><span class="line">      &#123;text&#125;</span><br><span class="line">    &lt;/li&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在Todo.js中定义了一个clickHandler方法，这样todo方法每次重新运行时clickHandler都不会变。</p>
-<p><img src=".../images/13.png" alt></p>
+<p><img src="/images/react/13.png" alt></p>
 <p>新的分析数据中可以看到前面的todo组件都是灰色说明没有重新渲染，只有最后一个新加的todo被渲染了。</p>
 
           
