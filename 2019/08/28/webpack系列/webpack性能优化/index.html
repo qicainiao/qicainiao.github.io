@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="我们在打包的时候需要耗费非常多的时间，所以在一些大型项目的时候需要提升webpack的打包效率。 跟上技术的迭代（node,npm,yarn）　升级webpack，node，npm，yarn的版本。新的版本会做优化 在尽可能少的模块上应用Loader比如曾经有个功能将this指向window的功能 12345rules:[&amp;#123;　　use:[&amp;#123;　　　　loader: &apos;import">
+<meta name="description" content="我们在打包的时候需要耗费非常多的时间，所以在一些大型项目的时候需要提升webpack的打包效率。 打点   使用speed-measure-webpack-plugin测试 跟上技术的迭代（node,npm,yarn）　升级webpack，node，npm，yarn的版本。新的版本会做优化 在尽可能少的模块上应用Loader比如曾经有个功能将this指向window的功能 12345rules:[">
 <meta property="og:type" content="article">
 <meta property="og:title" content="webpack系列-webpack性能优化">
 <meta property="og:url" content="http://yoursite.com/2019/08/28/webpack系列/webpack性能优化/index.html">
 <meta property="og:site_name" content="qicainiao&#39;s Blog">
-<meta property="og:description" content="我们在打包的时候需要耗费非常多的时间，所以在一些大型项目的时候需要提升webpack的打包效率。 跟上技术的迭代（node,npm,yarn）　升级webpack，node，npm，yarn的版本。新的版本会做优化 在尽可能少的模块上应用Loader比如曾经有个功能将this指向window的功能 12345rules:[&amp;#123;　　use:[&amp;#123;　　　　loader: &apos;import">
+<meta property="og:description" content="我们在打包的时候需要耗费非常多的时间，所以在一些大型项目的时候需要提升webpack的打包效率。 打点   使用speed-measure-webpack-plugin测试 跟上技术的迭代（node,npm,yarn）　升级webpack，node，npm，yarn的版本。新的版本会做优化 在尽可能少的模块上应用Loader比如曾经有个功能将this指向window的功能 12345rules:[">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-29T09:54:22.181Z">
+<meta property="og:updated_time" content="2019-09-02T08:54:33.967Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="webpack系列-webpack性能优化">
-<meta name="twitter:description" content="我们在打包的时候需要耗费非常多的时间，所以在一些大型项目的时候需要提升webpack的打包效率。 跟上技术的迭代（node,npm,yarn）　升级webpack，node，npm，yarn的版本。新的版本会做优化 在尽可能少的模块上应用Loader比如曾经有个功能将this指向window的功能 12345rules:[&amp;#123;　　use:[&amp;#123;　　　　loader: &apos;import">
+<meta name="twitter:description" content="我们在打包的时候需要耗费非常多的时间，所以在一些大型项目的时候需要提升webpack的打包效率。 打点   使用speed-measure-webpack-plugin测试 跟上技术的迭代（node,npm,yarn）　升级webpack，node，npm，yarn的版本。新的版本会做优化 在尽可能少的模块上应用Loader比如曾经有个功能将this指向window的功能 12345rules:[">
 
 
 
@@ -97,7 +97,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -332,6 +332,7 @@
 
       
         <p>我们在打包的时候需要耗费非常多的时间，所以在一些大型项目的时候需要提升webpack的打包效率。</p>
+<h2 id="打点"><a href="#打点" class="headerlink" title="打点"></a>打点</h2><p>   使用speed-measure-webpack-plugin测试</p>
 <h2 id="跟上技术的迭代（node-npm-yarn）"><a href="#跟上技术的迭代（node-npm-yarn）" class="headerlink" title="跟上技术的迭代（node,npm,yarn）"></a>跟上技术的迭代（node,npm,yarn）</h2><p>　升级webpack，node，npm，yarn的版本。新的版本会做优化</p>
 <h2 id="在尽可能少的模块上应用Loader"><a href="#在尽可能少的模块上应用Loader" class="headerlink" title="在尽可能少的模块上应用Loader"></a>在尽可能少的模块上应用Loader</h2><p>比如曾经有个功能将this指向window的功能</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rules:[&#123;</span><br><span class="line">　　use:[&#123;</span><br><span class="line">　　　　loader: <span class="string">'imports-loader?this=&gt;window'</span></span><br><span class="line">　　&#125;]</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
@@ -508,7 +509,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -519,7 +520,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -554,7 +555,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#跟上技术的迭代（node-npm-yarn）"><span class="nav-number">1.</span> <span class="nav-text">跟上技术的迭代（node,npm,yarn）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在尽可能少的模块上应用Loader"><span class="nav-number">2.</span> <span class="nav-text">在尽可能少的模块上应用Loader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#尽可能少的使用plugin，同时确保plugin的可靠性。"><span class="nav-number">3.</span> <span class="nav-text">尽可能少的使用plugin，同时确保plugin的可靠性。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#resolve参数合理配置"><span class="nav-number">4.</span> <span class="nav-text">resolve参数合理配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用DllPlugin提高打包速度"><span class="nav-number">5.</span> <span class="nav-text">使用DllPlugin提高打包速度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#控制包文件大小-tree-shaking-splitChunks"><span class="nav-number">6.</span> <span class="nav-text">控制包文件大小(tree shaking, splitChunks)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#thread-loader-parallel-webpack-happypack多进程打包"><span class="nav-number">7.</span> <span class="nav-text">thread-loader,parallel-webpack,happypack多进程打包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合理使用sourceMap，soureMap越详细，打包速度越慢"><span class="nav-number">8.</span> <span class="nav-text">合理使用sourceMap，soureMap越详细，打包速度越慢</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结合stats，打包分析工具分析打包结果"><span class="nav-number">9.</span> <span class="nav-text">结合stats，打包分析工具分析打包结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发环境内存编译-devServer，内存的读取比硬盘读取快"><span class="nav-number">10.</span> <span class="nav-text">开发环境内存编译(devServer，内存的读取比硬盘读取快)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发环境无用插件剔除（比如开发环境，mode不要用production）"><span class="nav-number">11.</span> <span class="nav-text">开发环境无用插件剔除（比如开发环境，mode不要用production）</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#打点"><span class="nav-number">1.</span> <span class="nav-text">打点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跟上技术的迭代（node-npm-yarn）"><span class="nav-number">2.</span> <span class="nav-text">跟上技术的迭代（node,npm,yarn）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在尽可能少的模块上应用Loader"><span class="nav-number">3.</span> <span class="nav-text">在尽可能少的模块上应用Loader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#尽可能少的使用plugin，同时确保plugin的可靠性。"><span class="nav-number">4.</span> <span class="nav-text">尽可能少的使用plugin，同时确保plugin的可靠性。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#resolve参数合理配置"><span class="nav-number">5.</span> <span class="nav-text">resolve参数合理配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用DllPlugin提高打包速度"><span class="nav-number">6.</span> <span class="nav-text">使用DllPlugin提高打包速度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#控制包文件大小-tree-shaking-splitChunks"><span class="nav-number">7.</span> <span class="nav-text">控制包文件大小(tree shaking, splitChunks)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#thread-loader-parallel-webpack-happypack多进程打包"><span class="nav-number">8.</span> <span class="nav-text">thread-loader,parallel-webpack,happypack多进程打包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合理使用sourceMap，soureMap越详细，打包速度越慢"><span class="nav-number">9.</span> <span class="nav-text">合理使用sourceMap，soureMap越详细，打包速度越慢</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结合stats，打包分析工具分析打包结果"><span class="nav-number">10.</span> <span class="nav-text">结合stats，打包分析工具分析打包结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发环境内存编译-devServer，内存的读取比硬盘读取快"><span class="nav-number">11.</span> <span class="nav-text">开发环境内存编译(devServer，内存的读取比硬盘读取快)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发环境无用插件剔除（比如开发环境，mode不要用production）"><span class="nav-number">12.</span> <span class="nav-text">开发环境无用插件剔除（比如开发环境，mode不要用production）</span></a></li></ol></div>
             
 
           </div>
@@ -592,7 +593,7 @@
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
 
 
 
@@ -691,6 +692,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>

@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -96,7 +96,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -228,6 +228,398 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/03/js/函数式编程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/03/js/函数式编程/" itemprop="url">函数式编程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-03T14:23:17+08:00">
+                2019-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="函数组合"><a href="#函数组合" class="headerlink" title="函数组合"></a>函数组合</h2><p>最近后台接口返回的数据格式不对，数组总是以字符串的形式返回，前端统一转化<br>采用了函数式编程的方式解决</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var compose = function(f,g)&#123;</span><br><span class="line">    return function(x)&#123;</span><br><span class="line">       return f(g(x));</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var g = function(str)&#123;</span><br><span class="line">     console.log(str)</span><br><span class="line">   return str.replace(/^\[|\]$/g,&apos;&apos;);</span><br><span class="line">&#125;</span><br><span class="line">var f = function(str)&#123;</span><br><span class="line">    console.log(str)</span><br><span class="line">    return str.split(&apos;,&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var t = compose(f,g)</span><br><span class="line">console.log(t(&quot;[123,456]&quot;))</span><br></pre></td></tr></table></figure>
+
+<h2 id="Pointfree"><a href="#Pointfree" class="headerlink" title="Pointfree"></a>Pointfree</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fn = R.pipe(f1, f2, f3);</span><br></pre></td></tr></table></figure>
+
+<p>这个公式说明，如果先定义f1、f2、f3，就可以算出fn。整个过程，根本不需要知道a或b。</p>
+<p>也就是说，我们完全可以把数据处理的过程，定义成一种与参数无关的合成运算。不需要用到代表数据的那个参数，只要把一些简单的运算步骤合成在一起即可。</p>
+<p>这就叫做 Pointfree：不使用所要处理的值，只合成运算过程。中文可以译作”无值”风格。</p>
+<p>请看下面的例子。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var addOne = x =&gt; x + 1;</span><br><span class="line">var square = x =&gt; x * x;</span><br><span class="line"></span><br><span class="line">var addOneThenSquare = R.pipe(addOne, square);</span><br><span class="line"></span><br><span class="line">addOneThenSquare(2) //  9</span><br></pre></td></tr></table></figure>
+
+<p>addOneThenSquare是一个合成函数。定义它的时候，根本不需要提到要处理的值，这就是 Pointfree。</p>
+<h2 id="JavaScript中的Pipe"><a href="#JavaScript中的Pipe" class="headerlink" title="JavaScript中的Pipe"></a>JavaScript中的Pipe</h2><p>  先用一个最简单的例子来看一下什么是pipe，现在我们有两个最简单的函数addOne和addTwo，分别对于参数加一和加二：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const addOne = x=&gt;x+1;</span><br><span class="line">const addTwo = x=&gt;x*2;</span><br><span class="line">const addThree = x=&gt;x-3;</span><br><span class="line">const addFour= x=&gt;x*4;</span><br></pre></td></tr></table></figure>
+
+<p>  现在我们想让一个参数通过第一个参数之后再通过第二个参数，最简单直接方式<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addTwo(addOne(1)) //4</span><br></pre></td></tr></table></figure></p>
+<p>  我们来写一个简单的pipe函数，它返回一个新的函数，来达到我们上面的目的：<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const pipe = (fun1,fun2) =&gt; x=&gt;fun2(fun1(x))</span><br><span class="line"></span><br><span class="line">const addTotal = pipe(addOne,addTwo);</span><br><span class="line">addTotal(1)</span><br></pre></td></tr></table></figure></p>
+<p>  嗯，现在还看不出来什么好处，但是当我们要经过的Transform越来越多的时候，这样的好处就会越来越明显：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  const addTen = pipe(</span><br><span class="line">  addOne,</span><br><span class="line">  addTwo,</span><br><span class="line">  addThree,</span><br><span class="line">  addFour</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>  所以我们需要一个更牛逼的pipe函数，它可以接受任意数量的参数，并从第一个开始，依次接受原始数值，输出值传递给下一个函数。等等，我们好像想到了什么，遍历一个数组，把输出值当作下一个的输入，怎么听着都和reduce很像。所以，直接用Array.prototype.reduce就可以写一个简单的pipe函数：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> const pipe = (...args) =&gt; x =&gt; </span><br><span class="line">args.reduce(</span><br><span class="line">  (outputValue, currentFunction) =&gt; currentFunction(outputValue),</span><br><span class="line">  x</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>  展开</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> const pipe = function(x, ...fns) &#123;</span><br><span class="line">fns.reduce((outputValue, currentFunction) =&gt;  currentFunction(outputValue), x);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>  进一步拆解：<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> function pipe(x, ...fns)&#123;</span><br><span class="line">	let accu= x;</span><br><span class="line">	for(let f in fns)&#123;</span><br><span class="line">		accu= f(accu)</span><br><span class="line">	&#125;</span><br><span class="line">	return accu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/03/js/数组/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/03/js/数组/" itemprop="url">Array 对象大全</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-03T10:49:48+08:00">
+                2019-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="数组属性"><a href="#数组属性" class="headerlink" title="数组属性"></a>数组属性</h2><p>属性               描述<br>constructor        返回创建数组对象的原型函数。<br>length          设置或返回数组元素的个数。<br>prototype        允许你向数组对象添加属性或方法。</p>
+<h2 id="Array对象方法"><a href="#Array对象方法" class="headerlink" title="Array对象方法"></a>Array对象方法</h2><h4 id="splice-方法用于添加或删除数组中的元素。"><a href="#splice-方法用于添加或删除数组中的元素。" class="headerlink" title="splice() 方法用于添加或删除数组中的元素。"></a>splice() 方法用于添加或删除数组中的元素。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var fruits = [&quot;Banana&quot;, &quot;Orange&quot;, &quot;Apple&quot;, &quot;Mango&quot;];</span><br><span class="line">fruits.splice(2,0,&quot;Lemon&quot;,&quot;Kiwi&quot;); </span><br><span class="line">//返回 []</span><br><span class="line">//fruits的值 Banana,Orange,Lemon,Kiwi,Apple,Mango</span><br><span class="line">fruits.splice(2,1) //删除一个，返回删除元素的数组</span><br><span class="line">fruits.splice(2,0) //删除0个，返回空数组</span><br><span class="line"></span><br><span class="line">var fruits = [&quot;Banana&quot;, &quot;Orange&quot;, &quot;Apple&quot;, &quot;Mango&quot;];</span><br><span class="line">fruits.splice(2,2,&quot;Lemon&quot;,&quot;Kiwi&quot;);</span><br><span class="line">// 返回的删除元素的值 [&quot;Apple&quot;, &quot;Mango&quot;]</span><br><span class="line">//fruits的值[&quot;Banana&quot;, &quot;Orange&quot;, &quot;Lemon&quot;, &quot;Kiwi&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>语法<br>array.splice(index,howmany,item1,…..,itemX)<br>参数 Values<br>参数    描述<br>index    必需。规定从何处添加/删除元素。<br>该参数是开始插入和（或）删除的数组元素的下标，必须是数字。<br>howmany    可选。规定应该删除多少元素。必须是数字，但可以是 “0”。<br>如果未规定此参数，则删除从 index 开始到原数组结尾的所有元素。<br>item1, …, itemX    可选。要添加到数组的新元素</p>
+<h4 id="slice-选取数组的的一部分，并返回一个新数组"><a href="#slice-选取数组的的一部分，并返回一个新数组" class="headerlink" title="slice()    选取数组的的一部分，并返回一个新数组"></a>slice()    选取数组的的一部分，并返回一个新数组</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var fruits = [&quot;Banana&quot;, &quot;Orange&quot;, &quot;Lemon&quot;, &quot;Apple&quot;, &quot;Mango&quot;];</span><br><span class="line">var citrus = fruits.slice(1,3); //返回值 [&quot;Lemon&quot;, &quot;Apple&quot;]  fruits值不变</span><br></pre></td></tr></table></figure>
+
+<h4 id="reduce-方法"><a href="#reduce-方法" class="headerlink" title="reduce() 方法"></a>reduce() 方法</h4><p>reduce() 可以作为一个高阶函数，用于函数的 compose。从左到右</p>
+<h4 id="reduceRight-方法"><a href="#reduceRight-方法" class="headerlink" title="reduceRight() 方法"></a>reduceRight() 方法</h4><p>reduceRight() 可以作为一个高阶函数，用于函数的 compose。从右到左</p>
+<h4 id="map-通过指定函数处理数组的每个元素，并返回处理后的数组。"><a href="#map-通过指定函数处理数组的每个元素，并返回处理后的数组。" class="headerlink" title="map()    通过指定函数处理数组的每个元素，并返回处理后的数组。"></a>map()    通过指定函数处理数组的每个元素，并返回处理后的数组。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">let r = res.map(item =&gt; &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">        title: item.name,</span><br><span class="line">        sex: item.sex === 1? &apos;男&apos;:item.sex === 0?&apos;女&apos;:&apos;保密&apos;,</span><br><span class="line">        age: item.age,</span><br><span class="line">        avatar: item.img</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">也可以省略 return：</span><br><span class="line">const users=res.items.map(item =&gt; (&#123;</span><br><span class="line">    url: item.html_url,      </span><br><span class="line">    img: item.avatar_url,      </span><br><span class="line">    name: item.login,</span><br><span class="line">    &#125;)</span><br><span class="line">);</span><br><span class="line">//得到新数组，原数组不变化</span><br></pre></td></tr></table></figure>
+
+<h4 id="some-检测数组元素中是否有元素符合指定条件。-结果是-true-or-false"><a href="#some-检测数组元素中是否有元素符合指定条件。-结果是-true-or-false" class="headerlink" title="some()    检测数组元素中是否有元素符合指定条件。 结果是 true or false"></a>some()    检测数组元素中是否有元素符合指定条件。 结果是 true or false</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var ages = [3, 10, 18, 20];</span><br><span class="line"></span><br><span class="line">function checkAdult(age) &#123;</span><br><span class="line">    return age &gt;= 18;</span><br><span class="line">&#125;</span><br><span class="line">ages.some(checkAdult); //true</span><br></pre></td></tr></table></figure>
+
+<h4 id="shift-删除并返回数组的第一个元素。"><a href="#shift-删除并返回数组的第一个元素。" class="headerlink" title="shift()    删除并返回数组的第一个元素。"></a>shift()    删除并返回数组的第一个元素。</h4><h4 id="unshift-向数组的开头添加一个或更多元素，并返回新的长度。"><a href="#unshift-向数组的开头添加一个或更多元素，并返回新的长度。" class="headerlink" title="unshift()    向数组的开头添加一个或更多元素，并返回新的长度。"></a>unshift()    向数组的开头添加一个或更多元素，并返回新的长度。</h4><h4 id="push-方法"><a href="#push-方法" class="headerlink" title="push() 方法"></a>push() 方法</h4><h4 id="pop-方法-移除最后一个数组元素"><a href="#pop-方法-移除最后一个数组元素" class="headerlink" title="pop() 方法 移除最后一个数组元素"></a>pop() 方法 移除最后一个数组元素</h4><p>用于删除数组的最后一个元素并返回删除的元素。</p>
+<h4 id="sort-方法-用于对数组的元素进行排序。"><a href="#sort-方法-用于对数组的元素进行排序。" class="headerlink" title="sort() 方法  用于对数组的元素进行排序。"></a>sort() 方法  用于对数组的元素进行排序。</h4><p>sort() 方法用于对数组的元素进行排序。</p>
+<p>排序顺序可以是字母或数字，并按升序或降序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var fruits = [&quot;Banana&quot;, &quot;Orange&quot;, &quot;Apple&quot;, &quot;Mango&quot;];</span><br><span class="line">fruits.sort();</span><br><span class="line">//返回值和fruits值都是[&quot;Apple&quot;, &quot;Banana&quot;, &quot;Mango&quot;, &quot;Orange&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>####forEach() 没有返回值，与for循环不能break，continue 。</p>
+<h4 id="filter-方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素。"><a href="#filter-方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素。" class="headerlink" title="filter() 方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素。"></a>filter() 方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素。</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var ages = [32, 33, 16, 40];</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> checkAdult(age) &#123;</span><br><span class="line">    <span class="built_in">return</span> age &gt;= 18;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">myFunction</span></span>() &#123;</span><br><span class="line">    document.getElementById(<span class="string">"demo"</span>).innerHTML = ages.filter(checkAdult);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>定义和用法</li>
+</ul>
+<p>filter() 方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素。</p>
+<p>注意： filter() 不会对空数组进行检测。</p>
+<p>注意： filter() 不会改变原始数组。</p>
+<h4 id="some-检测数组元素中是否有元素符合指定条件。"><a href="#some-检测数组元素中是否有元素符合指定条件。" class="headerlink" title="some()    检测数组元素中是否有元素符合指定条件。"></a>some()    检测数组元素中是否有元素符合指定条件。</h4><h4 id="from-方法"><a href="#from-方法" class="headerlink" title="from() 方法"></a>from() 方法</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var myArr = Array.from(<span class="string">"RUNOOB"</span>); //[<span class="string">"R"</span>, <span class="string">"U"</span>, <span class="string">"N"</span>, <span class="string">"O"</span>, <span class="string">"O"</span>, <span class="string">"B"</span>]</span><br><span class="line"></span><br><span class="line">var setObj = new Set([<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>]);</span><br><span class="line">var objArr = Array.from(setObj);</span><br><span class="line">objArr[1] == <span class="string">"b"</span>;  // <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">var arr = Array.from([1, 2, 3], x =&gt; x * 10);  // [10, 20, 30]</span><br></pre></td></tr></table></figure>
+
+<h4 id="indexOf-搜索数组中的元素，并返回它所在的位置。"><a href="#indexOf-搜索数组中的元素，并返回它所在的位置。" class="headerlink" title="indexOf()    搜索数组中的元素，并返回它所在的位置。"></a>indexOf()    搜索数组中的元素，并返回它所在的位置。</h4><h4 id="keys-返回数组的可迭代对象，包含原始数组的键-key-。"><a href="#keys-返回数组的可迭代对象，包含原始数组的键-key-。" class="headerlink" title="keys()    返回数组的可迭代对象，包含原始数组的键(key)。"></a>keys()    返回数组的可迭代对象，包含原始数组的键(key)。</h4><h4 id="includes-判断一个数组是否包含一个指定的值。"><a href="#includes-判断一个数组是否包含一个指定的值。" class="headerlink" title="includes()    判断一个数组是否包含一个指定的值。"></a>includes()    判断一个数组是否包含一个指定的值。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[1,2].includes(1)</span><br><span class="line">true</span><br></pre></td></tr></table></figure>
+
+<h4 id="find-方法返回通过测试（函数内判断）的数组的第一个元素的值。"><a href="#find-方法返回通过测试（函数内判断）的数组的第一个元素的值。" class="headerlink" title="find() 方法返回通过测试（函数内判断）的数组的第一个元素的值。"></a>find() 方法返回通过测试（函数内判断）的数组的第一个元素的值。</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var ages = [3, 10, 18, 20];</span><br><span class="line"> </span><br><span class="line"><span class="keyword">function</span> checkAdult(age) &#123;</span><br><span class="line">    <span class="built_in">return</span> age &gt;= 18;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">myFunction</span></span>() &#123;</span><br><span class="line">    document.getElementById(<span class="string">"demo"</span>).innerHTML = ages.find(checkAdult);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>定义和用法</li>
+</ul>
+<p>find() 方法返回通过测试（函数内判断）的数组的第一个元素的值。</p>
+<p>find() 方法为数组中的每个元素都调用一次函数执行：</p>
+<p>当数组中的元素在测试条件时返回 true 时, find() 返回符合条件的元素，之后的值不会再调用执行函数。<br>如果没有符合条件的元素返回 undefined</p>
+<h4 id="reverse-反转数组的元素顺序。"><a href="#reverse-反转数组的元素顺序。" class="headerlink" title="reverse()    反转数组的元素顺序。"></a>reverse()    反转数组的元素顺序。</h4><h4 id="findIndex-方法返回传入一个测试条件（函数）符合条件的数组第一个元素位置。"><a href="#findIndex-方法返回传入一个测试条件（函数）符合条件的数组第一个元素位置。" class="headerlink" title="findIndex() 方法返回传入一个测试条件（函数）符合条件的数组第一个元素位置。"></a>findIndex() 方法返回传入一个测试条件（函数）符合条件的数组第一个元素位置。</h4><h4 id="concat-连接两个或更多的数组，并返回结果"><a href="#concat-连接两个或更多的数组，并返回结果" class="headerlink" title="concat()  连接两个或更多的数组，并返回结果"></a>concat()  连接两个或更多的数组，并返回结果</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var hege = [<span class="string">"Cecilie"</span>, <span class="string">"Lone"</span>];</span><br><span class="line">var stale = [<span class="string">"Emil"</span>, <span class="string">"Tobias"</span>, <span class="string">"Linus"</span>];</span><br><span class="line">var kai = [<span class="string">"Robin"</span>];</span><br><span class="line">var children = hege.concat(stale,kai);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>使用<br> 一道面试题：传递两个参数m，n，返回长度为m，所有元素都为n的数组，要求不能用循环。</p>
+<p> function fn(m,n){</p>
+<pre><code>return m? fn(m-1,n).concat(n):[];</code></pre><p> }</p>
+</li>
+</ul>
+<h4 id="copyWithin-从数组的指定位置拷贝元素到数组的另一个指定位置"><a href="#copyWithin-从数组的指定位置拷贝元素到数组的另一个指定位置" class="headerlink" title="copyWithin()  从数组的指定位置拷贝元素到数组的另一个指定位置"></a>copyWithin()  从数组的指定位置拷贝元素到数组的另一个指定位置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var fruits = [<span class="string">"Banana"</span>, <span class="string">"Orange"</span>, <span class="string">"Apple"</span>, <span class="string">"Mango"</span>];</span><br><span class="line">fruits.copyWithin(2, 0);</span><br><span class="line">//Banana,Orange,Banana,Orange</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>语法</p>
+<p> array.copyWithin(target, start, end)</p>
+<ul>
+<li>参数</li>
+</ul>
+<p>参数    描述<br>target    必需。复制到指定目标索引位置。<br>start    可选。元素复制的起始位置。<br>end    可选。停止复制的索引位置 (默认为 array.length)。如果为负值，表示倒数。</p>
+</li>
+</ul>
+<h4 id="entries-方法返回一个数组的迭代对象，该对象包含数组的键值对-key-value-。"><a href="#entries-方法返回一个数组的迭代对象，该对象包含数组的键值对-key-value-。" class="headerlink" title="entries() 方法返回一个数组的迭代对象，该对象包含数组的键值对 (key/value)。"></a>entries() 方法返回一个数组的迭代对象，该对象包含数组的键值对 (key/value)。</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var fruits = [<span class="string">"Banana"</span>, <span class="string">"Orange"</span>, <span class="string">"Apple"</span>, <span class="string">"Mango"</span>];</span><br><span class="line">fruits.entries();</span><br><span class="line"></span><br><span class="line"><span class="comment"># [0, "Banana"]</span></span><br><span class="line"><span class="comment"># [1, "Orange"]</span></span><br><span class="line"><span class="comment"># [2, "Apple"]</span></span><br><span class="line"><span class="comment"># [3, "Mango"]</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="toString-把数组转换为字符串，并返回结果。"><a href="#toString-把数组转换为字符串，并返回结果。" class="headerlink" title="toString()    把数组转换为字符串，并返回结果。"></a>toString()    把数组转换为字符串，并返回结果。</h4><h4 id="every-检测数值元素的每个元素是否都符合条件。与some（）对应"><a href="#every-检测数值元素的每个元素是否都符合条件。与some（）对应" class="headerlink" title="every() 检测数值元素的每个元素是否都符合条件。与some（）对应"></a>every() 检测数值元素的每个元素是否都符合条件。与some（）对应</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var ages = [32, 33, 16, 40];</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> checkAdult(age) &#123;</span><br><span class="line">    <span class="built_in">return</span> age &gt;= 18;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">myFunction</span></span>() &#123;</span><br><span class="line">    document.getElementById(<span class="string">"demo"</span>).innerHTML = ages.every(checkAdult);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//<span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>定义和用法</li>
+</ul>
+<p>every() 方法用于检测数组所有元素是否都符合指定条件（通过函数提供）。</p>
+<p>every() 方法使用指定函数检测数组中的所有元素：</p>
+<p>如果数组中检测到有一个元素不满足，则整个表达式返回 false ，且剩余的元素不会再进行检测。<br>如果所有元素都满足条件，则返回 true。<br>注意： every() 不会对空数组进行检测。</p>
+<p>注意： every() 不会改变原始数组。</p>
+<h4 id="fill-方法用于将一个固定值替换数组的元素。"><a href="#fill-方法用于将一个固定值替换数组的元素。" class="headerlink" title="fill() 方法用于将一个固定值替换数组的元素。"></a>fill() 方法用于将一个固定值替换数组的元素。</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var fruits = [<span class="string">"Banana"</span>, <span class="string">"Orange"</span>, <span class="string">"Apple"</span>, <span class="string">"Mango"</span>];</span><br><span class="line">fruits.fill(<span class="string">"Runoob"</span>);</span><br><span class="line">//Runoob,Runoob,Runoob,Runoob</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>语法</li>
+</ul>
+<p>array.fill(value, start, end)</p>
+<h4 id="keys-方法-用于从数组创建一个包含数组键的可迭代对象。"><a href="#keys-方法-用于从数组创建一个包含数组键的可迭代对象。" class="headerlink" title="keys() 方法 用于从数组创建一个包含数组键的可迭代对象。"></a>keys() 方法 用于从数组创建一个包含数组键的可迭代对象。</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var fruits = [<span class="string">"Banana"</span>, <span class="string">"Orange"</span>, <span class="string">"Apple"</span>, <span class="string">"Mango"</span>];</span><br><span class="line">var x = fruits.keys();</span><br><span class="line"> x.next().value; //0</span><br><span class="line">  x.next().value;//1</span><br><span class="line">   x.next().value;//2</span><br></pre></td></tr></table></figure>
+
+<h4 id="lastIndexOf-方法-返回一个指定的元素在数组中最后出现的位置，从该字符串的后面向前查找。"><a href="#lastIndexOf-方法-返回一个指定的元素在数组中最后出现的位置，从该字符串的后面向前查找。" class="headerlink" title="lastIndexOf() 方法 返回一个指定的元素在数组中最后出现的位置，从该字符串的后面向前查找。"></a>lastIndexOf() 方法 返回一个指定的元素在数组中最后出现的位置，从该字符串的后面向前查找。</h4><p>提示： 如果你想查找数组首次出现的位置，请使用 indexOf() 方法。</p>
+<ul>
+<li>语法<br>array.lastIndexOf(item,start)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//数组中的四个位置以前 查找字符串 &quot;Apple&quot;出现的位置</span><br><span class="line">var fruits=[&quot;Banana&quot;,&quot;Orange&quot;,&quot;Apple&quot;,&quot;Mango&quot;,&quot;Banana&quot;,&quot;Orange&quot;,&quot;Apple&quot;];</span><br><span class="line">var a = fruits.lastIndexOf(&quot;Apple&quot;,4);</span><br></pre></td></tr></table></figure>
+
+<h4 id="valueOf-返回数组对象的原始值。"><a href="#valueOf-返回数组对象的原始值。" class="headerlink" title="valueOf()    返回数组对象的原始值。"></a>valueOf()    返回数组对象的原始值。</h4><p>该原始值由 Array 对象派生的所有对象继承。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -529,13 +921,30 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+            <h2 id="单个react组件性能优化"><a href="#单个react组件性能优化" class="headerlink" title="单个react组件性能优化"></a>单个react组件性能优化</h2><h3 id="render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量"><a href="#render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量" class="headerlink" title="render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量"></a>render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量</h3><p>首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法</p>
+<p>大家应该都能想到，无非就是三种，如下图：</p>
+<p>![]{/images/2-1.png}</p>
+<p>第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法；</p>
+<p>但是哪一种方法的性能最好，是我们要考虑的问题。应该大家都知道答案：第一种的性能最好。</p>
+<ul>
+<li><p>因为第一种，构造函数每一次渲染的时候只会执行一遍；</p>
+</li>
+<li><p>第二种方法，在每次render()的时候都会重新执行一遍函数；</p>
+</li>
+<li><p>第三种方法的话，每一次render()的时候，都会生成一个新的箭头函数，即使两个箭头函数的内容是一样的。</p>
+<p>第三种方法我们可以举一个例子，因为react判断是否需要进行render是浅层比较，简单来说就是通过===来判断的，如果state或者prop的类型是字符串或者数字，只要值相同，那么浅层比较就会认为其相同；</p>
+<p>但是如果前者的类型是复杂的对象的时候，我们知道对象是引用类型，浅层比较只会认为这两个prop是不是同一个引用，如果不是，哪怕这两个对象中的内容完全一样，也会被认为是两个不同的prop。</p>
+</li>
+</ul>
+<p>举个例子：</p>
+<p>当我们给组件Foo给名为style的prop赋值；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Foo style=&#123;&#123; color:<span class="string">"red"</span> &#125;&#125;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>使用这种方法，每一次渲染都会被认为是一个style这个prop发生了变化，因为每一次都会产生一个对象给style。</p>
+<p>那么我们应该如何改进，如果想要让react渲染的时候认为前后对象类型prop相同，则必须要保证prop指向同一个javascript对象，如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const fooStyle = &#123; color: <span class="string">"red"</span> &#125;; //确保这个初始化只执行一次，不要放在render中，可以放在构造函数中</span><br><span class="line"></span><br><span class="line">&lt;Foo style=&#123;fooStyle&#125; /&gt;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<p>这个问题是我们在平时的编码中可以避免的。</p>
 <h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 
 <p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
@@ -1024,6 +1433,7 @@ title: My First Blog
         
           
             <p>我们在打包的时候需要耗费非常多的时间，所以在一些大型项目的时候需要提升webpack的打包效率。</p>
+<h2 id="打点"><a href="#打点" class="headerlink" title="打点"></a>打点</h2><p>   使用speed-measure-webpack-plugin测试</p>
 <h2 id="跟上技术的迭代（node-npm-yarn）"><a href="#跟上技术的迭代（node-npm-yarn）" class="headerlink" title="跟上技术的迭代（node,npm,yarn）"></a>跟上技术的迭代（node,npm,yarn）</h2><p>　升级webpack，node，npm，yarn的版本。新的版本会做优化</p>
 <h2 id="在尽可能少的模块上应用Loader"><a href="#在尽可能少的模块上应用Loader" class="headerlink" title="在尽可能少的模块上应用Loader"></a>在尽可能少的模块上应用Loader</h2><p>比如曾经有个功能将this指向window的功能</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rules:[&#123;</span><br><span class="line">　　use:[&#123;</span><br><span class="line">　　　　loader: <span class="string">'imports-loader?this=&gt;window'</span></span><br><span class="line">　　&#125;]</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
@@ -1643,374 +2053,11 @@ title: My First Blog
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/18webpack中css文件的代码分割和压缩/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/18webpack中css文件的代码分割和压缩/" itemprop="url">webpack系列-18webpack中css文件的代码分割</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T17:47:20+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack系列/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack系列</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　output: &#123;</span><br><span class="line">　　　　filename: <span class="string">'[name].js'</span>,</span><br><span class="line">　　　　chunkFilename: <span class="string">'[name].chunk.js'</span>,</span><br><span class="line">　　　　path: path.resolve(__dirname, <span class="string">'../dist'</span>)</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在看别人写的webpack，output配置项，肯跟会碰到chunkFilename这样的配置项，那这个是什么意思呢？filename和chunkFilename有什么区别呢？首先看个例子</p>
-<p>index.html</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">async <span class="keyword">function</span> <span class="function"><span class="title">getComponent</span></span>() &#123;</span><br><span class="line">　　const &#123; default: _ &#125; = await import(/* webpackChunkName:<span class="string">'lodash'</span> */<span class="string">'lodash'</span>);</span><br><span class="line">　　const element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　element.innerHTML = _.join([<span class="string">'1'</span>, <span class="string">'2'</span>], <span class="string">'-'</span>);</span><br><span class="line">　　<span class="built_in">return</span> element</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　getComponent().<span class="keyword">then</span>( element =&gt;&#123;</span><br><span class="line">　　　　document.body.appendChild(element);</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>webpack.common.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　entry: &#123;</span><br><span class="line">　　　　main: <span class="string">'./src/index.js'</span></span><br><span class="line">　　&#125;,</span><br><span class="line">　　output: &#123;</span><br><span class="line">　　　　filename: <span class="string">'[name].js'</span>,</span><br><span class="line">　　　　chunkFilename: <span class="string">'[name].chunk.js'</span>,</span><br><span class="line">　　　　path: path.resolve(__dirname, <span class="string">'../dist'</span>)</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行npm run dev-build打包。打开dist目录，发现第三方模块打包好的名字叫vendors<del>lodash.chunk.js，不再是之前的vendors</del>lodash.js。我们的入口文件对应的都是filename的输出。如果不是入口文件，是异步引入或者间接产生的js文件，他就会走chunkFilename这个输出的配置参数。</p>
-<p>接下来进入主题，css代码的分割<br>index.html</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import <span class="string">'./style.css'</span>;</span><br><span class="line">console.log(<span class="string">' hello world '</span>);</span><br></pre></td></tr></table></figure>
-
-<p>style.css</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">body&#123;</span><br><span class="line">　　background: <span class="comment">#abcdef;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行npm run dev-build。发现打包生成的文件只有main.js 和 vendors~main.chunk.js。但是浏览器打开index.html。背景已经有了。这是怎么回事呢？webpack在做css的打包的时候，会直接打包到js里面</p>
-<p>如果我希望在打包生成代码的时候，如果我引入了css文件，那么把css文件打包到dist目录下。而不是直接引入到js文件里面。那么就需要引入一个插件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/plugins/mini-css-extract-plugin</span><br><span class="line"></span><br><span class="line">npm install --save-dev mini-css-extract-plugin</span><br></pre></td></tr></table></figure>
-
-<p>这个插件可以对css进行代码分割。这个插件不适合开发环境，因为官网说了，这个插件现在还暂时不支持热更新。</p>
-<p>安装好之后看怎么使用，首先要在webpack中引入这个插件。首先打开线上配置文件</p>
-<p>webpack.prod.js</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">const merge = require(&apos;webpack-merge&apos;);</span><br><span class="line">const commonConfig = require(&apos;./webpack.common.js&apos;);</span><br><span class="line">const MiniCssExtractPlugin = require(&apos;mini-css-extract-plugin&apos;);</span><br><span class="line"></span><br><span class="line">const prodConfig = &#123;</span><br><span class="line">　　mode: &apos;production&apos;,</span><br><span class="line">　　devtool: &apos;cheap-module-source-map&apos;,</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　test: /\.scss$/,</span><br><span class="line">　　　　　　use: [</span><br><span class="line">　　　　　　　　MiniCssExtractPlugin.loader,</span><br><span class="line">　　　　　　　　&#123;</span><br><span class="line">　　　　　　　　　　loader: &apos;css-loader&apos;,</span><br><span class="line">　　　　　　　　　　options: &#123;</span><br><span class="line">　　　　　　　　　　　　importLoaders: 2</span><br><span class="line">　　　　　　　　　　&#125;</span><br><span class="line">　　　　　　　　&#125;,</span><br><span class="line">　　　　　　　　&apos;sass-loader&apos;,</span><br><span class="line">　　　　　　　　&apos;postcss-loader&apos;</span><br><span class="line">　　　　　　]</span><br><span class="line">　　　　&#125;,&#123;</span><br><span class="line">　　　　　　test: /\.css$/,</span><br><span class="line">　　　　　　use: [</span><br><span class="line">　　　　　　　　MiniCssExtractPlugin.loader,</span><br><span class="line">　　　　　　　　&apos;css-loader&apos;,</span><br><span class="line">　　　　　　　　&apos;postcss-loader&apos;</span><br><span class="line">　　　　　　]</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;,</span><br><span class="line">　　plugins:[</span><br><span class="line">　　　　new MiniCssExtractPlugin(&#123;&#125;)</span><br><span class="line">　　]</span><br><span class="line">&#125;</span><br><span class="line">module.exports = merge(commonConfig, prodConfig);</span><br></pre></td></tr></table></figure>
-
-<p>然后对应到webpack.common.js里面删除css,scss相关到配置。运行npm run build。发现多出了两个文件main.css 和 main.css.map</p>
-<p>css打包好后，是未压缩的，要将打包好的css进行压缩，安装，optimize-css-assets-webpack-plugin</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install optimize-css-assets-webpack-plugin -D</span><br></pre></td></tr></table></figure>
-
-<p>在webpack.props.js引入并配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">const OptimizeCSSAssetsPlugin = require(&apos;optimize-css-assets-webpack-plugin&apos;);</span><br><span class="line">　　module.exports = &#123;</span><br><span class="line">　　　　optimization: &#123;</span><br><span class="line">　　　　　　minimizer: [new OptimizeCSSAssetsPlugin(&#123;&#125;)],</span><br><span class="line">　　　　&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行 npm run build。会发现css文件被自动的合并压缩。</p>
-<p>还有更高级的用法， 假设有很多个css，要打包到一个css文件里面</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/plugins/mini-css-extract-plugin</span><br></pre></td></tr></table></figure>
-
-<p>也可以实现</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">　　splitChunks: &#123;</span><br><span class="line">　　　　cacheGroups: &#123;</span><br><span class="line">　　　　　　styles: &#123;</span><br><span class="line">　　　　　　　　name: &apos;styles&apos;,</span><br><span class="line">　　　　　　　　test: /\.css$/,</span><br><span class="line">　　　　　　　　chunks: &apos;all&apos;,</span><br><span class="line">　　　　　　　　enforce: true, // 忽略到前面到配置，不管是minSize,maxSize等等，只要是css，都打包到同一个文件中</span><br><span class="line">　　　　　　&#125;,</span><br><span class="line">　　　　&#125;,</span><br><span class="line">　　&#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/18webpack打包分析，preloading,prefetching的使用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/18webpack打包分析，preloading,prefetching的使用/" itemprop="url">webpack系列-18webpack打包分析，preloading,prefetching的使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T15:58:30+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack系列/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack系列</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>打包分析：当我们使用webpack进行打包之后呢，我们可以借助webpack的一些打包工具进行一定的分析，然后看一下他打包是否合理。<br>webpack官网提供的一个分析工具的仓库：<a href="https://github.com/webpack/analyse。" target="_blank" rel="noopener">https://github.com/webpack/analyse。</a><br>如果要对我们自个打包生成的代码进行一个分析，首先要生成一个打包过程的描述文件，将–profile –json &gt; stats.json粘贴到package.json</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"dev-build"</span>: <span class="string">"webpack --profile --json &gt; stats.json --config ./build/webpack.dev.js"</span>,</span><br><span class="line">　　<span class="string">"bundle"</span>: <span class="string">"webpack"</span>,</span><br><span class="line">　　<span class="string">"watch"</span>: <span class="string">"webpack --watch"</span>,</span><br><span class="line">　　<span class="string">"dev"</span>: <span class="string">"webpack-dev-server --config ./build/webpack.dev.js"</span>,</span><br><span class="line">　　<span class="string">"build"</span>: <span class="string">"webpack --config ./build/webpack.prod.js"</span>,</span><br><span class="line">　　<span class="string">"server"</span>: <span class="string">"node server.js"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p> 他的意思是我把打包过程中的一些描述放置到stats.json的文件里面。这个文件的格式是一个json的格式。这么写完之后，我们进行一次打包。打包完之后在根目录出现一个叫做stats.json的文件。这个文件就是webpack自动生成的对应的我们webpack的描述文件。生成这个文件之后打开分析仓库，进入<a href="http://webpack.github.io/analyse/。把我们生成的stats.json传进去。会得到下面的这种结果" target="_blank" rel="noopener">http://webpack.github.io/analyse/。把我们生成的stats.json传进去。会得到下面的这种结果</a></p>
-<p><img src="/images/18-1.png" alt></p>
-<p> 告诉我们，整个打包用的是webpack 4.30.0的版本进行的打包。耗时，1.24s。打包对应的hash值是c631e7b50a03b44511b4。里面有4个模块。2个chunk，也就是2个文件，打包生成3个静态文件，打包过程没有警告，没有异常。上面的后面是每个的详细解析</p>
-<p>除了这个工具之外，还有其他的分析工具，</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/guides/code-splitting/<span class="comment">#bundle-analysis</span></span><br></pre></td></tr></table></figure>
-
-<p>可以安装webpack-bundle-analyzer。我们做复杂项目的时候，代码分割跟我们的预期不相符，就可以通过这个做一些代码分析。看一看是不是有些代码重复打包了，是不是有哪些地方可以优化，哪一部分耗时比较长。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">optimization: &#123;</span><br><span class="line">　　splitChunks: &#123;</span><br><span class="line">　　　　chunks: <span class="string">'all'</span></span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们现在这个chunks是all，如果我们将此注释掉，默认的值是什么呢，是aysnc。也就是webpack默认只对异步代码进行分割。那么webpack为什么这么做呢。像jquery，lodash，这种库，应该对他进行分割。这样浏览器可以对他缓存，提高访问速度。但是我们只是提高第二次访问的速度。那真正的对页面做优化，webpack想达到的效果是，当你第一次访问页面的时候，他的加载速度就是最快的。要满足这种，靠将jquery,lodash打包成单独的文件是满足不了需求的。那么webpack真正希望我们编写代码的方式是什么样的呢？</p>
-<p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// async <span class="keyword">function</span> <span class="function"><span class="title">getComponent</span></span>() &#123;</span><br><span class="line">// const &#123; default: _ &#125; = await import(/* webpackChunkName:<span class="string">"lodash"</span> */ <span class="string">'lodash'</span>);</span><br><span class="line">// var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">// element.innerHTML = _.join([<span class="string">'1'</span>, <span class="string">' '</span>, <span class="string">'2'</span>], <span class="string">'-'</span>);</span><br><span class="line">// <span class="built_in">return</span> element;</span><br><span class="line">// &#125;</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">// document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">// getComponent().<span class="keyword">then</span>(element =&gt; &#123;</span><br><span class="line">// document.body.appendChild(element);</span><br><span class="line">// &#125;)</span><br><span class="line">// &#125;)</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　element.innerHTML = <span class="string">'1-2'</span>;</span><br><span class="line">　　document.body.appendChild(element);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>下面的这个方式是我们以前标准的js写法。这段代码肯定没有问题。但是这个代码是否就完全没有优化的空间了，或者说这是不是webpack推荐的代码编写的方式。显然不是</p>
-<p>打开控制台，快捷键 command+shift+p。 输入coverage，打开coverage，点击录制，刷新页面。可以看到main.js的利用率只有75.5%。那么为什么是75.5％呢，看到上面的main.js，一些红色，一些绿色，绿色的才有意义，红色的没用。click里面的代码，只有点击后才变绿。不然是红色，点击前是没有用的代码。一开始加载的时候，这里面的代码就不会执行，不会执行的代码，一开始就让页面下载下来，实际上就会浪费执行的性能</p>
-<p>那么webpack希望这种交互的代码应该放到异步加载的模块里面去写，新建一个click.js<br>index.html</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-
-<p>index.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　import(<span class="string">'./click.js'</span>).<span class="keyword">then</span>((&#123;default: func&#125;) =&gt; &#123;</span><br><span class="line">　　　　func()</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>click.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">handleClick</span></span>()&#123;</span><br><span class="line">　　var element = document.createElement(<span class="string">'div'</span>);</span><br><span class="line">　　element.innerHTML = <span class="string">'1-2'</span>;</span><br><span class="line">　　document.body.appendChild(element);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> default handleClick;</span><br></pre></td></tr></table></figure>
-
-<p>这个时候打包后运行index.html，发现main.js的利用率变成了78％，因为加载页面的时候并没有加载业务。所以webpack希望多写异步的代码，所以默认的chunks默认配置的是async。异步的。</p>
-<p>比如用户未登录的情况下，首先我只加载首页的逻辑，不加载登录的逻辑，那么等我点击登录的时候再去记载登录，会不会很慢呢，那么preloading,prefetching就是解决这个问题的。在首页加载好之后，空闲的时间偷偷的去把登录的模块加载好。如果利用这个空闲的时间，两个条件都满足了。那么怎么做呢</p>
-<p>将 /* webpackPrefetch: true */ 这句话放到引入的前面<br>index.js </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">document.addEventListener(<span class="string">'click'</span>, ()=&gt; &#123;</span><br><span class="line">　　import(/* webpackPrefetch: <span class="literal">true</span> */<span class="string">'./click.js'</span>).<span class="keyword">then</span>((&#123;default: func&#125;) =&gt; &#123;</span><br><span class="line">　　　　func()</span><br><span class="line">　　&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>意思是的当我点击的时候，去加载click.js，但不是非得点击的时候才去加载，而是主要的js加载好之后，有空闲的时候，会偷偷的去家在click.js。上面的这种魔法注释是prefetch的用法 </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://webpack.js.org/guides/code-splitting<span class="comment">#prefetchingpreloading-modules</span></span><br></pre></td></tr></table></figure>
-
-<p>preloading,prefetching的区别。prefetching会等主要的js加载完之后，空闲的时候再去加载click.js<br>/* webpackPreload: true */。preload是和主要的文件一起去加载的，所以preload还是不怎么合理的。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2056,7 +2103,7 @@ title: My First Blog
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2067,7 +2114,7 @@ title: My First Blog
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2124,7 +2171,7 @@ title: My First Blog
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
 
 
 
@@ -2223,6 +2270,13 @@ title: My First Blog
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
 

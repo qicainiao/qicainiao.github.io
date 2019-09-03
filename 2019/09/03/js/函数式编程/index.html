@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="单个react组件性能优化render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法 大家应该都能想到，无非就是三种，如下图： ![]{/images/2-1.png} 第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法">
+<meta name="description" content="函数组合最近后台接口返回的数据格式不对，数组总是以字符串的形式返回，前端统一转化采用了函数式编程的方式解决 1234567891011121314151617var compose = function(f,g)&amp;#123;    return function(x)&amp;#123;       return f(g(x));    &amp;#125; &amp;#125;var g = function(str)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="react性能优化一">
-<meta property="og:url" content="http://yoursite.com/2019/08/30/react性能优化/react性能优化1/index.html">
+<meta property="og:title" content="函数式编程">
+<meta property="og:url" content="http://yoursite.com/2019/09/03/js/函数式编程/index.html">
 <meta property="og:site_name" content="qicainiao&#39;s Blog">
-<meta property="og:description" content="单个react组件性能优化render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法 大家应该都能想到，无非就是三种，如下图： ![]{/images/2-1.png} 第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法">
+<meta property="og:description" content="函数组合最近后台接口返回的数据格式不对，数组总是以字符串的形式返回，前端统一转化采用了函数式编程的方式解决 1234567891011121314151617var compose = function(f,g)&amp;#123;    return function(x)&amp;#123;       return f(g(x));    &amp;#125; &amp;#125;var g = function(str)">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-30T10:31:33.964Z">
+<meta property="og:updated_time" content="2019-09-03T09:22:33.459Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="react性能优化一">
-<meta name="twitter:description" content="单个react组件性能优化render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法 大家应该都能想到，无非就是三种，如下图： ![]{/images/2-1.png} 第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法">
+<meta name="twitter:title" content="函数式编程">
+<meta name="twitter:description" content="函数组合最近后台接口返回的数据格式不对，数组总是以字符串的形式返回，前端统一转化采用了函数式编程的方式解决 1234567891011121314151617var compose = function(f,g)&amp;#123;    return function(x)&amp;#123;       return f(g(x));    &amp;#125; &amp;#125;var g = function(str)">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/08/30/react性能优化/react性能优化1/">
+  <link rel="canonical" href="http://yoursite.com/2019/09/03/js/函数式编程/">
 
 
 
 
 
-  <title>react性能优化一 | qicainiao's Blog</title>
+  <title>函数式编程 | qicainiao's Blog</title>
   
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/30/react性能优化/react性能优化1/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/03/js/函数式编程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="qicainiao">
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">react性能优化一</h1>
+          <h1 class="post-title" itemprop="name headline">函数式编程</h1>
         
 
         <div class="post-meta">
@@ -271,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-30T17:05:59+08:00">
-                2019-08-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-03T14:23:17+08:00">
+                2019-09-03
               </time>
             
 
@@ -294,8 +294,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/react性能优化/" itemprop="url" rel="index">
-                    <span itemprop="name">react性能优化</span>
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
                   </a>
                 </span>
 
@@ -331,37 +331,34 @@
       
 
       
-        <h2 id="单个react组件性能优化"><a href="#单个react组件性能优化" class="headerlink" title="单个react组件性能优化"></a>单个react组件性能优化</h2><h3 id="render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量"><a href="#render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量" class="headerlink" title="render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量"></a>render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量</h3><p>首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法</p>
-<p>大家应该都能想到，无非就是三种，如下图：</p>
-<p>![]{/images/2-1.png}</p>
-<p>第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法；</p>
-<p>但是哪一种方法的性能最好，是我们要考虑的问题。应该大家都知道答案：第一种的性能最好。</p>
-<ul>
-<li><p>因为第一种，构造函数每一次渲染的时候只会执行一遍；</p>
-</li>
-<li><p>第二种方法，在每次render()的时候都会重新执行一遍函数；</p>
-</li>
-<li><p>第三种方法的话，每一次render()的时候，都会生成一个新的箭头函数，即使两个箭头函数的内容是一样的。</p>
-<p>第三种方法我们可以举一个例子，因为react判断是否需要进行render是浅层比较，简单来说就是通过===来判断的，如果state或者prop的类型是字符串或者数字，只要值相同，那么浅层比较就会认为其相同；</p>
-<p>但是如果前者的类型是复杂的对象的时候，我们知道对象是引用类型，浅层比较只会认为这两个prop是不是同一个引用，如果不是，哪怕这两个对象中的内容完全一样，也会被认为是两个不同的prop。</p>
-</li>
-</ul>
-<p>举个例子：</p>
-<p>当我们给组件Foo给名为style的prop赋值；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Foo style=&#123;&#123; color:<span class="string">"red"</span> &#125;&#125;</span><br></pre></td></tr></table></figure>
+        <h2 id="函数组合"><a href="#函数组合" class="headerlink" title="函数组合"></a>函数组合</h2><p>最近后台接口返回的数据格式不对，数组总是以字符串的形式返回，前端统一转化<br>采用了函数式编程的方式解决</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var compose = function(f,g)&#123;</span><br><span class="line">    return function(x)&#123;</span><br><span class="line">       return f(g(x));</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var g = function(str)&#123;</span><br><span class="line">     console.log(str)</span><br><span class="line">   return str.replace(/^\[|\]$/g,&apos;&apos;);</span><br><span class="line">&#125;</span><br><span class="line">var f = function(str)&#123;</span><br><span class="line">    console.log(str)</span><br><span class="line">    return str.split(&apos;,&apos;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var t = compose(f,g)</span><br><span class="line">console.log(t(&quot;[123,456]&quot;))</span><br></pre></td></tr></table></figure>
 
-<p>使用这种方法，每一次渲染都会被认为是一个style这个prop发生了变化，因为每一次都会产生一个对象给style。</p>
-<p>那么我们应该如何改进，如果想要让react渲染的时候认为前后对象类型prop相同，则必须要保证prop指向同一个javascript对象，如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const fooStyle = &#123; color: <span class="string">"red"</span> &#125;; //确保这个初始化只执行一次，不要放在render中，可以放在构造函数中</span><br><span class="line"></span><br><span class="line">&lt;Foo style=&#123;fooStyle&#125; /&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="Pointfree"><a href="#Pointfree" class="headerlink" title="Pointfree"></a>Pointfree</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fn = R.pipe(f1, f2, f3);</span><br></pre></td></tr></table></figure>
 
-<p>这个问题是我们在平时的编码中可以避免的。</p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>这个公式说明，如果先定义f1、f2、f3，就可以算出fn。整个过程，根本不需要知道a或b。</p>
+<p>也就是说，我们完全可以把数据处理的过程，定义成一种与参数无关的合成运算。不需要用到代表数据的那个参数，只要把一些简单的运算步骤合成在一起即可。</p>
+<p>这就叫做 Pointfree：不使用所要处理的值，只合成运算过程。中文可以译作”无值”风格。</p>
+<p>请看下面的例子。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var addOne = x =&gt; x + 1;</span><br><span class="line">var square = x =&gt; x * x;</span><br><span class="line"></span><br><span class="line">var addOneThenSquare = R.pipe(addOne, square);</span><br><span class="line"></span><br><span class="line">addOneThenSquare(2) //  9</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>addOneThenSquare是一个合成函数。定义它的时候，根本不需要提到要处理的值，这就是 Pointfree。</p>
+<h2 id="JavaScript中的Pipe"><a href="#JavaScript中的Pipe" class="headerlink" title="JavaScript中的Pipe"></a>JavaScript中的Pipe</h2><p>  先用一个最简单的例子来看一下什么是pipe，现在我们有两个最简单的函数addOne和addTwo，分别对于参数加一和加二：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const addOne = x=&gt;x+1;</span><br><span class="line">const addTwo = x=&gt;x*2;</span><br><span class="line">const addThree = x=&gt;x-3;</span><br><span class="line">const addFour= x=&gt;x*4;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-<h2 id="props尽量只传需要的数据，避免多余的更新"><a href="#props尽量只传需要的数据，避免多余的更新" class="headerlink" title="props尽量只传需要的数据，避免多余的更新"></a>props尽量只传需要的数据，避免多余的更新</h2><h2 id="组件尽量解耦，比如一个input-list组建，可以将list分成一个PureComponent，只在list数据变化是更新"><a href="#组件尽量解耦，比如一个input-list组建，可以将list分成一个PureComponent，只在list数据变化是更新" class="headerlink" title="组件尽量解耦，比如一个input+list组建，可以将list分成一个PureComponent，只在list数据变化是更新"></a>组件尽量解耦，比如一个input+list组建，可以将list分成一个PureComponent，只在list数据变化是更新</h2><h2 id="如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index"><a href="#如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index" class="headerlink" title="如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index"></a>如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index</h2>
+<p>  现在我们想让一个参数通过第一个参数之后再通过第二个参数，最简单直接方式<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addTwo(addOne(1)) //4</span><br></pre></td></tr></table></figure></p>
+<p>  我们来写一个简单的pipe函数，它返回一个新的函数，来达到我们上面的目的：<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const pipe = (fun1,fun2) =&gt; x=&gt;fun2(fun1(x))</span><br><span class="line"></span><br><span class="line">const addTotal = pipe(addOne,addTwo);</span><br><span class="line">addTotal(1)</span><br></pre></td></tr></table></figure></p>
+<p>  嗯，现在还看不出来什么好处，但是当我们要经过的Transform越来越多的时候，这样的好处就会越来越明显：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  const addTen = pipe(</span><br><span class="line">  addOne,</span><br><span class="line">  addTwo,</span><br><span class="line">  addThree,</span><br><span class="line">  addFour</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>  所以我们需要一个更牛逼的pipe函数，它可以接受任意数量的参数，并从第一个开始，依次接受原始数值，输出值传递给下一个函数。等等，我们好像想到了什么，遍历一个数组，把输出值当作下一个的输入，怎么听着都和reduce很像。所以，直接用Array.prototype.reduce就可以写一个简单的pipe函数：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> const pipe = (...args) =&gt; x =&gt; </span><br><span class="line">args.reduce(</span><br><span class="line">  (outputValue, currentFunction) =&gt; currentFunction(outputValue),</span><br><span class="line">  x</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>  展开</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> const pipe = function(x, ...fns) &#123;</span><br><span class="line">fns.reduce((outputValue, currentFunction) =&gt;  currentFunction(outputValue), x);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>  进一步拆解：<br>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> function pipe(x, ...fns)&#123;</span><br><span class="line">	let accu= x;</span><br><span class="line">	for(let f in fns)&#123;</span><br><span class="line">		accu= f(accu)</span><br><span class="line">	&#125;</span><br><span class="line">	return accu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
       
     </div>
     
@@ -385,8 +382,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/29/hexo静态网站/Hexo+NexT 添加分类、标签、关于菜单项/" rel="next" title="hexo搭建静态网站-Hexo+NexT 添加分类、标签、关于菜单项">
-                <i class="fa fa-chevron-left"></i> hexo搭建静态网站-Hexo+NexT 添加分类、标签、关于菜单项
+              <a href="/2019/09/03/js/数组/" rel="next" title="Array 对象大全">
+                <i class="fa fa-chevron-left"></i> Array 对象大全
               </a>
             
           </div>
@@ -394,10 +391,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/30/react性能优化/手把手测试react性能/" rel="prev" title="手把手测试react性能">
-                手把手测试react性能 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -520,7 +513,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单个react组件性能优化"><span class="nav-number">1.</span> <span class="nav-text">单个react组件性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量"><span class="nav-number">1.1.</span> <span class="nav-text">render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.2.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.3.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#props尽量只传需要的数据，避免多余的更新"><span class="nav-number">2.</span> <span class="nav-text">props尽量只传需要的数据，避免多余的更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件尽量解耦，比如一个input-list组建，可以将list分成一个PureComponent，只在list数据变化是更新"><span class="nav-number">3.</span> <span class="nav-text">组件尽量解耦，比如一个input+list组建，可以将list分成一个PureComponent，只在list数据变化是更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index"><span class="nav-number">4.</span> <span class="nav-text">如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#函数组合"><span class="nav-number">1.</span> <span class="nav-text">函数组合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pointfree"><span class="nav-number">2.</span> <span class="nav-text">Pointfree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JavaScript中的Pipe"><span class="nav-number">3.</span> <span class="nav-text">JavaScript中的Pipe</span></a></li></ol></div>
             
 
           </div>
