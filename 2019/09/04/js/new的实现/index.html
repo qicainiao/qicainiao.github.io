@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="单个react组件性能优化render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法 大家应该都能想到，无非就是三种，如下图： ![]{/images/2-1.png} 第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法">
+<meta name="description" content="new的作用 返回实例对象 实例可以访问到构造函数的属性和方法  实例可以访问到构造函数原型中的属性和方法  12345678910111213//demo:function Person(name, age) &amp;#123;this.name = namethis.age = age&amp;#125;Person.prototype.sayName = function () &amp;#123;console">
 <meta property="og:type" content="article">
-<meta property="og:title" content="react性能优化一">
-<meta property="og:url" content="http://yoursite.com/2019/08/30/react性能优化/react性能优化1/index.html">
+<meta property="og:title" content="new的实现">
+<meta property="og:url" content="http://yoursite.com/2019/09/04/js/new的实现/index.html">
 <meta property="og:site_name" content="qicainiao&#39;s Blog">
-<meta property="og:description" content="单个react组件性能优化render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法 大家应该都能想到，无非就是三种，如下图： ![]{/images/2-1.png} 第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法">
+<meta property="og:description" content="new的作用 返回实例对象 实例可以访问到构造函数的属性和方法  实例可以访问到构造函数原型中的属性和方法  12345678910111213//demo:function Person(name, age) &amp;#123;this.name = namethis.age = age&amp;#125;Person.prototype.sayName = function () &amp;#123;console">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-30T10:31:33.964Z">
+<meta property="og:updated_time" content="2019-09-04T09:39:35.401Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="react性能优化一">
-<meta name="twitter:description" content="单个react组件性能优化render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法 大家应该都能想到，无非就是三种，如下图： ![]{/images/2-1.png} 第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法">
+<meta name="twitter:title" content="new的实现">
+<meta name="twitter:description" content="new的作用 返回实例对象 实例可以访问到构造函数的属性和方法  实例可以访问到构造函数原型中的属性和方法  12345678910111213//demo:function Person(name, age) &amp;#123;this.name = namethis.age = age&amp;#125;Person.prototype.sayName = function () &amp;#123;console">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/08/30/react性能优化/react性能优化1/">
+  <link rel="canonical" href="http://yoursite.com/2019/09/04/js/new的实现/">
 
 
 
 
 
-  <title>react性能优化一 | qicainiao's Blog</title>
+  <title>new的实现 | qicainiao's Blog</title>
   
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/30/react性能优化/react性能优化1/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/04/js/new的实现/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="qicainiao">
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">react性能优化一</h1>
+          <h1 class="post-title" itemprop="name headline">new的实现</h1>
         
 
         <div class="post-meta">
@@ -271,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-30T17:05:59+08:00">
-                2019-08-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-04T17:39:01+08:00">
+                2019-09-04
               </time>
             
 
@@ -294,8 +294,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/react性能优化/" itemprop="url" rel="index">
-                    <span itemprop="name">react性能优化</span>
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
                   </a>
                 </span>
 
@@ -331,37 +331,28 @@
       
 
       
-        <h2 id="单个react组件性能优化"><a href="#单个react组件性能优化" class="headerlink" title="单个react组件性能优化"></a>单个react组件性能优化</h2><h3 id="render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量"><a href="#render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量" class="headerlink" title="render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量"></a>render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量</h3><p>首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法</p>
-<p>大家应该都能想到，无非就是三种，如下图：</p>
-<p>![]{/images/2-1.png}</p>
-<p>第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法；</p>
-<p>但是哪一种方法的性能最好，是我们要考虑的问题。应该大家都知道答案：第一种的性能最好。</p>
-<ul>
-<li><p>因为第一种，构造函数每一次渲染的时候只会执行一遍；</p>
-</li>
-<li><p>第二种方法，在每次render()的时候都会重新执行一遍函数；</p>
-</li>
-<li><p>第三种方法的话，每一次render()的时候，都会生成一个新的箭头函数，即使两个箭头函数的内容是一样的。</p>
-<p>第三种方法我们可以举一个例子，因为react判断是否需要进行render是浅层比较，简单来说就是通过===来判断的，如果state或者prop的类型是字符串或者数字，只要值相同，那么浅层比较就会认为其相同；</p>
-<p>但是如果前者的类型是复杂的对象的时候，我们知道对象是引用类型，浅层比较只会认为这两个prop是不是同一个引用，如果不是，哪怕这两个对象中的内容完全一样，也会被认为是两个不同的prop。</p>
-</li>
+        <h2 id="new的作用"><a href="#new的作用" class="headerlink" title="new的作用"></a>new的作用</h2><ul>
+<li>返回实例对象</li>
+<li>实例可以访问到构造函数的属性和方法 </li>
+<li>实例可以访问到构造函数原型中的属性和方法</li>
 </ul>
-<p>举个例子：</p>
-<p>当我们给组件Foo给名为style的prop赋值；</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Foo style=&#123;&#123; color:<span class="string">"red"</span> &#125;&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//demo:</span><br><span class="line"></span><br><span class="line">function Person(name, age) &#123;</span><br><span class="line">this.name = name</span><br><span class="line">this.age = age</span><br><span class="line">&#125;</span><br><span class="line">Person.prototype.sayName = function () &#123;</span><br><span class="line">console.log(&quot;this.name:&quot;,this.name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const man = new Person(&quot;张三&quot;,18)</span><br><span class="line">console.log(&quot;demo man:&quot;, man) //Person &#123; name: &apos;张三&apos;, age: 18 &#125;</span><br><span class="line">man.sayName() //this.name: 张三</span><br></pre></td></tr></table></figure>
 
-<p>使用这种方法，每一次渲染都会被认为是一个style这个prop发生了变化，因为每一次都会产生一个对象给style。</p>
-<p>那么我们应该如何改进，如果想要让react渲染的时候认为前后对象类型prop相同，则必须要保证prop指向同一个javascript对象，如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const fooStyle = &#123; color: <span class="string">"red"</span> &#125;; //确保这个初始化只执行一次，不要放在render中，可以放在构造函数中</span><br><span class="line"></span><br><span class="line">&lt;Foo style=&#123;fooStyle&#125; /&gt;</span><br></pre></td></tr></table></figure>
+<p>解析</p>
+<p>思路:</p>
+<p>创建一个新对象obj<br>把obj的<strong>proto</strong>指向Dog.prototype实现继承<br>执行构造函数,传递参数,改变this指向,Dog.call(obj, …args)<br>返回obj</p>
+<h3 id="初步实现"><a href="#初步实现" class="headerlink" title="初步实现"></a>初步实现</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function myNew() &#123;</span><br><span class="line">const result = new Object() //最终返回的是个对象，所以先new一个出来</span><br><span class="line"></span><br><span class="line">const obj = Array.prototype.shift.call(arguments) //使用shift，截取第一个参数，即我们需要的构造函数</span><br><span class="line"></span><br><span class="line">//这一步其实可以不用，因为shift直接改变原数组，在后面的apply的时候直接传arguments即可</span><br><span class="line">const argArray = Array.prototype.slice.call(arguments)//将构造函数obj的this指向result对象，这样result就可以访问到obj中的属性或方法</span><br><span class="line"></span><br><span class="line">result.__proto__ = obj.prototype // 第二条,继承原型上的属性或方法</span><br><span class="line"></span><br><span class="line">obj.apply(result, argArray) //第一条,将构造函数obj的this指向result对象，这样result就可以访问到obj中的属性或方法</span><br><span class="line"></span><br><span class="line">return result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const b = myNew(Person, &quot;张三&quot;,19)</span><br><span class="line">console.log(&quot;test:&quot;, b) //test: &#123; name: &apos;张三&apos;, age: 19 &#125;</span><br></pre></td></tr></table></figure>
 
-<p>这个问题是我们在平时的编码中可以避免的。</p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>完美实现，(^▽^) 哈哈哈。。。。</p>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>如果构造函数有返回且返回的是个指定对象呢，比如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function Person(name, age) &#123;</span><br><span class="line">this.name = name</span><br><span class="line">this.age = age</span><br><span class="line">this.like = &quot;休息&quot;</span><br><span class="line">return &#123;</span><br><span class="line">like:this.like</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">const man = new Person(&quot;张三&quot;, 18)</span><br><span class="line">console.log(&quot;demo man:&quot;, man) //demo man: &#123; like: &apos;休息&apos; &#125;</span><br><span class="line">console.log(man.name, man.age) //undefined undefined</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>代码实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function myNew() &#123;</span><br><span class="line"></span><br><span class="line">、、、、</span><br><span class="line">、、、、</span><br><span class="line"></span><br><span class="line">const  hasReturn = obj.apply(result,argArray)  //第一条,将构造函数obj的this指向result对象，这样result就可以访问到obj中的属性或方法</span><br><span class="line">                                             //同时看obj构造函数有无返回，且，返回是否为对象，否则，直接返回</span><br><span class="line">return typeof hasReturn === &apos;object&apos; ? hasReturn : result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const b = myNew(Person, &quot;张三&quot;, 19)</span><br><span class="line">console.log(&quot;test:&quot;, b) // test: &#123; like: &apos;休息&apos; &#125;</span><br><span class="line">console.log(b.name, b.age) // undefined undefined</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-<h2 id="props尽量只传需要的数据，避免多余的更新"><a href="#props尽量只传需要的数据，避免多余的更新" class="headerlink" title="props尽量只传需要的数据，避免多余的更新"></a>props尽量只传需要的数据，避免多余的更新</h2><h2 id="组件尽量解耦，比如一个input-list组建，可以将list分成一个PureComponent，只在list数据变化是更新"><a href="#组件尽量解耦，比如一个input-list组建，可以将list分成一个PureComponent，只在list数据变化是更新" class="headerlink" title="组件尽量解耦，比如一个input+list组建，可以将list分成一个PureComponent，只在list数据变化是更新"></a>组件尽量解耦，比如一个input+list组建，可以将list分成一个PureComponent，只在list数据变化是更新</h2><h2 id="如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index"><a href="#如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index" class="headerlink" title="如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index"></a>如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index</h2>
+<p>完成，(＾－＾)V</p>
+<p>tips:如果构造函数没有返回或者返回的不是一个指定对象，比如只是 return “我是字符串” 这种，那返回不返回其实没啥区别<br> new还是返回的实例对象</p>
+
       
     </div>
     
@@ -385,8 +376,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/29/hexo静态网站/Hexo+NexT 添加分类、标签、关于菜单项/" rel="next" title="hexo搭建静态网站-Hexo+NexT 添加分类、标签、关于菜单项">
-                <i class="fa fa-chevron-left"></i> hexo搭建静态网站-Hexo+NexT 添加分类、标签、关于菜单项
+              <a href="/2019/09/03/js/函数式编程/" rel="next" title="函数式编程">
+                <i class="fa fa-chevron-left"></i> 函数式编程
               </a>
             
           </div>
@@ -394,10 +385,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/30/react性能优化/手把手测试react性能/" rel="prev" title="手把手测试react性能">
-                手把手测试react性能 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -520,7 +507,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单个react组件性能优化"><span class="nav-number">1.</span> <span class="nav-text">单个react组件性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量"><span class="nav-number">1.1.</span> <span class="nav-text">render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.2.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.3.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#props尽量只传需要的数据，避免多余的更新"><span class="nav-number">2.</span> <span class="nav-text">props尽量只传需要的数据，避免多余的更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件尽量解耦，比如一个input-list组建，可以将list分成一个PureComponent，只在list数据变化是更新"><span class="nav-number">3.</span> <span class="nav-text">组件尽量解耦，比如一个input+list组建，可以将list分成一个PureComponent，只在list数据变化是更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index"><span class="nav-number">4.</span> <span class="nav-text">如果组件有复用，key值非常重要。因此key的优化，如果有唯一id，尽量不使用循环得到的index</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#new的作用"><span class="nav-number">1.</span> <span class="nav-text">new的作用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初步实现"><span class="nav-number">1.1.</span> <span class="nav-text">初步实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化"><span class="nav-number">1.2.</span> <span class="nav-text">优化</span></a></li></ol></li></ol></div>
             
 
           </div>
