@@ -242,6 +242,194 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/11webpack中使用babel处理es6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/28/webpack系列/11webpack中使用babel处理es6/" itemprop="url">webpack系列-11webpack中使用babel处理es6</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T14:37:10+08:00">
+                2019-08-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webpack系列/" itemprop="url" rel="index">
+                    <span itemprop="name">webpack系列</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">const arr = [</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;),</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;)</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">arr.map(item =&gt; &#123;</span><br><span class="line">　　console.log(item);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>index.html</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">　　&lt;head&gt;</span><br><span class="line">　　　　&lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">　　　　&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">　　　　&lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">　　　　&lt;title&gt;html template&lt;/title&gt;</span><br><span class="line">　　&lt;/head&gt;</span><br><span class="line">　　&lt;body&gt;</span><br><span class="line">　　　　&lt;div id=<span class="string">'root'</span>&gt;&lt;/div&gt;</span><br><span class="line">　　&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>运行npx webpack(用dev-server打包放在了缓存里面，看不到最终的打包内容)。看到打包生成的main.js的最后几行，index里面写的js，原封不动的打包到了main.js里面。这个时候浏览器中运行，可以打印出promise对象。好像是没问题的，这是什么原因呢，这是因为chrome更新比较快，es6里面很多东西，他都做了实现，所以直接在chrome浏览器写es6语法没问题，但是比如在ie或者更新没那么快的浏览器，，，就会报错。。。</p>
+<p>这个时候需要接住babel,<a href="https://babeljs.io/。" target="_blank" rel="noopener">https://babeljs.io/。</a><br>先安装两个包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev babel-loader @babel/core</span><br></pre></td></tr></table></figure>
+
+<p>一个是帮助webpack打包用的工具，一个是babel的核心库<br>webpack配置babel相关</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">"babel-loader"</span></span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再继续安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install @babel/preset-env --save-dev</span><br></pre></td></tr></table></figure>
+
+<p>为什么要安装这个模块，当我们使用babel－loader处理js文件的时候，实际上这个babel-loader只是webpack和babel做通信的一个桥梁，用了他之后，webpack和babel做了打通，但实际上，babel-loader并不会帮助我们把es6语法翻译成es5语法，还需要借助一些其它的模块才能够帮助我们把es6语法翻译成es5语法。babel/preset-env就是这样的一个模块，这里面包含了所有把es6转化成es5的规则。装好之后，还需要在webpack里面配置一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">　　　　　　options:&#123;</span><br><span class="line">　　　　　　　　<span class="string">"presets"</span>: [<span class="string">"@babel/preset-env"</span>]</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再使用npx webpack，看转化后的main.js，发现es6的语法转化成了es5的语法。但是光做到这点不够。为什么呢？因为比如像Promise这样新的语法变量，包括数组里面这个map方法，在低版本的浏览器里，实际上还是不存在的。虽然了语法翻译，但只翻译了一部分。还有一些对象或者函数在一些低版本的浏览器里面还是没有的。</p>
+<p>所以不仅要用preset-env翻译es6，还需要将缺失的语法补充到浏览器里，这个模块就是babel/polyfill。然后把polyfill引入到业务代码的最顶部<br>index.js</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import <span class="string">"@babel/polyfill"</span>;</span><br><span class="line"></span><br><span class="line">const arr = [</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;),</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;)</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">arr.map(item =&gt; &#123;</span><br><span class="line">　　console.log(item);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>处理好后，再运行，会发现原来打包好的main是28kb，现在是534kb。这多出来的内容就是polyfill弥补的内容，所以main.js一下子就变的很大。那么我不想要这么大，我只需要你在我需要补充语法的时候出来相应处理的代码就可以。<br>安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install core-js --save-dev</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">　　　　　　options:&#123;</span><br><span class="line">　　　　　　　　presets: [[<span class="string">'@babel/preset-env'</span>,&#123;</span><br><span class="line">　　　　　　　　/**</span><br><span class="line">　　　　　　　　* 当我做polyfill填充的时候，去加一些低版本特性的时候，我不是把所有特性都加进来</span><br><span class="line">　　　　　　　　* 是根据你的业务代码来决定要加什么</span><br><span class="line">　　　　　　　　*/</span><br><span class="line">　　　　　　　　useBuiltIns: <span class="string">'usage'</span>,</span><br><span class="line">　　　　　　　　corejs: 3</span><br><span class="line">　　　　　　　　&#125;]]</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主页打包出来的main就124kb，小了很多</p>
+<p>当然preset也可以配置一些额外的参数<br> <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">　　　　　　options:&#123;</span><br><span class="line">　　　　　　　　presets: [[<span class="string">'@babel/preset-env'</span>,&#123;</span><br><span class="line">　　　　　　　　/**</span><br><span class="line">　　　　　　　　* 意思是我的这个项目，打包会运行在&gt;67这个版本的chrome浏览器下</span><br><span class="line">　　　　　　　　* 比如chrome浏览器在67版本以上对es6语法支持很好了，就不需要翻译</span><br><span class="line">　　　　　　　　*/</span><br><span class="line">　　　　　　　　targets: &#123;</span><br><span class="line">　　　　　　　　　　chrome: <span class="string">"67"</span>,</span><br><span class="line">　　　　　　　　&#125;,</span><br><span class="line">　　　　　　　　/**</span><br><span class="line">　　　　　　　　* 当我做polyfill填充的时候，去加一些低版本特性的时候，我不是把所有特性都加进来</span><br><span class="line">　　　　　　　　* 是根据你的业务代码来决定要加什么</span><br><span class="line">　　　　　　　　* @babel/polyfill，放在js入口</span><br><span class="line">　　　　　　　　*/</span><br><span class="line">　　　　　　　　useBuiltIns: <span class="string">'usage'</span>,</span><br><span class="line">　　　　　　　　corejs: 3</span><br><span class="line">　　　　　　　　&#125;]]</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>再运行npm run bundle，发现main.js重新变成了28.8kb。</p>
+<p>这种方案不一定所有场景都适用，在开发一个第三方模块的时候，这个时候用polyfill注入是有问题的，因为这是时候注入会以全局变量的方式注入，会污染到全局环境。所以我们在打包UI组件库或者类库的时候，需要换一种打包的方式。去除index的pollfile。webpack也不做presets的配置了<br>首先安装</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev @babel/plugin-transform-runtime</span><br><span class="line">npm install --save @babel/runtime</span><br></pre></td></tr></table></figure>
+
+<p>index.js</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// import <span class="string">"@babel/polyfill"</span>;</span><br><span class="line"></span><br><span class="line">const arr = [</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;),</span><br><span class="line">　　new Promise(()=&gt;&#123;&#125;)</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">arr.map(item =&gt; &#123;</span><br><span class="line">　　console.log(item);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　<span class="built_in">test</span>: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">　　　　　　options:&#123;</span><br><span class="line">　　　　　　　　<span class="string">"plugins"</span>: [[<span class="string">"@babel/plugin-transform-runtime"</span>,&#123;</span><br><span class="line">　　　　　　　　<span class="string">"absoluteRuntime"</span>: <span class="literal">false</span>,</span><br><span class="line">　　　　　　　　<span class="string">"corejs"</span>: 2,</span><br><span class="line">　　　　　　　　<span class="string">"helpers"</span>: <span class="literal">true</span>,</span><br><span class="line">　　　　　　　　<span class="string">"regenerator"</span>: <span class="literal">true</span>,</span><br><span class="line">　　　　　　　　<span class="string">"useESModules"</span>: <span class="literal">false</span></span><br><span class="line">　　　　　　　　&#125;]]</span><br><span class="line">　　　　　　&#125;</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再强调一遍，如果我们写的只是业务代码，在配置的时候只要配置presets,同时引入pollfill就可以了。如果你写的是一个库项目代码的时候，这个时候要使用babel/plugin-transform-runtime。这个时候可以有效的避免presets,或者说是pollfill的问题。pollfile会污染全局环境。但是plugin-transform-runtime会以闭包的方式注入。这样写类库的时候是更好的方式。</p>
+<p>另外补充一个知识点，如果我们认真的去配置babel相关的配置，会发现非常的长。我们可以在根目录新建一个文件。叫.babelrc。然后把options对象拿出来放到.babelrc里面。然后删除babel配置的option<br>.babelrc</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">　　<span class="string">"plugins"</span>: [[<span class="string">"@babel/plugin-transform-runtime"</span>,&#123;</span><br><span class="line">　　<span class="string">"absoluteRuntime"</span>: <span class="literal">false</span>,</span><br><span class="line">　　<span class="string">"corejs"</span>: 2,</span><br><span class="line">　　<span class="string">"helpers"</span>: <span class="literal">true</span>,</span><br><span class="line">　　<span class="string">"regenerator"</span>: <span class="literal">true</span>,</span><br><span class="line">　　<span class="string">"useESModules"</span>: <span class="literal">false</span></span><br><span class="line">　　&#125;]]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>webpack.config.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">　　module: &#123;</span><br><span class="line">　　　　rules:[&#123;</span><br><span class="line">　　　　　　test: /\.js$/,</span><br><span class="line">　　　　　　exclude: /node_modules/,</span><br><span class="line">　　　　　　loader: &quot;babel-loader&quot;</span><br><span class="line">　　　　&#125;]</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样执行起来 npm run bundle 不会有任何问题</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/10webpack热模块更新/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1807,150 +1995,6 @@ module.exports = {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/2模块打包工具/模块打包工具/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/2模块打包工具/模块打包工具/" itemprop="url">webpack系列-2模块打包工具</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T12:35:07+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack系列/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack系列</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="模块打包工具"><a href="#模块打包工具" class="headerlink" title="模块打包工具"></a>模块打包工具</h1><p>webpack是一个moudle bundler，模块打包工具。打包所有的脚本，资源，图片，样式</p>
-<p>官网对模块解释<br><a href="https://www.webpackjs.com/concepts/modules/#%E4%BB%80%E4%B9%88%E6%98%AF-webpack-%E6%A8%A1%E5%9D%97" target="_blank" rel="noopener">https://www.webpackjs.com/concepts/modules/#%E4%BB%80%E4%B9%88%E6%98%AF-webpack-%E6%A8%A1%E5%9D%97</a></p>
-<p>模块方法<br><a href="https://www.webpackjs.com/api/module-methods/" target="_blank" rel="noopener">https://www.webpackjs.com/api/module-methods/</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2001,7 +2045,7 @@ module.exports = {
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

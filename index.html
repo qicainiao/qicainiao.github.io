@@ -242,6 +242,246 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/06/js/V8引擎/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/06/js/V8引擎/" itemprop="url">V8引擎</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-06T09:12:59+08:00">
+                2019-09-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="JavaScript-V8引擎"><a href="#JavaScript-V8引擎" class="headerlink" title="JavaScript V8引擎"></a>JavaScript V8引擎</h2><p>v8引擎是js引擎的一种实现</p>
+<p>js引擎是执行js代码的程序或解释器。js引擎可以实现为标准解释器或及时编译器。，它以某种形式将ks编译为字节码</p>
+<p>V8是被设计用来提高网页浏览器内部JS执行的性能，那么如何提高性能？</p>
+<p>为了提高性能，v8会把js代码转换为高效的机器码，而不是依赖于解释器去执行。<br>V8引入了JIT在运行时把js代码进行转换为机器码。<br>这里主要的区别在于V8不生成字节码或任何中间代码。</p>
+<p>V8曾经有两个编译器</p>
+<p>full-codegen — 一个简单且速度非常快的编译器，可以生成简单且相对较慢的机器码<br>Crankshaft —  一个更复杂的（Just-In-Time）优化编译器，生成高度优化的代码</p>
+<p>v8充分多进程、主进程负责获取代码，编译生成机器码，<br>有专门负责优化的进程，<br>还有一个监控进程负责分析哪些代码执行比较慢，以便Crankshaft做优化，<br>最后还有一个就是GC进程，负责内存垃圾回收</p>
+<p>v8的具体优化方案</p>
+<p>  1 尽可能最大的内联。<br>  2 隐藏类</p>
+<pre><code>js中并没有指针的概念，js的对象访问就是基于隐藏类的。下面理解下隐藏类
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function Point(x, y) &#123;</span><br><span class="line"> this.x = x;</span><br><span class="line"> this.y = y;</span><br><span class="line">&#125;</span><br><span class="line">var p1 = new Point(1, 2);</span><br></pre></td></tr></table></figure></code></pre><p>   3 内联缓存<br>   4 Compilation to machine code<br>   5 垃圾回收机制</p>
+<pre><code>对于垃圾收集，V8采用了传统的分布式扫描方式来清理老一代。标记阶段应该停止js的执行。
+为了控制GC成本并使执行更加稳定，V8使用了渐进式标记，而不是走遍整个堆，试图标记每一个可能的对象
+它只走一部分，然后恢复正常执行。</code></pre><h3 id="js垃圾回收"><a href="#js垃圾回收" class="headerlink" title="js垃圾回收"></a>js垃圾回收</h3><p>   JavaScript 内存管理于我们来说是自动的、不可见的。我们创建的原始类型、对象、函数等等，都会占用内存。</p>
+<p>   当这些数据不被需要后会发生什么？JavaScript 引擎如何发现并清除他们？</p>
+<h4 id="可触及（Reachability）"><a href="#可触及（Reachability）" class="headerlink" title="可触及（Reachability）"></a>可触及（Reachability）</h4><pre><code> JavaScript 内存管理的关键概念是可触及（Reachability）。
+
+简单来说，“可触及”的值就是可访问的，可用的，他们被安全储存在内存。
+
+以下是一些必定 &quot;可触及&quot;的值，不管出于任何原因，都不能删除：
+  - 当前函数的局部变量和参数
+  - 当前调用链中所有的函数的局部变量和参数
+  - 全局变量
+  - 以及其他内部变量
+
+这些值都称为root。
+  其他值是否可触及视乎它是否被root及其引用链引用。
+  假如有一个对象存在于局部变量，它的值引用了另一个对象，如果这个对象是可触及的。则
+  它引用的对象也是可触及的。
+
+  js引擎有一个垃圾回收后台进程。监控着所有对象，当对象不可触及会被删除。</code></pre><h5 id="一个简单例子"><a href="#一个简单例子" class="headerlink" title="一个简单例子"></a>一个简单例子</h5><pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let user =&#123;</span><br><span class="line">    name:&apos;Json&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+![](./images/js/1.png)</code></pre><p>箭头代表的是对象引用。全局变量 “user” 引用了对象 {name: “John”}（简称此对象为 John）。John 的 “name” 属性储存的是一个原始值，所以无其他引用。</p>
+<p>如果覆盖 user，对 John 的引用就丢失了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user = null</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="./images/js/2.png" alt></p>
+<p>   现在 John 变得不可触及，垃圾回收机制会将其删除并释放内存。</p>
+<h5 id="两个引用"><a href="#两个引用" class="headerlink" title="两个引用"></a>两个引用</h5><p>如果我们从 user 复制引用到 admin：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// user 引用了一个对象</span><br><span class="line">let user = &#123;</span><br><span class="line">  name: &apos;John&apos;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let admin = user</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="./images/js/3.png" alt></p>
+<pre><code>如果重复一次这个操作：
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user=null</span><br></pre></td></tr></table></figure>
+
+……这个对象是依然可以通过 admin 访问，所以它依然存在于内存。如果我们把 admin 也覆盖为 null，那它就会被删除了。</code></pre><h5 id="相互引用的对象"><a href="#相互引用的对象" class="headerlink" title="相互引用的对象"></a>相互引用的对象</h5><p>  这个例子比较复杂：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function marry(man,woman)&#123;</span><br><span class="line">   woman.husband = man</span><br><span class="line">   man.wife= woman</span><br><span class="line">   </span><br><span class="line">   return &#123;</span><br><span class="line">     father:man,</span><br><span class="line">     mother:woman</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let family = marry(&#123;</span><br><span class="line">    name:&apos;John&apos;</span><br><span class="line">&#125;,&#123;</span><br><span class="line">    name:&apos;Ann&apos;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>  marry 函数让两个参数对象互相引用，返回一个包含两者的新对象，结构如下：</p>
+<p>  <img src="./images/js/4.png" alt></p>
+<p>  暂时所有对象都是可触及的，但我们现在决定移除两个引用：</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">delete family.father</span><br><span class="line">delete family.mother.husband</span><br></pre></td></tr></table></figure>
+
+
+<p>  <img src="./images/js/5.png" alt></p>
+<p>  只删除一个引用不会有什么影响，但是两个引用同时删除，我们可以看到 John 已经不被任何对象引用了：</p>
+<pre><code>![](./images/js/6.png)
+
+即使 John 还在引用别人，但是他不被别人引用，所以 John 现在已经不可触及，将会被移除。</code></pre><p>垃圾回收后：</p>
+<p><img src="./images/js/6.png" alt></p>
+<h5 id="孤岛（Unreachable-island"><a href="#孤岛（Unreachable-island" class="headerlink" title="孤岛（Unreachable island)"></a>孤岛（Unreachable island)</h5><p>也可能有一大堆互相引用的对象整块（像个孤岛）都不可触及了。</p>
+<p>对上面的对象进行操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">family = null</span><br></pre></td></tr></table></figure>
+
+<p>内存中的情况如下：<br> <img src="./images/js/7.png" alt></p>
+<p>这个例子展示了“可触及”这个概念的重要性。</p>
+<p>尽管 John 和 Ann 互相依赖，但这仍不足够。</p>
+<p>“family” 对象整个已经切断了与 root 的连接，没有任何东西引用到这里，所以这个孤岛遥不可及，只能等待被清除。</p>
+<h5 id="内部算法"><a href="#内部算法" class="headerlink" title="内部算法"></a>内部算法</h5><p>基础的垃圾回收算法被称为“标记-清除算法”（”mark-and-sweep”）：</p>
+<p>垃圾回收器获取并标记 root。<br>然后访问并标记来自他们的所有引用。<br>访问被标记的对象，标记他们的引用。所有被访问过的对象都会被记录，以后将不会重复访问同一对象。<br>……直到只剩下未访问的引用。<br>所有未被标记的对象都会被移除。<br>举个例子，假设对象结构如下：<br> <img src="./images/js/8.png" alt></p>
+<p>很明显右侧有一个“孤岛”，现在使用“标记-清除”的方法处理它。</p>
+<p>首先，标记 root：<br> <img src="./images/js/9.png" alt><br>然后标记他们的引用：<br> <img src="./images/js/10.png" alt></p>
+<p> ……标记他们引用的引用：<br>   <img src="./images/js/11.png" alt><br>   现在没有被访问过的对象会被认为是不可触及，他们将会被删除：<br>     <img src="./images/js/12.png" alt></p>
+<pre><code>这就是垃圾回收的工作原理。</code></pre><p>JavaScript 引擎在不影响执行的情况下做了很多优化，使这个过程的垃圾回收效率更高：</p>
+<p>分代收集 – 对象会被分为“新生代”和“老生代”。很多对象完成任务后很快就不再需要了，所以对于他们的清理可以很频繁。而在清理中留下的称为“老生代”一员。<br>增量收集 – 如果对象很多，很难一次标记完所有对象，这个过程甚至对程序执行产生了明显的延迟。所以引擎会尝试把这个操作分割成多份，每次执行一份。这样做要记录额外的数据，但是可以有效降低延迟对用户体验的影响。<br>闲时收集 – 垃圾回收器尽量只在 CPU 空闲时运行，减少对程序执行的影响。<br>除此以外还有很多对垃圾回收的优化，在此就不详细说了，各个引擎有自己的调整和技术，而且这个东西一直随着引擎的更新换代在改变，如果不是有实在的需求，不值得挖太深。不过如果你真的对此有浓厚的兴趣，下面会为你提供一些拓展链接。</p>
+<p>重点：</p>
+<p>垃圾回收自动进行，我们不能强制或阻止其进行。<br>可触及的对象会被保留在内存中。<br>被引用不一定是可触及的（从 root）：相互引用的对象可能整块都是不可触及的。</p>
+<p>Function.prototype.myCall = function(context){<br>    if(typeof this !== ‘’){</p>
+<pre><code>}
+var fn = Symbol()
+context[fn] = this
+var args = Array.prototype.slice.call(arguments,1)
+var  result = context[fn](...args)
+delete context[fn]
+return result</code></pre><p>}</p>
+<p>Function.prototype.myApply= function(context){<br>  if(typeof this !==’function’){<br>    return new TypeError(‘error’)<br>  }<br>  context = context||window<br>  var fn = Symbol()<br>  context[fn] = this<br>  var args = Array.prototype.slice.call(arguments,1)<br>   var  result<br>  if(args[0]){<br>    result = context<a href="...args[0]">fn</a><br>  }else{<br>    result = context<a href>fn</a><br>  }<br>  delete context[fn]<br>  return result<br>}</p>
+<p>Function.prototype.myBind = function(context){<br>   if(typeof this !== ‘function’){<br>      return new TypeError(‘error’)<br>   }<br>    const _this = this<br>    const args =  Array.prototype.slice.call(arguments,1),<br>          fToBind = this,<br>          FNOP = function(){},<br>          fBound = function(){<br>            return fToBind.apply(this instanceof )<br>          }</p>
+<pre><code>return function F(){
+  if(this instanceof F){
+     return new _this(...args,...arguments)
+  }
+  return _this.apply(context,args.concat(...arguments))
+}</code></pre><p>}</p>
+<p>function fun(){<br>  console.log(this.name)<br>}</p>
+<p>var name = ‘aaa’</p>
+<p>var obj = {<br>  name:’bbb’<br>}</p>
+<p>fun.myApply(obj)</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/04/js/new的实现/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -352,7 +592,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function Person(name, age) &#123;</span><br><span class="line">this.name = name</span><br><span class="line">this.age = age</span><br><span class="line">this.like = &quot;休息&quot;</span><br><span class="line">return &#123;</span><br><span class="line">like:this.like</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">const man = new Person(&quot;张三&quot;, 18)</span><br><span class="line">console.log(&quot;demo man:&quot;, man) //demo man: &#123; like: &apos;休息&apos; &#125;</span><br><span class="line">console.log(man.name, man.age) //undefined undefined</span><br></pre></td></tr></table></figure>
 
 <p>代码实现</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function myNew() &#123;</span><br><span class="line"></span><br><span class="line">、、、、</span><br><span class="line">、、、、</span><br><span class="line"></span><br><span class="line">const  hasReturn = obj.apply(result,argArray)  //第一条,将构造函数obj的this指向result对象，这样result就可以访问到obj中的属性或方法</span><br><span class="line">                                             //同时看obj构造函数有无返回，且，返回是否为对象，否则，直接返回</span><br><span class="line">return typeof hasReturn === &apos;object&apos; ? hasReturn : result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const b = myNew(Person, &quot;张三&quot;, 19)</span><br><span class="line">console.log(&quot;test:&quot;, b) // test: &#123; like: &apos;休息&apos; &#125;</span><br><span class="line">console.log(b.name, b.age) // undefined undefined</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">function myNew() &#123;</span><br><span class="line"></span><br><span class="line">const result = new Object() //最终返回的是个对象，所以先new一个出来</span><br><span class="line"></span><br><span class="line">const obj = Array.prototype.shift.call(arguments) //使用shift，截取第一个参数，即我们需要的构造函数</span><br><span class="line"></span><br><span class="line">//这一步其实可以不用，因为shift直接改变原数组，在后面的apply的时候直接传arguments即可</span><br><span class="line">const argArray = Array.prototype.slice.call(arguments)//将构造函数obj的this指向result对象，这样result就可以访问到obj中的属性或方法</span><br><span class="line"></span><br><span class="line">result.__proto__ = obj.prototype // 第二条,继承原型上的属性或方法</span><br><span class="line"></span><br><span class="line">const  hasReturn = obj.apply(result,argArray)  //第一条,将构造函数obj的this指向result对象，这样result就可以访问到obj中的属性或方法</span><br><span class="line">                                             //同时看obj构造函数有无返回，且，返回是否为对象，否则，直接返回</span><br><span class="line">return typeof hasReturn === &apos;object&apos; ? hasReturn : result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const b = myNew(Person, &quot;张三&quot;, 19)</span><br><span class="line">console.log(&quot;test:&quot;, b) // test: &#123; like: &apos;休息&apos; &#125;</span><br><span class="line">console.log(b.name, b.age) // undefined undefined</span><br></pre></td></tr></table></figure>
 
 <p>完成，(＾－＾)V</p>
 <p>tips:如果构造函数没有返回或者返回的不是一个指定对象，比如只是 return “我是字符串” 这种，那返回不返回其实没啥区别<br> new还是返回的实例对象</p>
@@ -669,7 +909,7 @@
 <h2 id="Array对象方法"><a href="#Array对象方法" class="headerlink" title="Array对象方法"></a>Array对象方法</h2><h4 id="splice-方法用于添加或删除数组中的元素。"><a href="#splice-方法用于添加或删除数组中的元素。" class="headerlink" title="splice() 方法用于添加或删除数组中的元素。"></a>splice() 方法用于添加或删除数组中的元素。</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var fruits = [&quot;Banana&quot;, &quot;Orange&quot;, &quot;Apple&quot;, &quot;Mango&quot;];</span><br><span class="line">fruits.splice(2,0,&quot;Lemon&quot;,&quot;Kiwi&quot;); </span><br><span class="line">//返回 []</span><br><span class="line">//fruits的值 Banana,Orange,Lemon,Kiwi,Apple,Mango</span><br><span class="line">fruits.splice(2,1) //删除一个，返回删除元素的数组</span><br><span class="line">fruits.splice(2,0) //删除0个，返回空数组</span><br><span class="line"></span><br><span class="line">var fruits = [&quot;Banana&quot;, &quot;Orange&quot;, &quot;Apple&quot;, &quot;Mango&quot;];</span><br><span class="line">fruits.splice(2,2,&quot;Lemon&quot;,&quot;Kiwi&quot;);</span><br><span class="line">// 返回的删除元素的值 [&quot;Apple&quot;, &quot;Mango&quot;]</span><br><span class="line">//fruits的值[&quot;Banana&quot;, &quot;Orange&quot;, &quot;Lemon&quot;, &quot;Kiwi&quot;]</span><br></pre></td></tr></table></figure>
 
 <p>语法<br>array.splice(index,howmany,item1,…..,itemX)<br>参数 Values<br>参数    描述<br>index    必需。规定从何处添加/删除元素。<br>该参数是开始插入和（或）删除的数组元素的下标，必须是数字。<br>howmany    可选。规定应该删除多少元素。必须是数字，但可以是 “0”。<br>如果未规定此参数，则删除从 index 开始到原数组结尾的所有元素。<br>item1, …, itemX    可选。要添加到数组的新元素</p>
-<h4 id="slice-选取数组的的一部分，并返回一个新数组"><a href="#slice-选取数组的的一部分，并返回一个新数组" class="headerlink" title="slice()    选取数组的的一部分，并返回一个新数组"></a>slice()    选取数组的的一部分，并返回一个新数组</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var fruits = [&quot;Banana&quot;, &quot;Orange&quot;, &quot;Lemon&quot;, &quot;Apple&quot;, &quot;Mango&quot;];</span><br><span class="line">var citrus = fruits.slice(1,3); //返回值 [&quot;Lemon&quot;, &quot;Apple&quot;]  fruits值不变</span><br></pre></td></tr></table></figure>
+<h4 id="slice-选取数组的的一部分，并返回一个新数组"><a href="#slice-选取数组的的一部分，并返回一个新数组" class="headerlink" title="slice()    选取数组的的一部分，并返回一个新数组"></a>slice()    选取数组的的一部分，并返回一个新数组</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var fruits = [&quot;Banana&quot;, &quot;Orange&quot;, &quot;Lemon&quot;, &quot;Apple&quot;, &quot;Mango&quot;];</span><br><span class="line">var citrus = fruits.slice(1,3); //返回值  [&quot;Orange&quot;, &quot;Lemon&quot;] fruits值不变</span><br></pre></td></tr></table></figure>
 
 <h4 id="reduce-方法"><a href="#reduce-方法" class="headerlink" title="reduce() 方法"></a>reduce() 方法</h4><p>reduce() 可以作为一个高阶函数，用于函数的 compose。从左到右</p>
 <h4 id="reduceRight-方法"><a href="#reduceRight-方法" class="headerlink" title="reduceRight() 方法"></a>reduceRight() 方法</h4><p>reduceRight() 可以作为一个高阶函数，用于函数的 compose。从右到左</p>
@@ -1906,167 +2146,6 @@ title: My First Blog
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/28/webpack系列/21webpack中环境变量的使用方法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="qicainiao">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="qicainiao's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/28/webpack系列/21webpack中环境变量的使用方法/" itemprop="url">webpack系列-21webpack中环境变量的使用方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-28T18:31:00+08:00">
-                2019-08-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack系列/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack系列</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在webpack打包过程中，怎么去使用一些环境变量。<br>首先我有一个打包配置的三个文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"dev-build"</span>: <span class="string">"webpack --profile --json &gt; stats.json --config ./build/webpack.dev.js"</span>,</span><br><span class="line">　　<span class="string">"dev"</span>: <span class="string">"webpack-dev-server --config ./build/webpack.dev.js"</span>,</span><br><span class="line">　　<span class="string">"build"</span>: <span class="string">"webpack --config ./build/webpack.prod.js"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>对应三个命令，分别是开发环境的一个命令 npm run dev。打包生成开发环境代码的命令 npm run dev-build。以及线上代码生成的一个命令 npm run build。现在我要借助两个配置文件来帮助我们去完成对应的打包，分别是dev对应配置文件和prod对应的配置文件。现在我可以通过另外一种形式来对代码进行一次变更。</p>
-<p>webpack.dev.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">const webpack = require(<span class="string">'webpack'</span>);</span><br><span class="line">const merge = require(<span class="string">'webpack-merge'</span>);</span><br><span class="line">const commonConfig = require(<span class="string">'./webpack.common.js'</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const devConfig = &#123;　　</span><br><span class="line">　　mode: <span class="string">'development'</span>,</span><br><span class="line">　　devtool: <span class="string">'cheap-module-eval-source-map'</span>,</span><br><span class="line">　　devServer: &#123;</span><br><span class="line">　　　　contentBase:<span class="string">'./dist'</span>,</span><br><span class="line">　　　　open:<span class="literal">true</span>,</span><br><span class="line">　　　　hot: <span class="literal">true</span></span><br><span class="line">　　&#125;,</span><br><span class="line">　　plugins: [</span><br><span class="line">　　　　new webpack.HotModuleReplacementPlugin()</span><br><span class="line">　　],</span><br><span class="line">　　output: &#123;</span><br><span class="line">　　　　filename: <span class="string">'[name].js'</span>,</span><br><span class="line">　　　　chunkFilename: <span class="string">'[name].chunk.js'</span>,</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br><span class="line">module.exports = merge(commonConfig, devConfig);</span><br></pre></td></tr></table></figure>
-
-<p>这是dev配置原始文件，其中引入了merge和commonConfig。现在我把他删掉，直接导出devConfig</p>
-<p>webpack.dev.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">const webpack = require(<span class="string">'webpack'</span>);</span><br><span class="line">const devConfig = &#123;</span><br><span class="line">&#125;</span><br><span class="line">module.exports = devConfig;</span><br></pre></td></tr></table></figure>
-
-<p>prod也做同样的处理，这样我导出的就不是融合过后的文件。而是自己独立的配置文件。接着我们打开webpack.common.js，去引入merge，dev和prod</p>
-<p>webpack.common.js</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">const path = require(<span class="string">'path'</span>);</span><br><span class="line">const HtmlWebpackPlugin = require(<span class="string">'html-webpack-plugin'</span>);</span><br><span class="line">const CleanWebpackPlugin = require(<span class="string">'clean-webpack-plugin'</span>);</span><br><span class="line">const webpack = require(<span class="string">'webpack'</span>);</span><br><span class="line">const merge = require(<span class="string">'webpack-merge'</span>);</span><br><span class="line">const devConfig = require(<span class="string">'./webpack.dev'</span>);</span><br><span class="line">const prodConfig = require(<span class="string">'./webpack.prod'</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const commonConfig = &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">module.exports = (env) =&gt; &#123;</span><br><span class="line">　　// 如果有这个全局变量，且是线上环境，否则是开发环境</span><br><span class="line">　　<span class="keyword">if</span>(env &amp;&amp; env.production) &#123;</span><br><span class="line">　　　　<span class="built_in">return</span> merge(commonConfig, prodConfig);</span><br><span class="line">　　&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">　　　　<span class="built_in">return</span> merge(commonConfig, devConfig);</span><br><span class="line">　　&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>以前我们导出一个对象，这里我们导出一个函数，接收一个全局变量，怎么融合取决于传递进来的变量。是否有全局变量，是哪个环境决定</p>
-<p>package.json</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">　　<span class="string">"dev-build"</span>: <span class="string">"webpack --profile --json &gt; stats.json --config ./build/webpack.common.js"</span>,</span><br><span class="line">　　<span class="string">"dev"</span>: <span class="string">"webpack-dev-server --config ./build/webpack.common.js"</span>,</span><br><span class="line">　　<span class="string">"build"</span>: <span class="string">"webpack --env.production --config ./build/webpack.common.js"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-
-<p>package.json里面走的都是webpack.common.js了。在build里面加入–env.production。其他不加默认走devConfig。各自运行。没问题。这样就不是通过不同的文件，而是都是走common，通过变量控制</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2117,7 +2196,7 @@ title: My First Blog
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

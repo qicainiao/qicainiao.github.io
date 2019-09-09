@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="JavaScript V8引擎v8引擎是js引擎的一种实现 js引擎是执行js代码的程序或解释器。js引擎可以实现为标准解释器或及时编译器。，它以某种形式将ks编译为字节码 V8是被设计用来提高网页浏览器内部JS执行的性能，那么如何提高性能？ 为了提高性能，v8会把js代码转换为高效的机器码，而不是依赖于解释器去执行。V8引入了JIT在运行时把js代码进行转换为机器码。这里主要的区别在于V8不生成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="V8引擎">
+<meta property="og:url" content="http://yoursite.com/2019/09/06/js/V8引擎/index.html">
+<meta property="og:site_name" content="qicainiao&#39;s Blog">
+<meta property="og:description" content="JavaScript V8引擎v8引擎是js引擎的一种实现 js引擎是执行js代码的程序或解释器。js引擎可以实现为标准解释器或及时编译器。，它以某种形式将ks编译为字节码 V8是被设计用来提高网页浏览器内部JS执行的性能，那么如何提高性能？ 为了提高性能，v8会把js代码转换为高效的机器码，而不是依赖于解释器去执行。V8引入了JIT在运行时把js代码进行转换为机器码。这里主要的区别在于V8不生成">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/4.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/5.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/6.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/7.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/8.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/9.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/10.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/11.png">
+<meta property="og:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/12.png">
+<meta property="og:updated_time" content="2019-09-09T10:20:38.193Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="V8引擎">
+<meta name="twitter:description" content="JavaScript V8引擎v8引擎是js引擎的一种实现 js引擎是执行js代码的程序或解释器。js引擎可以实现为标准解释器或及时编译器。，它以某种形式将ks编译为字节码 V8是被设计用来提高网页浏览器内部JS执行的性能，那么如何提高性能？ 为了提高性能，v8会把js代码转换为高效的机器码，而不是依赖于解释器去执行。V8引入了JIT在运行时把js代码进行转换为机器码。这里主要的区别在于V8不生成">
+<meta name="twitter:image" content="http://yoursite.com/2019/09/06/js/V8引擎/images/js/2.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/09/06/js/V8引擎/">
+
+
+
+
+
+  <title>V8引擎 | qicainiao's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">qicainiao's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Geek Spirit</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/06/js/V8引擎/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="qicainiao">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="qicainiao's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">V8引擎</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-06T09:12:59+08:00">
+                2019-09-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="JavaScript-V8引擎"><a href="#JavaScript-V8引擎" class="headerlink" title="JavaScript V8引擎"></a>JavaScript V8引擎</h2><p>v8引擎是js引擎的一种实现</p>
+<p>js引擎是执行js代码的程序或解释器。js引擎可以实现为标准解释器或及时编译器。，它以某种形式将ks编译为字节码</p>
+<p>V8是被设计用来提高网页浏览器内部JS执行的性能，那么如何提高性能？</p>
+<p>为了提高性能，v8会把js代码转换为高效的机器码，而不是依赖于解释器去执行。<br>V8引入了JIT在运行时把js代码进行转换为机器码。<br>这里主要的区别在于V8不生成字节码或任何中间代码。</p>
+<p>V8曾经有两个编译器</p>
+<p>full-codegen — 一个简单且速度非常快的编译器，可以生成简单且相对较慢的机器码<br>Crankshaft —  一个更复杂的（Just-In-Time）优化编译器，生成高度优化的代码</p>
+<p>v8充分多进程、主进程负责获取代码，编译生成机器码，<br>有专门负责优化的进程，<br>还有一个监控进程负责分析哪些代码执行比较慢，以便Crankshaft做优化，<br>最后还有一个就是GC进程，负责内存垃圾回收</p>
+<p>v8的具体优化方案</p>
+<p>  1 尽可能最大的内联。<br>  2 隐藏类</p>
+<pre><code>js中并没有指针的概念，js的对象访问就是基于隐藏类的。下面理解下隐藏类
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function Point(x, y) &#123;</span><br><span class="line"> this.x = x;</span><br><span class="line"> this.y = y;</span><br><span class="line">&#125;</span><br><span class="line">var p1 = new Point(1, 2);</span><br></pre></td></tr></table></figure></code></pre><p>   3 内联缓存<br>   4 Compilation to machine code<br>   5 垃圾回收机制</p>
+<pre><code>对于垃圾收集，V8采用了传统的分布式扫描方式来清理老一代。标记阶段应该停止js的执行。
+为了控制GC成本并使执行更加稳定，V8使用了渐进式标记，而不是走遍整个堆，试图标记每一个可能的对象
+它只走一部分，然后恢复正常执行。</code></pre><h3 id="js垃圾回收"><a href="#js垃圾回收" class="headerlink" title="js垃圾回收"></a>js垃圾回收</h3><p>   JavaScript 内存管理于我们来说是自动的、不可见的。我们创建的原始类型、对象、函数等等，都会占用内存。</p>
+<p>   当这些数据不被需要后会发生什么？JavaScript 引擎如何发现并清除他们？</p>
+<h4 id="可触及（Reachability）"><a href="#可触及（Reachability）" class="headerlink" title="可触及（Reachability）"></a>可触及（Reachability）</h4><pre><code> JavaScript 内存管理的关键概念是可触及（Reachability）。
+
+简单来说，“可触及”的值就是可访问的，可用的，他们被安全储存在内存。
+
+以下是一些必定 &quot;可触及&quot;的值，不管出于任何原因，都不能删除：
+  - 当前函数的局部变量和参数
+  - 当前调用链中所有的函数的局部变量和参数
+  - 全局变量
+  - 以及其他内部变量
+
+这些值都称为root。
+  其他值是否可触及视乎它是否被root及其引用链引用。
+  假如有一个对象存在于局部变量，它的值引用了另一个对象，如果这个对象是可触及的。则
+  它引用的对象也是可触及的。
+
+  js引擎有一个垃圾回收后台进程。监控着所有对象，当对象不可触及会被删除。</code></pre><h5 id="一个简单例子"><a href="#一个简单例子" class="headerlink" title="一个简单例子"></a>一个简单例子</h5><pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let user =&#123;</span><br><span class="line">    name:&apos;Json&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+![](./images/js/1.png)</code></pre><p>箭头代表的是对象引用。全局变量 “user” 引用了对象 {name: “John”}（简称此对象为 John）。John 的 “name” 属性储存的是一个原始值，所以无其他引用。</p>
+<p>如果覆盖 user，对 John 的引用就丢失了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user = null</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="./images/js/2.png" alt></p>
+<p>   现在 John 变得不可触及，垃圾回收机制会将其删除并释放内存。</p>
+<h5 id="两个引用"><a href="#两个引用" class="headerlink" title="两个引用"></a>两个引用</h5><p>如果我们从 user 复制引用到 admin：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// user 引用了一个对象</span><br><span class="line">let user = &#123;</span><br><span class="line">  name: &apos;John&apos;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let admin = user</span><br></pre></td></tr></table></figure>
+
+<p>   <img src="./images/js/3.png" alt></p>
+<pre><code>如果重复一次这个操作：
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user=null</span><br></pre></td></tr></table></figure>
+
+……这个对象是依然可以通过 admin 访问，所以它依然存在于内存。如果我们把 admin 也覆盖为 null，那它就会被删除了。</code></pre><h5 id="相互引用的对象"><a href="#相互引用的对象" class="headerlink" title="相互引用的对象"></a>相互引用的对象</h5><p>  这个例子比较复杂：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function marry(man,woman)&#123;</span><br><span class="line">   woman.husband = man</span><br><span class="line">   man.wife= woman</span><br><span class="line">   </span><br><span class="line">   return &#123;</span><br><span class="line">     father:man,</span><br><span class="line">     mother:woman</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let family = marry(&#123;</span><br><span class="line">    name:&apos;John&apos;</span><br><span class="line">&#125;,&#123;</span><br><span class="line">    name:&apos;Ann&apos;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>  marry 函数让两个参数对象互相引用，返回一个包含两者的新对象，结构如下：</p>
+<p>  <img src="./images/js/4.png" alt></p>
+<p>  暂时所有对象都是可触及的，但我们现在决定移除两个引用：</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">delete family.father</span><br><span class="line">delete family.mother.husband</span><br></pre></td></tr></table></figure>
+
+
+<p>  <img src="./images/js/5.png" alt></p>
+<p>  只删除一个引用不会有什么影响，但是两个引用同时删除，我们可以看到 John 已经不被任何对象引用了：</p>
+<pre><code>![](./images/js/6.png)
+
+即使 John 还在引用别人，但是他不被别人引用，所以 John 现在已经不可触及，将会被移除。</code></pre><p>垃圾回收后：</p>
+<p><img src="./images/js/6.png" alt></p>
+<h5 id="孤岛（Unreachable-island"><a href="#孤岛（Unreachable-island" class="headerlink" title="孤岛（Unreachable island)"></a>孤岛（Unreachable island)</h5><p>也可能有一大堆互相引用的对象整块（像个孤岛）都不可触及了。</p>
+<p>对上面的对象进行操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">family = null</span><br></pre></td></tr></table></figure>
+
+<p>内存中的情况如下：<br> <img src="./images/js/7.png" alt></p>
+<p>这个例子展示了“可触及”这个概念的重要性。</p>
+<p>尽管 John 和 Ann 互相依赖，但这仍不足够。</p>
+<p>“family” 对象整个已经切断了与 root 的连接，没有任何东西引用到这里，所以这个孤岛遥不可及，只能等待被清除。</p>
+<h5 id="内部算法"><a href="#内部算法" class="headerlink" title="内部算法"></a>内部算法</h5><p>基础的垃圾回收算法被称为“标记-清除算法”（”mark-and-sweep”）：</p>
+<p>垃圾回收器获取并标记 root。<br>然后访问并标记来自他们的所有引用。<br>访问被标记的对象，标记他们的引用。所有被访问过的对象都会被记录，以后将不会重复访问同一对象。<br>……直到只剩下未访问的引用。<br>所有未被标记的对象都会被移除。<br>举个例子，假设对象结构如下：<br> <img src="./images/js/8.png" alt></p>
+<p>很明显右侧有一个“孤岛”，现在使用“标记-清除”的方法处理它。</p>
+<p>首先，标记 root：<br> <img src="./images/js/9.png" alt><br>然后标记他们的引用：<br> <img src="./images/js/10.png" alt></p>
+<p> ……标记他们引用的引用：<br>   <img src="./images/js/11.png" alt><br>   现在没有被访问过的对象会被认为是不可触及，他们将会被删除：<br>     <img src="./images/js/12.png" alt></p>
+<pre><code>这就是垃圾回收的工作原理。</code></pre><p>JavaScript 引擎在不影响执行的情况下做了很多优化，使这个过程的垃圾回收效率更高：</p>
+<p>分代收集 – 对象会被分为“新生代”和“老生代”。很多对象完成任务后很快就不再需要了，所以对于他们的清理可以很频繁。而在清理中留下的称为“老生代”一员。<br>增量收集 – 如果对象很多，很难一次标记完所有对象，这个过程甚至对程序执行产生了明显的延迟。所以引擎会尝试把这个操作分割成多份，每次执行一份。这样做要记录额外的数据，但是可以有效降低延迟对用户体验的影响。<br>闲时收集 – 垃圾回收器尽量只在 CPU 空闲时运行，减少对程序执行的影响。<br>除此以外还有很多对垃圾回收的优化，在此就不详细说了，各个引擎有自己的调整和技术，而且这个东西一直随着引擎的更新换代在改变，如果不是有实在的需求，不值得挖太深。不过如果你真的对此有浓厚的兴趣，下面会为你提供一些拓展链接。</p>
+<p>重点：</p>
+<p>垃圾回收自动进行，我们不能强制或阻止其进行。<br>可触及的对象会被保留在内存中。<br>被引用不一定是可触及的（从 root）：相互引用的对象可能整块都是不可触及的。</p>
+<p>Function.prototype.myCall = function(context){<br>    if(typeof this !== ‘’){</p>
+<pre><code>}
+var fn = Symbol()
+context[fn] = this
+var args = Array.prototype.slice.call(arguments,1)
+var  result = context[fn](...args)
+delete context[fn]
+return result</code></pre><p>}</p>
+<p>Function.prototype.myApply= function(context){<br>  if(typeof this !==’function’){<br>    return new TypeError(‘error’)<br>  }<br>  context = context||window<br>  var fn = Symbol()<br>  context[fn] = this<br>  var args = Array.prototype.slice.call(arguments,1)<br>   var  result<br>  if(args[0]){<br>    result = context<a href="...args[0]">fn</a><br>  }else{<br>    result = context<a href>fn</a><br>  }<br>  delete context[fn]<br>  return result<br>}</p>
+<p>Function.prototype.myBind = function(context){<br>   if(typeof this !== ‘function’){<br>      return new TypeError(‘error’)<br>   }<br>    const _this = this<br>    const args =  Array.prototype.slice.call(arguments,1),<br>          fToBind = this,<br>          FNOP = function(){},<br>          fBound = function(){<br>            return fToBind.apply(this instanceof )<br>          }</p>
+<pre><code>return function F(){
+  if(this instanceof F){
+     return new _this(...args,...arguments)
+  }
+  return _this.apply(context,args.concat(...arguments))
+}</code></pre><p>}</p>
+<p>function fun(){<br>  console.log(this.name)<br>}</p>
+<p>var name = ‘aaa’</p>
+<p>var obj = {<br>  name:’bbb’<br>}</p>
+<p>fun.myApply(obj)</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/04/js/new的实现/" rel="next" title="new的实现">
+                <i class="fa fa-chevron-left"></i> new的实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">qicainiao</p>
+              <p class="site-description motion-element" itemprop="description">Geek Spirit</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JavaScript-V8引擎"><span class="nav-number">1.</span> <span class="nav-text">JavaScript V8引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#js垃圾回收"><span class="nav-number">1.1.</span> <span class="nav-text">js垃圾回收</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#可触及（Reachability）"><span class="nav-number">1.1.1.</span> <span class="nav-text">可触及（Reachability）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#一个简单例子"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">一个简单例子</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#两个引用"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">两个引用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#相互引用的对象"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">相互引用的对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#孤岛（Unreachable-island"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">孤岛（Unreachable island)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#内部算法"><span class="nav-number">1.1.1.5.</span> <span class="nav-text">内部算法</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qicainiao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

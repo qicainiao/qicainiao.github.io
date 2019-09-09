@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="qicainiao&#39;s Blog">
 <meta property="og:description" content="new的作用 返回实例对象 实例可以访问到构造函数的属性和方法  实例可以访问到构造函数原型中的属性和方法  12345678910111213//demo:function Person(name, age) &amp;#123;this.name = namethis.age = age&amp;#125;Person.prototype.sayName = function () &amp;#123;console">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-04T09:39:35.401Z">
+<meta property="og:updated_time" content="2019-09-04T09:45:51.589Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="new的实现">
 <meta name="twitter:description" content="new的作用 返回实例对象 实例可以访问到构造函数的属性和方法  实例可以访问到构造函数原型中的属性和方法  12345678910111213//demo:function Person(name, age) &amp;#123;this.name = namethis.age = age&amp;#125;Person.prototype.sayName = function () &amp;#123;console">
@@ -348,7 +348,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function Person(name, age) &#123;</span><br><span class="line">this.name = name</span><br><span class="line">this.age = age</span><br><span class="line">this.like = &quot;休息&quot;</span><br><span class="line">return &#123;</span><br><span class="line">like:this.like</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">const man = new Person(&quot;张三&quot;, 18)</span><br><span class="line">console.log(&quot;demo man:&quot;, man) //demo man: &#123; like: &apos;休息&apos; &#125;</span><br><span class="line">console.log(man.name, man.age) //undefined undefined</span><br></pre></td></tr></table></figure>
 
 <p>代码实现</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function myNew() &#123;</span><br><span class="line"></span><br><span class="line">、、、、</span><br><span class="line">、、、、</span><br><span class="line"></span><br><span class="line">const  hasReturn = obj.apply(result,argArray)  //第一条,将构造函数obj的this指向result对象，这样result就可以访问到obj中的属性或方法</span><br><span class="line">                                             //同时看obj构造函数有无返回，且，返回是否为对象，否则，直接返回</span><br><span class="line">return typeof hasReturn === &apos;object&apos; ? hasReturn : result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const b = myNew(Person, &quot;张三&quot;, 19)</span><br><span class="line">console.log(&quot;test:&quot;, b) // test: &#123; like: &apos;休息&apos; &#125;</span><br><span class="line">console.log(b.name, b.age) // undefined undefined</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">function myNew() &#123;</span><br><span class="line"></span><br><span class="line">const result = new Object() //最终返回的是个对象，所以先new一个出来</span><br><span class="line"></span><br><span class="line">const obj = Array.prototype.shift.call(arguments) //使用shift，截取第一个参数，即我们需要的构造函数</span><br><span class="line"></span><br><span class="line">//这一步其实可以不用，因为shift直接改变原数组，在后面的apply的时候直接传arguments即可</span><br><span class="line">const argArray = Array.prototype.slice.call(arguments)//将构造函数obj的this指向result对象，这样result就可以访问到obj中的属性或方法</span><br><span class="line"></span><br><span class="line">result.__proto__ = obj.prototype // 第二条,继承原型上的属性或方法</span><br><span class="line"></span><br><span class="line">const  hasReturn = obj.apply(result,argArray)  //第一条,将构造函数obj的this指向result对象，这样result就可以访问到obj中的属性或方法</span><br><span class="line">                                             //同时看obj构造函数有无返回，且，返回是否为对象，否则，直接返回</span><br><span class="line">return typeof hasReturn === &apos;object&apos; ? hasReturn : result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const b = myNew(Person, &quot;张三&quot;, 19)</span><br><span class="line">console.log(&quot;test:&quot;, b) // test: &#123; like: &apos;休息&apos; &#125;</span><br><span class="line">console.log(b.name, b.age) // undefined undefined</span><br></pre></td></tr></table></figure>
 
 <p>完成，(＾－＾)V</p>
 <p>tips:如果构造函数没有返回或者返回的不是一个指定对象，比如只是 return “我是字符串” 这种，那返回不返回其实没啥区别<br> new还是返回的实例对象</p>
@@ -385,6 +385,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/06/js/V8引擎/" rel="prev" title="V8引擎">
+                V8引擎 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -461,7 +465,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
