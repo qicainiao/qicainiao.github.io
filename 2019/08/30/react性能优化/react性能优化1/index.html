@@ -87,7 +87,7 @@
 <meta property="og:description" content="单个react组件性能优化render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法 大家应该都能想到，无非就是三种，如下图：  第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法； 但是哪一种方法的性能最好，是我们要考">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/react/2-1.png">
-<meta property="og:updated_time" content="2019-09-11T07:32:36.925Z">
+<meta property="og:updated_time" content="2019-09-11T07:49:03.893Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="react性能优化一">
 <meta name="twitter:description" content="单个react组件性能优化render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量首先我们先思考一个问题，比如我要实现一个点击按钮使相应的num增加1，我们有哪一些方法 大家应该都能想到，无非就是三种，如下图：  第一种是在构造函数中绑定this，第二种是在render()函数里面绑定this，第三种就是使用箭头函数，都能实现上述方法； 但是哪一种方法的性能最好，是我们要考">
@@ -357,6 +357,8 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const fooStyle = &#123; color: <span class="string">"red"</span> &#125;; //确保这个初始化只执行一次，不要放在render中，可以放在构造函数中</span><br><span class="line"></span><br><span class="line">&lt;Foo style=&#123;fooStyle&#125; /&gt;</span><br></pre></td></tr></table></figure>
 
 <p>这个问题是我们在平时的编码中可以避免的。</p>
+<h3 id="setState传递个函数"><a href="#setState传递个函数" class="headerlink" title="setState传递个函数"></a>setState传递个函数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//input onChange事件  </span><br><span class="line">handleInputChange(e)&#123;</span><br><span class="line">  const value = e.target.value</span><br><span class="line">  this.setState(&#123;</span><br><span class="line">    inputValue:value</span><br><span class="line">  &#125;)</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">//</span><br><span class="line"><span class="function"><span class="title">handleSubmit</span></span>()&#123;</span><br><span class="line">  this.setState((preState)=&gt;(&#123; </span><br><span class="line">    list:[...preState.list,preState.inputValue],</span><br><span class="line">    inputValue:<span class="string">''</span></span><br><span class="line">  &#125;))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -516,7 +518,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单个react组件性能优化"><span class="nav-number">1.</span> <span class="nav-text">单个react组件性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量"><span class="nav-number">1.1.</span> <span class="nav-text">render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单个react组件性能优化"><span class="nav-number">1.</span> <span class="nav-text">单个react组件性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量"><span class="nav-number">1.1.</span> <span class="nav-text">render里面尽量减少新建变量和bind函数，传递参数是尽量减少传递参数的数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#setState传递个函数"><span class="nav-number">1.2.</span> <span class="nav-text">setState传递个函数</span></a></li></ol></li></ol></div>
             
 
           </div>
